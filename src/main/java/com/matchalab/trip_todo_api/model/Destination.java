@@ -33,14 +33,14 @@ public class Destination {
     private Trip trip;
 
     private String description;
-    private String nation;
+    private String countryISO;
     private String title;
     private String region;
 
     public Destination(Destination destination) {
         this.trip = destination.getTrip();
         this.description = destination.getDescription();
-        this.nation = destination.getNation();
+        this.countryISO = destination.getCountryISO();
         this.title = destination.getTitle();
         this.region = destination.getRegion();
     }

@@ -18,7 +18,7 @@ public class Location {
 
     String name;
     String title;
-    String nation;
+    String countryISO;
 
     @Nullable
     String region;
