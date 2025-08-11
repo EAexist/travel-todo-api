@@ -1,26 +1,29 @@
 package com.matchalab.trip_todo_api;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.matchalab.trip_todo_api.model.Airport;
 import com.matchalab.trip_todo_api.model.PresetTodoContent;
-import com.matchalab.trip_todo_api.model.Todo;
+import com.matchalab.trip_todo_api.repository.AirportRepository;
 import com.matchalab.trip_todo_api.repository.PresetTodoContentRepository;
+import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,8 @@ public class DataLoader implements CommandLineRunner {
 
     @Autowired
     private PresetTodoContentRepository presetTodoContentRepository;
+    @Autowired
+    private AirportRepository airportRepository;
     // @Autowired
     // private TripRepository tripRepository;
     // @Autowired
@@ -51,19 +56,37 @@ public class DataLoader implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
 
-        // Properties props = new Properties();
-        // props.put("username", username);
-        // props.put("password", password);
-        // props.put("sslmode", "verify-ca");
-        // props.put("ssl", "true");
-
         try {
-            // Connection conn = DriverManager.getConnection(url, props);
-            // log.info("연결 정보 확인: {}", conn);
             presetTodoContentRepository.saveAll(readPresetJson());
+
+            List<Airport> airports = new ArrayList<Airport>();
+            // airports = readCsv("static/airports.csv");
+            airports = readCsv();
+
+            airportRepository.saveAll(airports);
 
         } catch (DataIntegrityViolationException ignore) {
             ignore.printStackTrace();
+        }
+    }
+
+    @Autowired
+    private ResourceLoader resourceLoader;
+
+    private List<Airport> readCsv() throws Exception {
+        String filePath = "classpath:/static/airports.csv";
+        Resource resource = resourceLoader.getResource(filePath);
+        try (CSVReader reader = new CSVReader(new InputStreamReader(resource.getInputStream()))) {
+            HeaderColumnNameMappingStrategy<Airport> strategy = new HeaderColumnNameMappingStrategy<>();
+            strategy.setType(Airport.class);
+
+            CsvToBean<Airport> csvToBean = new CsvToBeanBuilder<Airport>(reader)
+                    .withType(Airport.class)
+                    .withMappingStrategy(strategy)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .build();
+
+            return csvToBean.parse();
         }
     }
 
