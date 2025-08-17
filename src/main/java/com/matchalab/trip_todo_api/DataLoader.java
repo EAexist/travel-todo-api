@@ -74,7 +74,7 @@ public class DataLoader implements CommandLineRunner {
     private ResourceLoader resourceLoader;
 
     private List<Airport> readCsv() throws Exception {
-        String filePath = "classpath:/static/airports.csv";
+        String filePath = "classpath:/static/airports_sample.csv";
         Resource resource = resourceLoader.getResource(filePath);
         try (CSVReader reader = new CSVReader(new InputStreamReader(resource.getInputStream()))) {
             HeaderColumnNameMappingStrategy<Airport> strategy = new HeaderColumnNameMappingStrategy<>();

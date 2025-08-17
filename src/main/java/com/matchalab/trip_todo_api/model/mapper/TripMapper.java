@@ -181,6 +181,8 @@ public abstract class TripMapper {
 
     public abstract DestinationDTO mapToDestinationDTO(Destination destination);
 
+    @Mapping(target = "recommendedOutboundFlight", ignore = true)
+    @Mapping(target = "recommendedReturnFlight", ignore = true)
     public abstract Destination mapToDestination(DestinationDTO destinationDTO);
 
     // public PresetDTO mapToPresetDTO(PresetTodoContent presetTodoContent) {

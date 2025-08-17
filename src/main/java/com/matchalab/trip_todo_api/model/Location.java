@@ -24,5 +24,5 @@ public class Location {
     String region;
 
     @Nullable
-    String iataCode;
+    String IATACode;
 }

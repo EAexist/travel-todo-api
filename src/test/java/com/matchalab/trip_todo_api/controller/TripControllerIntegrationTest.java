@@ -1,6 +1,8 @@
 package com.matchalab.trip_todo_api.controller;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matchalab.trip_todo_api.DataLoader;
+import com.matchalab.trip_todo_api.config.RecommendedFlightTestConfig;
 import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.PresetTodoContentNotFoundException;
@@ -47,24 +50,27 @@ import com.matchalab.trip_todo_api.model.PresetTodoContent;
 import com.matchalab.trip_todo_api.model.Todo;
 import com.matchalab.trip_todo_api.model.TodoContent;
 import com.matchalab.trip_todo_api.model.Trip;
+import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.PresetDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.model.mapper.TripMapper;
 import com.matchalab.trip_todo_api.model.request.CreateTodoRequest;
+import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.PresetTodoContentRepository;
 import com.matchalab.trip_todo_api.repository.TodoRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AutoConfigureMockMvc
 @WithMockUser
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import({ TestConfig.class })
+@Import({ TestConfig.class, RecommendedFlightTestConfig.class })
 // @TestPropertySource(properties = { "spring.config.location =
 // classpath:application-test.yml" })
 @TestInstance(Lifecycle.PER_CLASS)
@@ -88,6 +94,9 @@ public class TripControllerIntegrationTest {
     private UserAccountRepository userAccountRepository;
 
     @Autowired
+    private DestinationRepository destinationRepository;
+
+    @Autowired
     private TripMapper tripMapper;
 
     // @Autowired
@@ -109,6 +118,9 @@ public class TripControllerIntegrationTest {
     private Destination[] destinations;
 
     @Autowired
+    private DestinationDTO[] destinationDTOs;
+
+    @Autowired
     private CustomTodoContent customTodoContent;
 
     @Autowired
@@ -122,6 +134,9 @@ public class TripControllerIntegrationTest {
 
     @Autowired
     private TodoDTO customTodoDTO;
+
+    @Autowired
+    private Destination destinationWithRecommendedFlight;
 
     private Trip savedTrip;
 
@@ -138,13 +153,7 @@ public class TripControllerIntegrationTest {
         userAccountId = userAccountRepository.save(new UserAccount()).getId();
 
         savedTrip = new Trip();
-        savedTrip.setDestination(Arrays.stream(destinations)
-                .map(dest -> {
-                    Destination newDest = new Destination(dest);
-                    newDest.setTrip(savedTrip);
-                    return newDest;
-                })
-                .toList());
+        savedTrip.setDestination(Arrays.stream(destinations).toList());
         savedTrip.setAccomodation(Arrays.stream(accomodations)
                 .map(acc -> {
                     Accomodation newAcc = new Accomodation(acc);
@@ -418,8 +427,57 @@ public class TripControllerIntegrationTest {
     }
 
     /* @TODO */
-    // @Test
-    void createDestination_When_Then() throws Exception {
+    @Test
+    void createDestination_Given_ValidTripIdAndDestinationDTO_When_RequestPost_Then_CreateDestination()
+            throws Exception {
+
+        Long id = savedTrip.getId();
+
+        DestinationDTO destinationDTO = destinationDTOs[0];
+
+        ResultActions result = mockMvc.perform(post(String.format("/user/%s/trip/%s/destination", userAccountId, id))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(destinationDTO)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("id")
+                        .isNotEmpty())
+                .andExpect(jsonPath("title").value(presetTodoContent.getTitle()))
+                .andExpect(jsonPath("orderKey").value(0))
+                .andExpect(jsonPath("note").isEmpty());
+
+        DestinationDTO actualDestinationDTO = asObject(result, DestinationDTO.class);
+
+        result.andExpect(header().string("Location",
+                String.format("http://localhost/destination/%s", actualDestinationDTO.id())));
+    }
+
+    @Test
+    @Transactional
+    void createDestination_Given_FirstSeenDestination_When_RequestPost_Then_AddRecommendedFlights() throws Exception {
+
+        ResultActions result = mockMvc
+                .perform(post(String.format("/user/%s/trip/%s/destination", userAccountId, savedTrip.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(destinationDTOs[0])))
+                .andDo(print());
+
+        String[] locationStringSplit = result.andReturn().getResponse().getHeader("Location").split("/");
+        Long destinationId = Long.parseLong(locationStringSplit[locationStringSplit.length - 1]);
+
+        await().atMost(5, SECONDS).untilAsserted(() -> {
+            Destination destination = destinationRepository.findById(destinationId)
+                    .orElseThrow(() -> new NotFoundException(destinationId));
+
+            assertThat(destination)
+                    .usingRecursiveComparison()
+                    .comparingOnlyFields("recommendedOutboundFlight", "recommendedReturnFlight")
+                    .ignoringFieldsOfTypes()
+                    .ignoringFields("id")
+                    .isEqualTo(destinationWithRecommendedFlight);
+
+        });
     }
 
     /* @TODO */

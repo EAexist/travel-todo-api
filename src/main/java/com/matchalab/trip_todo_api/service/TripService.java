@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
 import com.matchalab.trip_todo_api.model.Accomodation;
@@ -15,7 +17,8 @@ import com.matchalab.trip_todo_api.model.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Location;
-import com.matchalab.trip_todo_api.model.RecommendedFlight;
+import com.matchalab.trip_todo_api.model.PresetTodoContent;
+import com.matchalab.trip_todo_api.model.FlightRoute;
 import com.matchalab.trip_todo_api.model.Todo;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
@@ -24,6 +27,8 @@ import com.matchalab.trip_todo_api.model.DTO.PresetDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
+import com.matchalab.trip_todo_api.model.genAI.RecommendedFlightChatResult;
+import com.matchalab.trip_todo_api.model.mapper.FlightRouteMapper;
 import com.matchalab.trip_todo_api.model.mapper.TripMapper;
 import com.matchalab.trip_todo_api.repository.AccomodationRepository;
 import com.matchalab.trip_todo_api.repository.CustomTodoContentRepository;
@@ -59,7 +64,7 @@ public class TripService {
     private final TripMapper tripMapper;
 
     @Autowired
-    private final GenAIService genAIService;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Provide the details of a Trip with the given id.
@@ -95,10 +100,11 @@ public class TripService {
     /**
      * Create new todo.
      */
-    public List<RecommendedFlight> getRecommendedFlight(Long tripId) {
-        return tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
-                .getRecommendedFlight();
-    }
+    // public List<FlightRoute> getFlightRoute(Long tripId) {
+    // return tripRepository.findById(tripId).orElseThrow(() -> new
+    // TripNotFoundException(tripId))
+    // .getFlightRoute();
+    // }
 
     /**
      * Create new todo.
@@ -114,7 +120,21 @@ public class TripService {
         if (newTodo.getCustomTodoContent() != null) {
             if (newTodo.getCustomTodoContent().getType() == null) {
                 newTodo.getCustomTodoContent().setIcon(new Icon("⭐️", "tossface"));
-                newTodo.getCustomTodoContent().setTitle("새 할 일");
+                String title = "";
+                // switch (newTodo.getCustomTodoContent().getCategory()) {
+                // case "reservation":
+                // title = "새 예약";
+                // break;
+                // case "foreign":
+                // title = "새 할 일";
+                // break;
+                // case "goods":
+                // title = "새 짐 챙기기";
+                // break;
+                // default:
+                // break;
+                // }
+                newTodo.getCustomTodoContent().setTitle(title);
             } else {
                 switch (newTodo.getCustomTodoContent().getType()) {
                     case "flight":
@@ -168,9 +188,18 @@ public class TripService {
      * Create new todo.
      */
     public List<PresetDTO> getTodoPreset(Long tripId) {
-        return presetTodoContentRepository.findAll().stream().map(
+        List<PresetDTO> preset = presetTodoContentRepository.findAll().stream().map(
                 presetTodoContent -> PresetDTO.builder().todo(presetTodoContent).isFlaggedToAdd(true).build())
                 .toList();
+        Boolean isForeign = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
+                .getDestination().stream().anyMatch(dest -> !dest.getCountryISO().equals("KR"));
+        if (isForeign) {
+            preset.addAll(Arrays.asList(
+                    new PresetDTO(true, new PresetTodoContent(null, "reservation", "flight", "가는 항공편", new Icon("✈️"))),
+                    new PresetDTO(true,
+                            new PresetTodoContent(null, "reservation", "flight", "오는 항공편", new Icon("✈️")))));
+        }
+        return preset;
     }
 
     /**
@@ -178,12 +207,17 @@ public class TripService {
      */
     public DestinationDTO createDestination(Long tripId, DestinationDTO destinationDTO) {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
-        Destination newDestination = tripMapper.mapToDestination(destinationDTO);
-        newDestination.setTrip(trip);
-        trip.getDestination().add(newDestination);
-        List<RecommendedFlight> recommendedFlight = genAIService.getRecommendedFlight(newDestination.getTitle());
+        Destination queryDestination = tripMapper.mapToDestination(destinationDTO);
 
-        trip.setRecommendedFlight(recommendedFlight);
+        Destination newDestination = destinationRepository
+                .findByCountryISOAndTitle(queryDestination.getCountryISO(), queryDestination.getTitle())
+                .orElseGet(() -> {
+                    Destination dest = destinationRepository.save(queryDestination);
+                    eventPublisher.publishEvent(new NewDestinationCreatedEvent(this, dest.getId()));
+                    return dest;
+                });
+
+        trip.getDestination().add(newDestination);
 
         return tripMapper.mapToDestinationDTO(tripRepository.save(trip).getDestination().getLast());
     }

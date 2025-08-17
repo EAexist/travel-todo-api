@@ -46,21 +46,23 @@ public class ProxyController {
      * Provide the details of an Trip with the given id.
      */
 
-    @GetMapping("/airport/place/autocomplete/json")
-    public Object googlePlaceAirportAutocomplete(@RequestParam String input,
-            @RequestParam String language) {
-        log.info(String.format("[proxy/google-places-autocomplete] input=%s , language=%s", input, language));
-        RestTemplate restTemplate = new RestTemplate();
-        URI uri = UriComponentsBuilder.fromUriString(GOOGLE_PLACES_API_BASE_URL)
-                .queryParam("input", input)
-                .queryParam("key", GOOGLE_PLACES_API_KEY)
-                .queryParam("language", language)
-                .queryParam("type", "airport")
-                // .queryParams(query)
-                .build()
-                .toUri();
-        log.info(String.format("[proxy/google-places-autocomplete] uri={}", uri.toString()));
-        return restTemplate.getForObject(uri, Object.class);
-    }
+    // @GetMapping("/airport/place/autocomplete/json")
+    // public Object googlePlaceAirportAutocomplete(@RequestParam String input,
+    // @RequestParam String language) {
+    // log.info(String.format("[proxy/google-places-autocomplete] input=%s ,
+    // language=%s", input, language));
+    // RestTemplate restTemplate = new RestTemplate();
+    // URI uri = UriComponentsBuilder.fromUriString(GOOGLE_PLACES_API_BASE_URL)
+    // .queryParam("input", input)
+    // .queryParam("key", GOOGLE_PLACES_API_KEY)
+    // .queryParam("language", language)
+    // .queryParam("type", "airport")
+    // // .queryParams(query)
+    // .build()
+    // .toUri();
+    // log.info(String.format("[proxy/google-places-autocomplete] uri={}",
+    // uri.toString()));
+    // return restTemplate.getForObject(uri, Object.class);
+    // }
 
 }

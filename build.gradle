@@ -84,11 +84,21 @@ dependencies {
     /* Test */
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core:3.27.2'
+    testImplementation "org.awaitility:awaitility:4.3.0"
     // testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     // testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     
 }
-tasks.named('test') {
-	
+tasks.named('test') {	
 	useJUnitPlatform()
 }
+
+// tasks.withType(JavaCompile).configureEach {
+//     if (name.contains("Test")) {
+//         options.compilerArgs << "-proc:none"
+//     }
+// }
+
+// tasks.named('compileTestJava', JavaCompile) {
+//     options.compilerArgs.add("-proc:none")
+// }

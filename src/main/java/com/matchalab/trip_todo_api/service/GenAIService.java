@@ -7,9 +7,10 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.matchalab.trip_todo_api.enums.ReservationType;
-import com.matchalab.trip_todo_api.model.RecommendedFlight;
+import com.matchalab.trip_todo_api.model.FlightRoute;
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
+import com.matchalab.trip_todo_api.model.genAI.RecommendedFlightChatResult;
 
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -133,10 +134,10 @@ public class GenAIService {
         return Arrays.asList(reservationImageAnalysisResult);
     }
 
-    public List<RecommendedFlight> getRecommendedFlight(String destinationTitle) {
+    public List<FlightRoute> getFlightRoute(String destinationTitle) {
 
-        BeanOutputConverter<List<RecommendedFlight>> outputConverter = new BeanOutputConverter<>(
-                new ParameterizedTypeReference<List<RecommendedFlight>>() {
+        BeanOutputConverter<List<FlightRoute>> outputConverter = new BeanOutputConverter<>(
+                new ParameterizedTypeReference<List<FlightRoute>>() {
                 });
 
         String format = outputConverter.getFormat();
@@ -152,7 +153,32 @@ public class GenAIService {
 
         Generation generation = geminiChatModel.call(prompt).getResult();
 
-        List<RecommendedFlight> recommendedFlight = outputConverter
+        List<FlightRoute> recommendedFlight = outputConverter
+                .convert(generation.getOutput().getText());
+
+        return recommendedFlight;
+    }
+
+    public RecommendedFlightChatResult getRecommendedFlight(String destinationTitle) {
+
+        BeanOutputConverter<RecommendedFlightChatResult> outputConverter = new BeanOutputConverter<>(
+                new ParameterizedTypeReference<RecommendedFlightChatResult>() {
+                });
+
+        String format = outputConverter.getFormat();
+        String departureTitle = "한국";
+        String language = "Korean";
+        String template = """
+                {departureTitle}에서 {destinationTitle}로 여행할 때 이용할 수 있는 모든 outbound/return 항공 노선 정보를 알려줘. 목록 중에 직항이 있다면 직항이 아닌 노선은 제외해. 한국에서 많이 이용하는 순서대로 나열해.
+                {format}""";
+
+        Prompt prompt = new PromptTemplate(template)
+                .create(Map.of("departureTitle", departureTitle, "destinationTitle", destinationTitle, "format",
+                        format, "language", language));
+
+        Generation generation = geminiChatModel.call(prompt).getResult();
+
+        RecommendedFlightChatResult recommendedFlight = outputConverter
                 .convert(generation.getOutput().getText());
 
         return recommendedFlight;

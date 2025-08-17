@@ -7,6 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -48,7 +50,8 @@ public class Trip {
     private UserAccount userAccount;
 
     @Builder.Default
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "trip_to_destination", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "destination_id"))
     private List<Destination> destination = new ArrayList<Destination>();
 
     @Builder.Default
@@ -65,7 +68,7 @@ public class Trip {
 
     @Builder.Default
     @JdbcTypeCode(SqlTypes.JSON)
-    private List<RecommendedFlight> recommendedFlight = new ArrayList<RecommendedFlight>();
+    private List<FlightRoute> recommendedFlight = new ArrayList<FlightRoute>();
 
     @Builder.Default
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

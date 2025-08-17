@@ -35,13 +35,16 @@ public class TestConfig {
 
     @Bean
     Destination[] destinations() {
-        return new Destination[] { new Destination(null, null, "", "jp", "도쿠시마", "시코쿠"),
-                new Destination(null, null, "", "jp", "교토", "간사이") };
+        return new Destination[] { new Destination("도쿠시마", "시코쿠", "JP", ""),
+                new Destination("교토", "간사이", "JP", "") };
     }
 
-    private List<DestinationDTO> destinationDTOs = new ArrayList<DestinationDTO>(
-            Arrays.asList(new DestinationDTO[] { new DestinationDTO(null, "", "jp", "도쿠시마", "시코쿠"),
-                    new DestinationDTO(null, "", "jp", "교토", "간사이") }));
+    @Bean
+    List<DestinationDTO> destinationDTOs() {
+        return (new ArrayList<DestinationDTO>(
+                Arrays.asList(new DestinationDTO[] { new DestinationDTO(null, "", "jp", "도쿠시마", "시코쿠"),
+                        new DestinationDTO(null, "", "jp", "교토", "간사이") })));
+    }
 
     @Bean
     Accomodation[] accomodations() {
@@ -182,7 +185,7 @@ public class TestConfig {
                 .title("Vaundy 보러 가는 도쿠시마 여행")
                 .startDateISOString("2025-02-20T00:00:00.001Z")
                 .endDateISOString("2025-02-25T00:00:00.001Z")
-                .destination(destinationDTOs).todolist(todoDTOlist).accomodation(accomodationDTOs).build();
+                .destination(destinationDTOs()).todolist(todoDTOlist).accomodation(accomodationDTOs).build();
     }
 
     @Bean
