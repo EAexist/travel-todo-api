@@ -191,9 +191,9 @@ public class TripService {
         List<PresetDTO> preset = presetTodoContentRepository.findAll().stream().map(
                 presetTodoContent -> PresetDTO.builder().todo(presetTodoContent).isFlaggedToAdd(true).build())
                 .toList();
-        Boolean isForeign = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
-                .getDestination().stream().anyMatch(dest -> !dest.getCountryISO().equals("KR"));
-        if (isForeign) {
+        Boolean doRecommendFlight = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
+                .getDestination().stream().anyMatch(dest -> dest.getRecommendedOutboundFlight().size() > 0);
+        if (doRecommendFlight) {
             preset.addAll(Arrays.asList(
                     new PresetDTO(true, new PresetTodoContent(null, "reservation", "flight", "가는 항공편", new Icon("✈️"))),
                     new PresetDTO(true,

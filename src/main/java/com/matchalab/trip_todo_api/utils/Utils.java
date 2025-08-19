@@ -1,5 +1,6 @@
 package com.matchalab.trip_todo_api.utils;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -7,15 +8,12 @@ import java.io.IOException;
 import java.net.URI;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Utils {

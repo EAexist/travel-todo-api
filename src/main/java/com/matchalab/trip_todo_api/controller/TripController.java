@@ -15,11 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.matchalab.trip_todo_api.model.FlightRoute;
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.PresetDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
 import com.matchalab.trip_todo_api.service.TripService;
 import com.matchalab.trip_todo_api.utils.Utils;
@@ -78,45 +76,6 @@ public class TripController {
     /**
      * Provide the details of an Trip with the given id.
      */
-    @PostMapping("/{tripId}/todo")
-    public ResponseEntity<TodoDTO> createTodo(@PathVariable Long tripId, @RequestBody TodoDTO requestbody) {
-        try {
-            TodoDTO todoDTO = tripService.createTodo(tripId, requestbody);
-            return ResponseEntity.created(Utils.getLocation(todoDTO.id())).body(todoDTO);
-        } catch (HttpClientErrorException e) {
-            throw e;
-        }
-    }
-
-    /**
-     * Provide the details of an Trip with the given id.
-     */
-    @PatchMapping("/{tripId}/todo/{todoId}")
-    public ResponseEntity<TodoDTO> patchTodo(@PathVariable Long todoId, @RequestBody TodoDTO newTodoDTO) {
-        try {
-            TodoDTO todoDTO = tripService.patchTodo(todoId, newTodoDTO);
-            return ResponseEntity.ok().body(todoDTO);
-        } catch (HttpClientErrorException e) {
-            throw e;
-        }
-    }
-
-    /**
-     * Provide the details of an Trip with the given id.
-     */
-    @DeleteMapping("/{tripId}/todo/{todoId}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long todoId) {
-        try {
-            tripService.deleteTodo(todoId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (HttpClientErrorException e) {
-            throw e;
-        }
-    }
-
-    /**
-     * Provide the details of an Trip with the given id.
-     */
     @GetMapping("/{tripId}/todoPreset")
     public ResponseEntity<List<PresetDTO>> todoPreset(@PathVariable Long tripId) {
         try {
@@ -126,21 +85,6 @@ public class TripController {
             throw e;
         }
     }
-
-    /**
-     * Provide the details of an Trip with the given id.
-     */
-    // @GetMapping("/{tripId}/recommendedFlight")
-    // public ResponseEntity<List<FlightRoute>> recommendedFlight(@PathVariable Long
-    // tripId) {
-    // try {
-    // List<FlightRoute> recommendedFlight = tripService.getFlightRoute(tripId);
-    // log.info(recommendedFlight.toString());
-    // return ResponseEntity.ok().body(recommendedFlight);
-    // } catch (HttpClientErrorException e) {
-    // throw e;
-    // }
-    // }
 
     /**
      * Provide the details of an Trip with the given id.
@@ -165,6 +109,21 @@ public class TripController {
             throw e;
         }
     }
+
+    /**
+     * Provide the details of an Trip with the given id.
+     */
+    // @GetMapping("/{tripId}/recommendedFlight")
+    // public ResponseEntity<List<FlightRoute>> recommendedFlight(@PathVariable Long
+    // tripId) {
+    // try {
+    // List<FlightRoute> recommendedFlight = tripService.getFlightRoute(tripId);
+    // log.info(recommendedFlight.toString());
+    // return ResponseEntity.ok().body(recommendedFlight);
+    // } catch (HttpClientErrorException e) {
+    // throw e;
+    // }
+    // }
 
     /**
      * Provide the details of an Trip with the given id.
