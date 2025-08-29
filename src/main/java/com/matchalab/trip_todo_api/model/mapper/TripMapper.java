@@ -14,16 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.matchalab.trip_todo_api.exception.PresetTodoContentNotFoundException;
 import com.matchalab.trip_todo_api.model.Accomodation;
-import com.matchalab.trip_todo_api.model.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Destination;
-import com.matchalab.trip_todo_api.model.PresetTodoContent;
-import com.matchalab.trip_todo_api.model.Todo;
-import com.matchalab.trip_todo_api.model.TodoContent;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.PresetTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.Todo;
+import com.matchalab.trip_todo_api.model.Todo.TodoContent;
 import com.matchalab.trip_todo_api.repository.PresetTodoContentRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +45,8 @@ public abstract class TripMapper {
         return new TodoDTO(todo.getId(), todo.getOrderKey(), todo.getNote(), todo.getCompleteDateISOString(),
                 (todo.getPresetTodoContent() != null) ? todo.getPresetTodoContent().getId() : null,
                 todoContent.getCategory(), todoContent.getType(),
-                todoContent.getTitle(), todoContent.getIcon(), todo.getDeparture(),
-                todo.getArrival());
+                todoContent.getTitle(), todoContent.getIcon(),
+                (todo.getFlightTodoContent() != null) ? todo.getFlightTodoContent().getRoutes() : null);
 
     }
 
@@ -167,7 +167,7 @@ public abstract class TripMapper {
     @AfterMapping
     private void afterMapping(TodoDTO tripDTO, @MappingTarget Trip trip) {
         List<Accomodation> accomodations = trip.getAccomodation().stream().map(accomodation -> {
-            accomodation.setTrip(trip);
+            // accomodation.setTrip(trip);
             accomodation.setTitle("HelloWorld");
             return accomodation;
         }).toList();

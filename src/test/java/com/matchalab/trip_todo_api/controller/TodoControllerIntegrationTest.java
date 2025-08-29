@@ -32,20 +32,18 @@ import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.PresetTodoContentNotFoundException;
 import com.matchalab.trip_todo_api.model.Accomodation;
-import com.matchalab.trip_todo_api.model.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Icon;
-import com.matchalab.trip_todo_api.model.PresetTodoContent;
-import com.matchalab.trip_todo_api.model.Todo;
-import com.matchalab.trip_todo_api.model.TodoContent;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
-import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
+import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.PresetTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.Todo;
+import com.matchalab.trip_todo_api.model.Todo.TodoContent;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.model.mapper.TripMapper;
 import com.matchalab.trip_todo_api.model.request.CreateTodoRequest;
-import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.PresetTodoContentRepository;
 import com.matchalab.trip_todo_api.repository.TodoRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
@@ -83,31 +81,13 @@ public class TodoControllerIntegrationTest {
     private UserAccountRepository userAccountRepository;
 
     @Autowired
-    private DestinationRepository destinationRepository;
-
-    @Autowired
     private TripMapper tripMapper;
-
-    // @Autowired
-    // private TodoDTO todoDTO;
-
-    // @Autowired
-    // private Todo todo;
-
-    @Autowired
-    private TripDTO tripDTO;
-
-    @Autowired
-    private Trip trip;
 
     @Autowired
     private Accomodation[] accomodations;
 
     @Autowired
     private Destination[] destinations;
-
-    @Autowired
-    private DestinationDTO[] destinationDTOs;
 
     @Autowired
     private CustomTodoContent customTodoContent;
@@ -120,12 +100,6 @@ public class TodoControllerIntegrationTest {
 
     @Autowired
     private Todo customTodo;
-
-    @Autowired
-    private TodoDTO customTodoDTO;
-
-    @Autowired
-    private Destination destinationWithRecommendedFlight;
 
     private Trip savedTrip;
 
@@ -146,7 +120,7 @@ public class TodoControllerIntegrationTest {
         savedTrip.setAccomodation(Arrays.stream(accomodations)
                 .map(acc -> {
                     Accomodation newAcc = new Accomodation(acc);
-                    newAcc.setTrip(savedTrip);
+                    // newAcc.setTrip(savedTrip);
                     return newAcc;
                 })
                 .toList());
@@ -196,6 +170,35 @@ public class TodoControllerIntegrationTest {
         result.andExpect(header().string("Location",
                 String.format("http://localhost/user/%s/trip/%s/todo/%s", userAccountId, id, createdTodoDTO.id())));
     }
+
+    // @TODO
+    // @Test
+    // void
+    // createTodo_Given_ValidTripIdAndFlightTodoDTO_When_RequestPost_Then_CreateTodo()
+    // throws Exception {
+
+    // Long id = savedTrip.getId();
+
+    // ResultActions result =
+    // mockMvc.perform(post(String.format("/user/%s/trip/%s/todo", userAccountId,
+    // id))
+    // .contentType(MediaType.APPLICATION_JSON)
+    // .content(
+    // Utils.asJsonString(TodoDTO.builder().type("flight")
+    // .flightRoutes(List.of(new FlightRoute(id, null, null, null),
+    // new FlightRoute(id, null, null, null)))
+    // .build())))
+    // .andDo(print())
+    // .andExpect(status().isCreated())
+    // .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+    // .andExpect(jsonPath("id")
+    // .isNotEmpty());
+
+    // TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
+    // result.andExpect(header().string("Location",
+    // String.format("http://localhost/user/%s/trip/%s/todo/%s", userAccountId, id,
+    // createdTodoDTO.id())));
+    // }
 
     @Test
     void createTodo_Given_ValidTripIdAndPresetTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
@@ -290,12 +293,6 @@ public class TodoControllerIntegrationTest {
     }
 
     /* @TODO */
-    // @Test
     void deleteTodo_When_Then() throws Exception {
-    }
-
-    /* @TODO */
-    // @Test
-    void deleteDestination_When_Then() throws Exception {
     }
 }

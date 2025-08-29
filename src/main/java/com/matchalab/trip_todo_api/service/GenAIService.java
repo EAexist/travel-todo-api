@@ -4,20 +4,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.stereotype.Service;
-
-import com.matchalab.trip_todo_api.enums.ReservationType;
-import com.matchalab.trip_todo_api.model.FlightRoute;
-import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
-import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
-import com.matchalab.trip_todo_api.model.genAI.RecommendedFlightChatResult;
-
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.converter.BeanOutputConverter;
+import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
+import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatOptions;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.retry.support.RetryTemplate;
+import org.springframework.stereotype.Service;
+
+import com.google.cloud.vertexai.VertexAI;
+import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
+import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
+import com.matchalab.trip_todo_api.model.genAI.RecommendedFlightChatResult;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class GenAIService {
 
-    private final VertexAiGeminiChatModel geminiChatModel;
+    private final VertexAiGeminiChatModel geminiChatModel = new VertexAiGeminiChatModel(new VertexAI(),
+            VertexAiGeminiChatOptions.builder().model("gemini-2.0-flash-lite").build(),
+            ToolCallingManager.builder().build(),
+            new RetryTemplate(), null);
 
     /**
      * This method downloads an image from a URL and sends its contents to the
@@ -144,7 +148,7 @@ public class GenAIService {
         String departureTitle = "한국";
         String language = "Korean";
         String template = """
-                {departureTitle}에서 {destinationTitle}로 여행할 때 이용할 수 있는 모든 항공 노선들의 출발 공항과 도착 공항을 각각 알려줘. 직항이 있다면 직항이 아닌 노선은 제외해. 한국에서 많이 이용하는 순서대로 나열해.
+                {departureTitle}에서 {destinationTitle}로 여행할 때 직항 항공 노선을 이용할거야. 출발 공항과 도착 공항의 짝을 알려줘. 최대한 많이 알려줘. 한국인이 많이 이용하는 순서대로 나열해.
                 {format} Provide Answer in {language}""";
 
         Prompt prompt = new PromptTemplate(template)
@@ -169,7 +173,7 @@ public class GenAIService {
         String departureTitle = "한국";
         String language = "Korean";
         String template = """
-                {departureTitle}에서 {destinationTitle}로 여행할 때 이용할 수 있는 모든 outbound/return 항공 노선 정보를 알려줘. 목록 중에 직항이 있다면 직항이 아닌 노선은 제외해. 한국에서 많이 이용하는 순서대로 나열해.
+                {departureTitle}에서 {destinationTitle}로 여행할 때 이용할 수 있는 모든 outbound/return 직항 항공 노선을 한국에서 많이 이용하는 순서대로 나열해.
                 {format}""";
 
         Prompt prompt = new PromptTemplate(template)
@@ -182,6 +186,31 @@ public class GenAIService {
                 .convert(generation.getOutput().getText());
 
         return recommendedFlight;
+    }
+
+    public List<String> getRecommendedAirline(FlightRoute flightRoute) {
+
+        BeanOutputConverter<List<String>> outputConverter = new BeanOutputConverter<>(
+                new ParameterizedTypeReference<List<String>>() {
+                });
+
+        String format = outputConverter.getFormat();
+        String language = "Korean";
+        String template = """
+                출발:{departureAirportIATA},도착:{destinationAirportIATA} 에 해당하는 모든 항공 노선 목록에 대해 각 노선을 운영하는 항공사의 Offical IATA Code를 최대한 많이 알려줘. 노선의 한국인 이용객이 많은 순서대로 나열해.
+                {format}""";
+
+        Prompt prompt = new PromptTemplate(template)
+                .create(Map.of("departureAirportIATA", flightRoute.getDeparture().getIATACode(),
+                        "destinationAirportIATA", flightRoute.getArrival().getIATACode(), "format",
+                        format, "language", language));
+
+        Generation generation = geminiChatModel.call(prompt).getResult();
+
+        List<String> recommendedAirlines = outputConverter
+                .convert(generation.getOutput().getText());
+
+        return recommendedAirlines;
     }
 
     // public ReservationImageAnalysisResult

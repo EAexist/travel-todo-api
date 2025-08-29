@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.matchalab.trip_todo_api.model.Airport;
+import com.matchalab.trip_todo_api.model.Flight.Airport;
 import com.matchalab.trip_todo_api.repository.AirportRepository;
 
 import lombok.RequiredArgsConstructor;

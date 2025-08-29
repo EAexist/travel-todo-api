@@ -28,10 +28,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.cloud.spring.vision.CloudVisionTemplate;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
-import com.matchalab.trip_todo_api.model.Flight;
-import com.matchalab.trip_todo_api.model.FlightTicket;
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
+import com.matchalab.trip_todo_api.model.Flight.Flight;
+import com.matchalab.trip_todo_api.model.Flight.FlightTicket;
 import com.matchalab.trip_todo_api.model.mapper.TripMapper;
 import com.matchalab.trip_todo_api.model.mapper.TripMapperImpl;
 
@@ -55,11 +55,12 @@ public class ReservationServiceTest {
     public void setup() throws IOException {
         ImageAnnotatorClient imageAnnotatorClient = ImageAnnotatorClient.create();
         VisionService visionService = new VisionService(new CloudVisionTemplate(imageAnnotatorClient));
-        GenAIService genAIService = new GenAIService(
-                new VertexAiGeminiChatModel(new VertexAI(),
-                        VertexAiGeminiChatOptions.builder().model("gemini-2.0-flash-lite").build(),
-                        ToolCallingManager.builder().build(),
-                        new RetryTemplate(), null));
+        // GenAIService genAIService = new GenAIService(
+        // new VertexAiGeminiChatModel(new VertexAI(),
+        // VertexAiGeminiChatOptions.builder().model("gemini-2.0-flash-lite").build(),
+        // ToolCallingManager.builder().build(),
+        // new RetryTemplate(), null));
+        GenAIService genAIService = new GenAIService();
         reservationService.setVisionService(visionService);
         reservationService.setGenAIService(genAIService);
         tripMapper = new TripMapperImpl();
@@ -88,7 +89,7 @@ public class ReservationServiceTest {
 
     @Test
     void Given_FlightReservation_Easterjet_KakaotalkScreenshot_testUploadReservationImage() throws IOException {
-        Flight expectedFlight = new Flight(null, null, null, "ZE671", "서울/인천", "도쿠시마", 1, new String[0],
+        Flight expectedFlight = new Flight(null, null, "ZE671", "서울/인천", "도쿠시마", 1, new String[0],
                 "2025-02-20T10:40:00+09:00", "2025-02-20T12:15:00+09:00");
         String[] filePaths = { "/image/flightReservation_Easterjet_KakaotalkScreenshot_1.png" };
         List<MultipartFile> files = readFiles(filePaths);

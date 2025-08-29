@@ -1,7 +1,7 @@
-package com.matchalab.trip_todo_api.model;
+package com.matchalab.trip_todo_api.model.Todo;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import com.matchalab.trip_todo_api.model.Trip;
+import com.matchalab.trip_todo_api.model.Flight.Flight;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
@@ -42,17 +42,14 @@ public class Todo {
     private CustomTodoContent customTodoContent;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "presetTodoContent_id")
+    @JoinColumn(name = "preset-todo-content_id")
     @Nullable
     private PresetTodoContent presetTodoContent;
 
-    @JdbcTypeCode(SqlTypes.JSON)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flight-todo-content_id")
     @Nullable
-    private Location departure;
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Nullable
-    private Location arrival;
+    private FlightTodoContent flightTodoContent;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Nullable
@@ -64,7 +61,5 @@ public class Todo {
         this.orderKey = todo.getOrderKey();
         this.customTodoContent = todo.getCustomTodoContent();
         this.presetTodoContent = todo.getPresetTodoContent();
-        this.departure = todo.getDeparture();
-        this.arrival = todo.getArrival();
     }
 }

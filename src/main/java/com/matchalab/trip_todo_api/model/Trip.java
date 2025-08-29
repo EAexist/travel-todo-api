@@ -24,6 +24,9 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import com.matchalab.trip_todo_api.model.DTO.Reservation;
+import com.matchalab.trip_todo_api.model.Flight.Flight;
+import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
+import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 
 @Entity
@@ -50,20 +53,20 @@ public class Trip {
     private UserAccount userAccount;
 
     @Builder.Default
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(name = "trip_to_destination", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "destination_id"))
     private List<Destination> destination = new ArrayList<Destination>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Todo> todolist = new ArrayList<Todo>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Accomodation> accomodation = new ArrayList<Accomodation>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Flight> flight = new ArrayList<Flight>();
 
     @Builder.Default

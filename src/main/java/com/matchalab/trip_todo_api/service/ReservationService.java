@@ -17,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
 import com.matchalab.trip_todo_api.model.Accomodation;
-import com.matchalab.trip_todo_api.model.Flight;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.Reservation;
 import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
+import com.matchalab.trip_todo_api.model.Flight.Flight;
 import com.matchalab.trip_todo_api.repository.ReservationRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 
@@ -209,17 +209,17 @@ public class ReservationService {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 
         List<Accomodation> accomodation = reservationImageAnalysisResult.accomodation();
-        accomodation.stream().forEach(acc -> {
-            acc.setTrip(trip);
-        });
+        // accomodation.stream().forEach(acc -> {
+        // acc.setTrip(trip);
+        // });
         trip.getAccomodation().addAll(accomodation);
         savedResultBuilder = savedResultBuilder
                 .accomodation(tripRepository.save(trip).getAccomodation().subList(-1 * (accomodation.size()), -1));
 
         List<Flight> flight = reservationImageAnalysisResult.flight();
-        flight.stream().forEach(fl -> {
-            fl.setTrip(trip);
-        });
+        // flight.stream().forEach(fl -> {
+        // fl.setTrip(trip);
+        // });
         trip.getFlight().addAll(flight);
         savedResultBuilder = savedResultBuilder
                 .flight(tripRepository.save(trip).getFlight().subList(-1 * (flight.size()), -1));

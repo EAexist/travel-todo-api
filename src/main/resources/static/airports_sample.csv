@@ -5,12 +5,18 @@ airportName,cityName,countryISO,IATACode
 아마미 공항,아마미,JP,ASJ
 아오모리 공항,아오모리,JP,AOJ
 아사히카와 공항,아사히카와,JP,AKJ
+청주국제공항,청주,KR,CJJ
 치치지마 공항,치치지마,JP,n/a
 조후 공항,조후,JP,n/a
 주부 국제공항,나고야,JP,NGO
+대구국제공항,대구,KR,TAE
 후쿠에 공항,후쿠에,JP,FUJ
 후쿠오카 공항,후쿠오카,JP,FUK
 후쿠시마 공항,후쿠시마,JP,FKS
+김해국제공항,부산,KR,PUS
+김포국제공항,서울,KR,GMP
+군산 공항,군산,KR,KUV
+광주공항,광주,KR,KWJ
 하치조지마 공항,하치조지마,JP,HAC
 하코다테 공항,하코다테,JP,HKD
 하나마키 공항,하나마키,JP,HNA
@@ -18,9 +24,11 @@ airportName,cityName,countryISO,IATACode
 히로시마 공항,히로시마,JP,HIJ
 이바라키공항,이바라키,JP,IBR
 이키 공항,이키,JP,IKI
+인천국제공항,서울,KR,ICN
 이와미 공항,이와미,JP,IWJ
 이오지마 공군기지,이오지마,JP,IWO
 이즈모 공항,이즈모,JP,IZO
+제주국제공항,제주,KR,CJU
 가데나 기지,카데나,JP,DNA
 가고시마 공항,가고시마,JP,KOJ
 간사이 국제공항,오사카,JP,KIX
@@ -45,6 +53,7 @@ airportName,cityName,countryISO,IATACode
 미야코 공항,미야코지마,JP,MMY
 미야자키 공항,미야자키,JP,KMI
 몬베쓰 공항,몬베츠,JP,MBE
+무안 국제공항,무안,KR,MWX
 나가사키 공항,나가사키,JP,NGS
 나고야 비행장,나고야,JP,NKM
 나하 공항,오키나와,JP,OKA
@@ -66,10 +75,13 @@ airportName,cityName,countryISO,IATACode
 오사카 국제공항,오사카,JP,ITM
 오사카 야오 공항,오사카,JP,n/a
 오시마 공항,오시마,JP,OIM
+포항공항,포항,KR,KPO
 리시리 공항,리시리,JP,RIS
+사천공항,진주,KR,HIN
 사도공항,사도,JP,SDS
 사가공항,사거,JP,HSG
 센다이 공항,센다이,JP,SDJ
+서산 공군기지,서산,KR,n/a
 시모지시마 공항,시모지시마,JP,SHI
 시즈오카 공항,시즈오카,JP,FSZ
 쇼나이 공항,쇼나이,JP,SYO
@@ -82,9 +94,14 @@ airportName,cityName,countryISO,IATACode
 돗토리 공항,돗토리,JP,TTJ
 도야마 공항,도야마,JP,TOY
 쓰시마 공항,쓰시마,JP,TSJ
+울산공항,울산,KR,USN
 왓카나이 공항,왓카나이,JP,WKJ
+원주공항,원주,KR,WJU
 야쿠시마 공항,야쿠시마,JP,KUM
 야마가타 공항,야마가타,JP,GAJ
 야마구치 우베 공항,우베,JP,UBJ
+양양국제공항,양양,KR,YNY
+예천 공군기지,예천,KR,YEC
+여수/순천공항,여수/순천,KR,RSU
 요나구니 공항,요나구니,JP,OGN
 요론 공항,요론지마,JP,RNJ

@@ -3,8 +3,8 @@ package com.matchalab.trip_todo_api.model.DTO;
 import java.util.List;
 
 import com.matchalab.trip_todo_api.model.Accomodation;
-import com.matchalab.trip_todo_api.model.Flight;
-import com.matchalab.trip_todo_api.model.FlightTicket;
+import com.matchalab.trip_todo_api.model.Flight.Flight;
+import com.matchalab.trip_todo_api.model.Flight.FlightTicket;
 
 import jakarta.annotation.Nullable;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package com.matchalab.trip_todo_api.model.DTO;
 
-import com.matchalab.trip_todo_api.model.PresetTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.PresetTodoContent;
 
 import lombok.Builder;
 

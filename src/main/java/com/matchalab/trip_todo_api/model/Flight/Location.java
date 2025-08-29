@@ -1,4 +1,4 @@
-package com.matchalab.trip_todo_api.model;
+package com.matchalab.trip_todo_api.model.Flight;
 
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;

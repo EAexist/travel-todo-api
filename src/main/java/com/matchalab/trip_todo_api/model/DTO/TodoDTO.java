@@ -1,7 +1,9 @@
 package com.matchalab.trip_todo_api.model.DTO;
 
+import java.util.List;
+
 import com.matchalab.trip_todo_api.model.Icon;
-import com.matchalab.trip_todo_api.model.Location;
+import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 
 import lombok.Builder;
 
@@ -16,6 +18,5 @@ public record TodoDTO(
         String type,
         String title,
         Icon icon,
-        Location departure,
-        Location arrival) {
+        List<FlightRoute> flightRoutes) {
 }

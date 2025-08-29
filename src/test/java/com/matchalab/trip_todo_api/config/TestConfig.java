@@ -9,16 +9,17 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
 import com.matchalab.trip_todo_api.model.Accomodation;
-import com.matchalab.trip_todo_api.model.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Icon;
-import com.matchalab.trip_todo_api.model.PresetTodoContent;
-import com.matchalab.trip_todo_api.model.Todo;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
+import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.PresetTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.Todo;
 
 @TestConfiguration
 public class TestConfig {
@@ -34,16 +35,45 @@ public class TestConfig {
     private List<TodoDTO> todoDTOlist = new ArrayList<TodoDTO>();
 
     @Bean
-    Destination[] destinations() {
-        return new Destination[] { new Destination("도쿠시마", "시코쿠", "JP", ""),
-                new Destination("교토", "간사이", "JP", "") };
+    List<Destination> destinations() {
+        return List.of(new Destination("도쿠시마", "시코쿠", "JP", ""),
+                new Destination("교토", "간사이", "JP", ""));
     }
 
     @Bean
-    List<DestinationDTO> destinationDTOs() {
-        return (new ArrayList<DestinationDTO>(
-                Arrays.asList(new DestinationDTO[] { new DestinationDTO(null, "", "jp", "도쿠시마", "시코쿠"),
-                        new DestinationDTO(null, "", "jp", "교토", "간사이") })));
+    Destination destination_tokushima() {
+        return new Destination("도쿠시마", "JP", "시코쿠", "");
+    }
+
+    @Bean
+    DestinationDTO destinationDTO_tokushima() {
+        return new DestinationDTO(null, "도쿠시마", "JP", "시코쿠", "");
+    }
+
+    @Bean
+    Destination destination_osaka() {
+        return new Destination("오사카", "JP", "간사이", "");
+    }
+
+    @Bean
+    DestinationDTO destinationDTO_osaka() {
+        return new DestinationDTO(null, "오사카", "JP", "간사이", "");
+    }
+
+    @Bean
+    Destination destination_kyoto() {
+        return new Destination("교토", "JP", "간사이", "");
+    }
+
+    @Bean
+    DestinationDTO destinationDTO_kyoto() {
+        return new DestinationDTO(null, "교토", "JP", "간사이", "");
+    }
+
+    @Bean
+    DestinationDTO[] destinationDTOs() {
+        return (new DestinationDTO[] { new DestinationDTO(null, "도쿠시마", "JP", "시코쿠", "시코쿠"),
+                new DestinationDTO(null, "교토", "JP", "간사이", "간사이") });
     }
 
     @Bean
@@ -51,7 +81,6 @@ public class TestConfig {
         return new Accomodation[] {
                 new Accomodation(
                         null,
-                        trip,
                         "Hostel PAQ Tokushima",
                         "혼성 도미토리 내 베드",
                         2,
@@ -68,7 +97,6 @@ public class TestConfig {
                                 "https://www.airbnb.co.kr/hotels/35388028?guests=1&adults=1&s=67&unique_share_id=be1c9ac3-c029-4927-a05e-efe2166f1903")),
                 new Accomodation(
                         null,
-                        trip,
                         "Yoshiko 님의 숙소",
                         "",
                         2,
@@ -149,7 +177,7 @@ public class TestConfig {
 
     @Bean
     Todo presetTodo() {
-        Todo todo = new Todo(null, "환전은 미리미리 할 것", null, 0, null, null, null, null, null, null);
+        Todo todo = new Todo(null, "환전은 미리미리 할 것", null, 0, null, null, null, null, null);
         return todo;
     }
 
@@ -174,7 +202,7 @@ public class TestConfig {
                 1,
                 null,
                 null,
-                null, null, null, null);
+                null, null, null);
         return todo;
     }
 
@@ -185,7 +213,7 @@ public class TestConfig {
                 .title("Vaundy 보러 가는 도쿠시마 여행")
                 .startDateISOString("2025-02-20T00:00:00.001Z")
                 .endDateISOString("2025-02-25T00:00:00.001Z")
-                .destination(destinationDTOs()).todolist(todoDTOlist).accomodation(accomodationDTOs).build();
+                .destination(List.of(destinationDTOs())).todolist(todoDTOlist).accomodation(accomodationDTOs).build();
     }
 
     @Bean

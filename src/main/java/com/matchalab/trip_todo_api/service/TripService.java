@@ -1,6 +1,5 @@
 package com.matchalab.trip_todo_api.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,23 +11,18 @@ import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
 import com.matchalab.trip_todo_api.model.Accomodation;
-import com.matchalab.trip_todo_api.model.Airport;
-import com.matchalab.trip_todo_api.model.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Icon;
-import com.matchalab.trip_todo_api.model.Location;
-import com.matchalab.trip_todo_api.model.PresetTodoContent;
-import com.matchalab.trip_todo_api.model.FlightRoute;
-import com.matchalab.trip_todo_api.model.Todo;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.PresetDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.PresetTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
-import com.matchalab.trip_todo_api.model.genAI.RecommendedFlightChatResult;
-import com.matchalab.trip_todo_api.model.mapper.FlightRouteMapper;
 import com.matchalab.trip_todo_api.model.mapper.TripMapper;
 import com.matchalab.trip_todo_api.repository.AccomodationRepository;
 import com.matchalab.trip_todo_api.repository.CustomTodoContentRepository;
@@ -207,17 +201,22 @@ public class TripService {
      */
     public DestinationDTO createDestination(Long tripId, DestinationDTO destinationDTO) {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
-        Destination queryDestination = tripMapper.mapToDestination(destinationDTO);
 
-        Destination newDestination = destinationRepository
-                .findByCountryISOAndTitle(queryDestination.getCountryISO(), queryDestination.getTitle())
-                .orElseGet(() -> {
-                    Destination dest = destinationRepository.save(queryDestination);
-                    eventPublisher.publishEvent(new NewDestinationCreatedEvent(this, dest.getId()));
+        destinationRepository
+                .findByCountryISOAndTitle(destinationDTO.countryISO(), destinationDTO.title())
+                .map(dest -> {
+                    trip.getDestination().add(dest);
+                    destinationRepository.save(dest);
                     return dest;
-                });
-
-        trip.getDestination().add(newDestination);
+                })
+                .orElseGet(
+                        () -> {
+                            Destination dest = tripMapper.mapToDestination(destinationDTO);
+                            trip.getDestination().add(dest);
+                            destinationRepository.save(dest);
+                            eventPublisher.publishEvent(new NewDestinationCreatedEvent(this, dest.getId()));
+                            return dest;
+                        });
 
         return tripMapper.mapToDestinationDTO(tripRepository.save(trip).getDestination().getLast());
     }
@@ -246,7 +245,7 @@ public class TripService {
     public AccomodationDTO createAccomodation(Long tripId) {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
         Accomodation newAccomodation = new Accomodation();
-        newAccomodation.setTrip(trip);
+        // newAccomodation.setTrip(trip);
         trip.getAccomodation().add(newAccomodation);
         return tripMapper.mapToAccomodationDTO(tripRepository.save(trip).getAccomodation().getLast());
     }

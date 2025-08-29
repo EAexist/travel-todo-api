@@ -1,4 +1,6 @@
-package com.matchalab.trip_todo_api.model;
+package com.matchalab.trip_todo_api.model.Todo;
+
+import com.matchalab.trip_todo_api.model.Icon;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

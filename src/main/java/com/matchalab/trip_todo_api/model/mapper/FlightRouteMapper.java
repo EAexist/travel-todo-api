@@ -4,9 +4,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.matchalab.trip_todo_api.model.Airport;
-import com.matchalab.trip_todo_api.model.FlightRoute;
-import com.matchalab.trip_todo_api.model.genAI.Flight;
+import com.matchalab.trip_todo_api.model.Flight.Airport;
+import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
+import com.matchalab.trip_todo_api.model.genAI.FlightRouteWithoutAirline;
 import com.matchalab.trip_todo_api.repository.AirportRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +22,10 @@ public abstract class FlightRouteMapper {
         return airportRepository.findById(airportIATACode).orElse(new Airport(airportIATACode));
     }
 
-    public FlightRoute mapToFlightRoute(Flight flight) {
+    public FlightRoute mapToFlightRoute(FlightRouteWithoutAirline frWithoutAirline) {
 
-        return new FlightRoute(null, getAirport(flight.departureAirportIATACode()),
-                getAirport(flight.arrivalAirportIATACode()), flight.airlineCompanyIATACode());
+        return new FlightRoute(getAirport(frWithoutAirline.departureAirportIATACode()),
+                getAirport(frWithoutAirline.arrivalAirportIATACode()));
 
     }
 

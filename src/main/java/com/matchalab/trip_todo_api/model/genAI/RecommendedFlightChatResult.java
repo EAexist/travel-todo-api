@@ -6,6 +6,6 @@ import lombok.Builder;
 
 @Builder
 public record RecommendedFlightChatResult(
-        List<Flight> recommendedOutboundFlight,
-        List<Flight> recommendedReturnFlight) {
+        List<FlightRouteWithoutAirline> recommendedOutboundFlight,
+        List<FlightRouteWithoutAirline> recommendedReturnFlight) {
 }

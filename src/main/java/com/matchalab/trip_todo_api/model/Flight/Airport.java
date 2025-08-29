@@ -1,4 +1,4 @@
-package com.matchalab.trip_todo_api.model;
+package com.matchalab.trip_todo_api.model.Flight;
 
 import com.opencsv.bean.CsvBindByName;
 
@@ -6,17 +6,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
 public class Airport {
 
     @Id
     @CsvBindByName(column = "IATACode", required = true)
-    private final String IATACode;
+    private String IATACode;
 
     @CsvBindByName(column = "airportName", required = true)
     private String airportName;
@@ -26,4 +30,8 @@ public class Airport {
 
     @CsvBindByName(column = "countryISO", required = true)
     private String countryISO;
+
+    public Airport(String IATACode) {
+        this.IATACode = IATACode;
+    }
 }

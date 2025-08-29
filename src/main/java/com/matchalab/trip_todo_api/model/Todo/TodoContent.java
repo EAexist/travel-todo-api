@@ -1,7 +1,9 @@
-package com.matchalab.trip_todo_api.model;
+package com.matchalab.trip_todo_api.model.Todo;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+
+import com.matchalab.trip_todo_api.model.Icon;
 
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;

@@ -29,9 +29,9 @@ public class Accomodation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trip_id")
-    private Trip trip;
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "trip_id")
+    // private Trip trip;
     private String title;
     private String roomTitle;
     private int numberOfGuest;
@@ -49,7 +49,7 @@ public class Accomodation {
 
     public Accomodation(Accomodation accomodation) {
         this.title = accomodation.getTitle();
-        this.trip = accomodation.getTrip();
+        // this.trip = accomodation.getTrip();
         this.roomTitle = accomodation.getRoomTitle();
         this.numberOfGuest = accomodation.getNumberOfGuest();
         this.clientName = accomodation.getClientName();

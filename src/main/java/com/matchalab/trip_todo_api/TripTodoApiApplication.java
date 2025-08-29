@@ -16,8 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 @EnableAsync
 public class TripTodoApiApplication {
 
-    @Autowired
-    private final VisionService visionService;
+    // @Autowired
+    // private final VisionService visionService;
 
     public static void main(String[] args) {
         SpringApplication.run(TripTodoApiApplication.class, args);
