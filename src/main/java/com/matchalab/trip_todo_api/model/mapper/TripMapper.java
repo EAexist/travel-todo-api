@@ -19,6 +19,7 @@ import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 
 import lombok.Getter;
@@ -103,6 +104,14 @@ public abstract class TripMapper {
     @Mapping(target = "accomodation", expression = "java(mapAccomodation(trip))")
     // @Mapping(target = "todolist", expression = "java(mapTodolist(trip))")
     public abstract TripDTO mapToTripDTO(Trip trip);
+
+    @Named("mapDestinationTitle")
+    public List<String> mapDestinationTitle(Trip trip) {
+        return trip.getDestination().stream().map(dest -> dest.getTitle()).toList();
+    }
+
+    @Mapping(target = "destination", expression = "java(mapDestinationTitle(trip))")
+    public abstract TripSummaryDTO mapToTripSummaryDTO(Trip trip);
 
     /*
      * mapToTrip

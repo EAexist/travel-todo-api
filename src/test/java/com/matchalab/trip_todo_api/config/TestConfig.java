@@ -17,6 +17,7 @@ import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
 import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
@@ -187,6 +188,29 @@ public class TestConfig {
     }
 
     @Bean
+    Trip trip() {
+        return Trip.builder().id(0L).title(
+                "Vaundy 보러 가는 도쿠시마 여행").startDateISOString(
+                        "2025-02-20T00:00:00.001Z")
+                .endDateISOString(
+                        "2025-02-25T00:00:00.001Z")
+                .build();
+    }
+
+    @Bean
+    Trip tripHydrated() {
+        return Trip.builder().id(0L).title(
+                "Vaundy 보러 가는 도쿠시마 여행").startDateISOString(
+                        "2025-02-20T00:00:00.001Z")
+                .endDateISOString(
+                        "2025-02-25T00:00:00.001Z")
+                .destination(List.of(destinations()))
+                .todolist(List.of(new Todo[] { stockTodo(), customTodo() }))
+                .accomodation(List.of(accomodations()))
+                .build();
+    }
+
+    @Bean
     TripDTO tripDTO() {
         return TripDTO.builder()
                 .id(0L)
@@ -199,12 +223,13 @@ public class TestConfig {
     }
 
     @Bean
-    Trip trip() {
-        return Trip.builder().id(0L).title(
-                "Vaundy 보러 가는 도쿠시마 여행").startDateISOString(
-                        "2025-02-20T00:00:00.001Z")
-                .endDateISOString(
-                        "2025-02-25T00:00:00.001Z")
+    TripSummaryDTO tripSummaryDTO() {
+        return TripSummaryDTO.builder()
+                .id(trip().getId())
+                .title(trip().getTitle())
+                .startDateISOString(trip().getStartDateISOString())
+                .endDateISOString(trip().getEndDateISOString())
+                .destination(List.of(destination_tokushima().getTitle(), destination_kyoto().getTitle()))
                 .build();
     }
 }

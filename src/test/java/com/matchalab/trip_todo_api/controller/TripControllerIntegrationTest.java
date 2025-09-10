@@ -210,7 +210,7 @@ public class TripControllerIntegrationTest {
     @Transactional
     void createTrip_When_RequestPost_Then_CreateNewTrip() throws Exception {
 
-        ResultActions result = mockMvc.perform(post(String.format("/user/%s/trip", userAccountId)))
+        ResultActions result = mockMvc.perform(post(String.format("/%s/trip", userAccountId)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

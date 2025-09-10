@@ -9,5 +9,5 @@ import lombok.Builder;
 public record UserAccountDTO(
         Long id,
         @Nullable String nickname,
-        List<Long> trip) {
+        List<TripSummaryDTO> tripSummary) {
 }

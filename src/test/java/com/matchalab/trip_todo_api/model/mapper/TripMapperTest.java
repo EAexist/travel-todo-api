@@ -22,6 +22,7 @@ import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
 import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 
@@ -39,10 +40,13 @@ import lombok.extern.slf4j.Slf4j;
 public class TripMapperTest {
 
     @Autowired
+    private Trip tripHydrated;
+
+    @Autowired
     private TripDTO tripDTO;
 
     @Autowired
-    private Trip trip;
+    private TripSummaryDTO tripSummaryDTO;
 
     @MockitoBean
     private StockTodoContentRepository stockTodoContentRepository;
@@ -64,22 +68,14 @@ public class TripMapperTest {
     }
 
     @Test
-    void mapToTripDTO_Given_tripDTO_When_mapped_Then_correctTrip() {
-        Trip mappedTrip = tripMapper.mapToTrip(tripDTO);
-        assertThat(trip).usingRecursiveComparison()
-                .ignoringFieldsOfTypes(Trip.class).ignoringFields("id")
-                .isEqualTo(mappedTrip);
-    }
-
-    @Test
     void mapToTripDTO_Given_trip_When_mapped_Then_correctTripDTO() {
-        TripDTO mappedTripDTO = tripMapper.mapToTripDTO(trip);
+        TripDTO mappedTripDTO = tripMapper.mapToTripDTO(tripHydrated);
         try {
             ObjectMapper mapper = new ObjectMapper();
             log.info(String.format("[TripMapperTest] tripDTO=%s\n, trip=%s\\n" + //
                     ", mappedTripDTO=%s ",
                     mapper.writeValueAsString(tripDTO),
-                    mapper.writeValueAsString(trip),
+                    mapper.writeValueAsString(tripHydrated),
                     mapper.writeValueAsString(mappedTripDTO)));
         } catch (Exception e) {
         }
@@ -87,4 +83,30 @@ public class TripMapperTest {
                 .ignoringFieldsOfTypes().ignoringFields()
                 .isEqualTo(tripDTO);
     }
+
+    @Test
+    void mapToTripSummaryDTO_Given_trip_When_mapped_Then_correctTripSummaryDTO() {
+        TripSummaryDTO mappedTripSummaryDTO = tripMapper.mapToTripSummaryDTO(tripHydrated);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            log.info(String.format("[TripMapperTest] tripDTO=%s\n, trip=%s\\n" + //
+                    ", mappedTripDTO=%s ",
+                    mapper.writeValueAsString(tripSummaryDTO),
+                    mapper.writeValueAsString(tripHydrated),
+                    mapper.writeValueAsString(mappedTripSummaryDTO)));
+        } catch (Exception e) {
+        }
+        assertThat(mappedTripSummaryDTO).usingRecursiveComparison()
+                .ignoringFieldsOfTypes().ignoringFields()
+                .isEqualTo(tripSummaryDTO);
+    }
+
+    @Test
+    void mapToTrip_Given_tripDTO_When_mapped_Then_correctTrip() {
+        Trip mappedTrip = tripMapper.mapToTrip(tripDTO);
+        assertThat(tripHydrated).usingRecursiveComparison()
+                .ignoringFieldsOfTypes(Trip.class).ignoringFields("id")
+                .isEqualTo(mappedTrip);
+    }
+
 }
