@@ -14,19 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.ai.model.tool.ToolCallingManager;
-import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
-import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.cloud.spring.vision.CloudVisionTemplate;
-import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
@@ -41,7 +36,7 @@ import jakarta.annotation.PostConstruct;
 @ContextConfiguration(classes = {
         TripMapperImpl.class
 })
-@ActiveProfiles("local")
+@ActiveProfiles({ "local", "local-init-data" })
 public class ReservationServiceTest {
 
     @Autowired
@@ -73,8 +68,9 @@ public class ReservationServiceTest {
                 "10:00", "도쿠시마", null, new HashMap<String, String>());
         String[] filePaths = { "/image/accomodation-agoda-app-ios_1.tiff", "/image/accomodation-agoda-app-ios_2.tiff" };
         List<MultipartFile> files = readFiles(filePaths);
-        ReservationImageAnalysisResult ReservationImageAnalysisResult = reservationService.uploadReservationImage(
-                files);
+        ReservationImageAnalysisResult ReservationImageAnalysisResult = reservationService
+                .analyzeReservationScreenImage(
+                        files);
 
         assertThat(ReservationImageAnalysisResult).isNotNull();
         assertThat(ReservationImageAnalysisResult.flight()).isEmpty();
@@ -93,8 +89,9 @@ public class ReservationServiceTest {
                 "2025-02-20T10:40:00+09:00", "2025-02-20T12:15:00+09:00");
         String[] filePaths = { "/image/flightReservation_Easterjet_KakaotalkScreenshot_1.png" };
         List<MultipartFile> files = readFiles(filePaths);
-        ReservationImageAnalysisResult ReservationImageAnalysisResult = reservationService.uploadReservationImage(
-                files);
+        ReservationImageAnalysisResult ReservationImageAnalysisResult = reservationService
+                .analyzeReservationScreenImage(
+                        files);
 
         assertThat(ReservationImageAnalysisResult).isNotNull();
         assertThat(ReservationImageAnalysisResult.accomodation()).isEmpty();
@@ -112,8 +109,9 @@ public class ReservationServiceTest {
                 .arrival("도쿠시마").departureDateTimeISOString("2025-02-20T10:40:00").passengerName("PYO/HYEON").build();
         String[] filePaths = { "/image/flightTicket_Easterjet_mobileWebScreenshot_1.png" };
         List<MultipartFile> files = readFiles(filePaths);
-        ReservationImageAnalysisResult ReservationImageAnalysisResult = reservationService.uploadReservationImage(
-                files);
+        ReservationImageAnalysisResult ReservationImageAnalysisResult = reservationService
+                .analyzeReservationScreenImage(
+                        files);
 
         assertThat(ReservationImageAnalysisResult).isNotNull();
         assertThat(ReservationImageAnalysisResult.flight()).isEmpty();
@@ -132,8 +130,9 @@ public class ReservationServiceTest {
                 .departureDateTimeISOString("2025-02-20T10:40:00").build();
         String[] filePaths = { "/image/flightTicket_Easterjet_image_1.png" };
         List<MultipartFile> files = readFiles(filePaths);
-        ReservationImageAnalysisResult ReservationImageAnalysisResult = reservationService.uploadReservationImage(
-                files);
+        ReservationImageAnalysisResult ReservationImageAnalysisResult = reservationService
+                .analyzeReservationScreenImage(
+                        files);
 
         assertThat(ReservationImageAnalysisResult).isNotNull();
         assertThat(ReservationImageAnalysisResult.flight()).isEmpty();

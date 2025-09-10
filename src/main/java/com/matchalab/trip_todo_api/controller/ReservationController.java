@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.matchalab.trip_todo_api.model.DTO.Reservation;
+import com.matchalab.trip_todo_api.enums.ReservationType;
 import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
+import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.service.ReservationService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -59,12 +60,13 @@ public class ReservationController {
     /**
      * Provide the details of a Trip with the given id.
      */
-    @PostMapping(value = "/flight")
-    public ResponseEntity<List<Reservation>> createFlightTicketReservationFromImage(@PathVariable Long tripId,
-            @RequestParam("image") List<MultipartFile> files) {
+    @PostMapping(value = "/", params = "images")
+    public ResponseEntity<ReservationImageAnalysisResult> createReservationFromImage(@PathVariable Long tripId,
+            @RequestParam("image") List<MultipartFile> files, @RequestParam ReservationType reservationType) {
         try {
-            return ResponseEntity.created(null).body(reservationService.analyzeFlightTicketAndCreateReservation(tripId,
-                    files));
+            return ResponseEntity.ok().body(
+                    reservationService.saveImageAnalysisResult(tripId, reservationService.analyzeReservationScreenImage(
+                            files, reservationType)));
         } catch (HttpClientErrorException e) {
             throw e;
         }
@@ -73,13 +75,12 @@ public class ReservationController {
     /**
      * Provide the details of a Trip with the given id.
      */
-    @PostMapping(value = "/", params = "images")
-    public ResponseEntity<ReservationImageAnalysisResult> createReservationFromImage(@PathVariable Long tripId,
+    @PostMapping(value = "/flight")
+    public ResponseEntity<List<Reservation>> createFlightTicketReservationFromImage(@PathVariable Long tripId,
             @RequestParam("image") List<MultipartFile> files) {
         try {
-            return ResponseEntity.ok().body(
-                    reservationService.saveImageAnalysisResult(tripId, reservationService.uploadReservationImage(
-                            files)));
+            return ResponseEntity.created(null).body(reservationService.analyzeFlightTicketAndCreateReservation(tripId,
+                    files));
         } catch (HttpClientErrorException e) {
             throw e;
         }

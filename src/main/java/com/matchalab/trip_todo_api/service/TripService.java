@@ -2,12 +2,14 @@ package com.matchalab.trip_todo_api.service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
+import com.matchalab.trip_todo_api.event.NewTripCreatedEvent;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
 import com.matchalab.trip_todo_api.model.Accomodation;
@@ -16,18 +18,23 @@ import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
-import com.matchalab.trip_todo_api.model.DTO.PresetDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
-import com.matchalab.trip_todo_api.model.Todo.PresetTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.FlightTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
+import com.matchalab.trip_todo_api.model.Todo.TodoContent;
+import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
+import com.matchalab.trip_todo_api.model.Todo.TodoPresetItem;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
+import com.matchalab.trip_todo_api.model.mapper.TodoMapper;
 import com.matchalab.trip_todo_api.model.mapper.TripMapper;
 import com.matchalab.trip_todo_api.repository.AccomodationRepository;
 import com.matchalab.trip_todo_api.repository.CustomTodoContentRepository;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
-import com.matchalab.trip_todo_api.repository.PresetTodoContentRepository;
+import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
+import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
 import com.matchalab.trip_todo_api.repository.TodoRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;
@@ -47,7 +54,7 @@ public class TripService {
     @Autowired
     private final TodoRepository todoRepository;
     @Autowired
-    private final PresetTodoContentRepository presetTodoContentRepository;
+    private final StockTodoContentRepository StockTodoContentRepository;
     @Autowired
     private final CustomTodoContentRepository customTodoContentRepository;
     @Autowired
@@ -55,7 +62,13 @@ public class TripService {
     @Autowired
     private final AccomodationRepository accomodationRepository;
     @Autowired
+    private final TodoPresetRepository todoPresetRepository;
+
+    @Autowired
     private final TripMapper tripMapper;
+
+    @Autowired
+    private final TodoMapper todoMapper;
 
     @Autowired
     private final ApplicationEventPublisher eventPublisher;
@@ -76,7 +89,10 @@ public class TripService {
                 .orElseThrow(() -> new NotFoundException(userId));
         Trip trip = new Trip();
         trip.setUserAccount(userAccount);
-        return tripMapper.mapToTripDTO(tripRepository.save(trip));
+        trip = tripRepository.save(trip);
+        // eventPublisher.publishEvent(new NewTripCreatedEvent(this, trip.getId()));
+
+        return tripMapper.mapToTripDTO(trip);
     }
 
     /**
@@ -104,13 +120,13 @@ public class TripService {
      * Create new todo.
      */
     public TodoDTO createTodo(Long tripId, TodoDTO todoDTO) {
-        Todo newTodo = tripMapper.mapToTodo(todoDTO);
+        Todo newTodo = todoMapper.mapToTodo(todoDTO);
         log.info(Utils.asJsonString(todoDTO));
         log.info(Utils.asJsonString(newTodo));
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
         newTodo.setId(null);
         newTodo.setOrderKey(0);
-        newTodo.setTrip(trip);
+        // newTodo.setTrip(trip);
         if (newTodo.getCustomTodoContent() != null) {
             if (newTodo.getCustomTodoContent().getType() == null) {
                 newTodo.getCustomTodoContent().setIcon(new Icon("⭐️", "tossface"));
@@ -147,7 +163,7 @@ public class TripService {
             }
         }
 
-        return tripMapper.mapToTodoDTO(todoRepository.save(newTodo));
+        return todoMapper.mapToTodoDTO(todoRepository.save(newTodo));
     }
 
     /**
@@ -156,16 +172,16 @@ public class TripService {
     public TodoDTO patchTodo(Long todoId, TodoDTO newTodoDTO) {
         Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new NotFoundException(todoId));
         log.info(Utils.asJsonString(newTodoDTO));
-        log.info(Utils.asJsonString(tripMapper.mapToTodoDTO(todo)));
+        log.info(Utils.asJsonString(todoMapper.mapToTodoDTO(todo)));
         if (todo.getCustomTodoContent() != null) {
-            CustomTodoContent customTodoContent = tripMapper.updateCustomTodoContentFromDto(newTodoDTO,
+            CustomTodoContent todoContent = todoMapper.updateCustomTodoContentFromDto(newTodoDTO,
                     todo.getCustomTodoContent());
-            customTodoContentRepository.save(customTodoContent);
+            customTodoContentRepository.save(todoContent);
         }
-        Todo updatedTodo = tripMapper.updateTodoFromDto(newTodoDTO, todo);
-        log.info(Utils.asJsonString(tripMapper.mapToTodoDTO(updatedTodo)));
+        Todo updatedTodo = todoMapper.updateTodoFromDto(newTodoDTO, todo);
+        log.info(Utils.asJsonString(todoMapper.mapToTodoDTO(updatedTodo)));
 
-        TodoDTO todoDTO = tripMapper.mapToTodoDTO(todoRepository.save(updatedTodo));
+        TodoDTO todoDTO = todoMapper.mapToTodoDTO(todoRepository.save(updatedTodo));
         log.info(Utils.asJsonString(todoDTO));
         return todoDTO;
     }
@@ -181,17 +197,48 @@ public class TripService {
     /**
      * Create new todo.
      */
-    public List<PresetDTO> getTodoPreset(Long tripId) {
-        List<PresetDTO> preset = presetTodoContentRepository.findAll().stream().map(
-                presetTodoContent -> PresetDTO.builder().todo(presetTodoContent).isFlaggedToAdd(true).build())
+    public List<TodoPresetItem> getTodoPreset(Long tripId) {
+
+        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
+
+        /* If preset isn't prepared(linked), make one. */
+        if (trip.getTodoPreset() == null) {
+            TodoPreset preset = todoPresetRepository.findByTitle("기본").orElseThrow(() -> new NotFoundException(null));
+            trip.setTodoPreset(preset);
+            trip = tripRepository.save(trip);
+        }
+
+        List<TodoPresetItem> preset = trip.getTodoPreset().getTodoPresetStockTodoContent().stream().map(
+                association -> new TodoPresetItem(association.getIsFlaggedToAdd(), association.getStockTodoContent()))
                 .toList();
+
         Boolean doRecommendFlight = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
                 .getDestination().stream().anyMatch(dest -> dest.getRecommendedOutboundFlight().size() > 0);
+
+        /*
+         * Add 2 preset items; ouutbound flight reservation & return flight reservation
+         */
         if (doRecommendFlight) {
+
+            List<FlightRoute> recommendedOutboudFlight = trip.getDestination().stream()
+                    .map(dest -> dest.getRecommendedOutboundFlight()).flatMap(List::stream)
+                    .collect(Collectors.toList());
+
+            List<FlightRoute> recommendedReturnFlight = trip.getDestination().stream()
+                    .map(dest -> dest.getRecommendedReturnFlight()).flatMap(List::stream)
+                    .collect(Collectors.toList());
+
             preset.addAll(Arrays.asList(
-                    new PresetDTO(true, new PresetTodoContent(null, "reservation", "flight", "가는 항공편", new Icon("✈️"))),
-                    new PresetDTO(true,
-                            new PresetTodoContent(null, "reservation", "flight", "오는 항공편", new Icon("✈️")))));
+                    new TodoPresetItem(true,
+                            CustomTodoContent.builder().isStock(false).category("reservation").type("flight")
+                                    .title("가는 항공편").icon(new Icon("✈️"))
+                                    .flightTodoContent(new FlightTodoContent(null, recommendedOutboudFlight)).build()),
+
+                    new TodoPresetItem(true,
+                            CustomTodoContent.builder().isStock(false).category("reservation").type("flight")
+                                    .title("오는 항공편").icon(new Icon("✈️"))
+                                    .flightTodoContent(new FlightTodoContent(null, recommendedReturnFlight))
+                                    .build())));
         }
         return preset;
     }
@@ -213,7 +260,7 @@ public class TripService {
                         () -> {
                             Destination dest = tripMapper.mapToDestination(destinationDTO);
                             trip.getDestination().add(dest);
-                            destinationRepository.save(dest);
+                            dest = destinationRepository.save(dest);
                             eventPublisher.publishEvent(new NewDestinationCreatedEvent(this, dest.getId()));
                             return dest;
                         });
@@ -277,22 +324,22 @@ public class TripService {
     // TripNotFoundException(tripId));
     // newTodo.setOrderKey(0);
     // newTodo.setTrip(trip);
-    // newTodo.setCustomTodoContent(new CustomTodoContent(newTodo, category));
+    // newTodo.setCustomTodoContent(new TodoContent(newTodo, category));
     // return tripMapper.mapToTodoDTO(todoRepository.save(newTodo));
     // }
 
     /**
      * Create new preset todo.
      */
-    // public List<TodoDTO> createPresetTodo(Long tripId, List<Long> presetIds) {
-    // return presetIds.stream().map((presetId) -> {
+    // public List<TodoDTO> createPresetTodo(Long tripId, List<Long> stockIds) {
+    // return stockIds.stream().map((stockId) -> {
     // Todo newTodo = new Todo();
     // Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new
     // TripNotFoundException(tripId));
     // newTodo.setOrderKey(0);
     // newTodo.setTrip(trip);
-    // newTodo.setPresetTodoContent(presetTodoContentRepository.findById(presetId)
-    // .orElseThrow(() -> new PresetTodoContentNotFoundException(presetId)));
+    // newTodo.setStockTodoContent(StockTodoContentRepository.findById(stockId)
+    // .orElseThrow(() -> new TodoContentNotFoundException(stockId)));
     // return tripMapper.mapToTodoDTO(todoRepository.save(newTodo));
     // }).toList();
     // }

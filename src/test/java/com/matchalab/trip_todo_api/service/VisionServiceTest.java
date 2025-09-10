@@ -7,19 +7,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.cloud.spring.vision.CloudVisionTemplate;
@@ -29,7 +23,7 @@ import com.google.cloud.vision.v1.ImageAnnotatorClient;
 https://github.com/spring-attic/spring-cloud-gcp/blob/main/spring-cloud-gcp-vision/src/test/java/org/springframework/cloud/gcp/vision/CloudVisionTemplateTests.java
 */
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("local")
+@ActiveProfiles({ "local", "local-init-data" })
 // @TestPropertySource(properties = { "spring.config.location
 // =classpath:application-dev.yml" })
 // @EnabledIfSystemProperty(named = "it.vision", matches = "true")

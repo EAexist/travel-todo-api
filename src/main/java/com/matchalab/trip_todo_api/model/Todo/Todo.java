@@ -33,33 +33,27 @@ public class Todo {
     private String completeDateISOString;
     private int orderKey;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trip_id")
-    private Trip trip;
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "trip_id")
+    // private Trip trip;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @Nullable
     private CustomTodoContent customTodoContent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "preset-todo-content_id")
     @Nullable
-    private PresetTodoContent presetTodoContent;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flight-todo-content_id")
-    @Nullable
-    private FlightTodoContent flightTodoContent;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Nullable
-    Flight flight;
+    private StockTodoContent stockTodoContent;
 
     public Todo(Todo todo) {
         this.note = todo.getNote();
         this.completeDateISOString = todo.getCompleteDateISOString();
         this.orderKey = todo.getOrderKey();
-        this.customTodoContent = todo.getCustomTodoContent();
-        this.presetTodoContent = todo.getPresetTodoContent();
+        this.customTodoContent = todo.getCustomTodoContent() != null
+                ? new CustomTodoContent(todo.getCustomTodoContent())
+                : null;
+        this.stockTodoContent = todo.getStockTodoContent() != null ? new StockTodoContent(todo.getStockTodoContent())
+                : null;
     }
 }

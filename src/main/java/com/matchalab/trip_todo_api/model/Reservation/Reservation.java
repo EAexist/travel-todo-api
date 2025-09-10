@@ -1,5 +1,6 @@
-package com.matchalab.trip_todo_api.model.DTO;
+package com.matchalab.trip_todo_api.model.Reservation;
 
+import com.matchalab.trip_todo_api.enums.ReservationType;
 import com.matchalab.trip_todo_api.model.Accomodation;
 import com.matchalab.trip_todo_api.model.Trip;
 
@@ -32,7 +33,7 @@ public class Reservation {
     Trip trip;
 
     String dateTimeISOString;
-    String type;
+    ReservationType type;
     String title;
     String subtitle;
 
@@ -51,7 +52,7 @@ public class Reservation {
 
     public Reservation(
             String dateTimeISOString,
-            String type,
+            ReservationType type,
             String title,
             String subtitle) {
         this.dateTimeISOString = dateTimeISOString;

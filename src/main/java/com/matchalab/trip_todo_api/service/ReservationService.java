@@ -15,12 +15,13 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.matchalab.trip_todo_api.enums.ReservationType;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
 import com.matchalab.trip_todo_api.model.Accomodation;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.DTO.Reservation;
 import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
 import com.matchalab.trip_todo_api.model.Flight.Flight;
+import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.repository.ReservationRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 
@@ -53,6 +54,58 @@ public class ReservationService {
     // this.genAIService = genAIService;
     // this.visionService = visionService;
     // }
+
+    /**
+     * Create new empty trip.
+     */
+    public ReservationImageAnalysisResult analyzeReservationScreenImage(
+            List<MultipartFile> files) {
+        return analyzeReservationScreenImage(files, ReservationType.General);
+    }
+
+    public ReservationImageAnalysisResult analyzeReservationScreenImage(
+            List<MultipartFile> files, ReservationType reservationType) {
+
+        /* Extract Text from Image */
+        List<String> reservationText = files.stream().map(multipartFile -> {
+            try {
+                byte[] fileBytes = multipartFile.getBytes();
+                File tempFile = File.createTempFile("temp_tiff", ".tiff");
+                try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                    fos.write(fileBytes);
+                }
+                tempFile.deleteOnExit(); // 프로그램 종료 시 삭제
+                return new FileUrlResource(tempFile.toURI().toURL());
+                // BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
+                // return new InputStreamResource(multipartFile.getInputStream());
+            } catch (Exception e) {
+                return null;
+            }
+        })
+                // .map(Utils::multipartFileToBufferedImage)
+                // .map(Utils::bufferedImageToTiffResource)
+                .map(visionService::extractTextfromImage)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        log.info(String.format("[extractTextfromImage] reservationText=%s", reservationText.toString()));
+
+        switch (reservationType) {
+            case ReservationType.Flight:
+                break;
+            case ReservationType.FlightTicket:
+                break;
+            case ReservationType.Accomodation:
+                break;
+            case ReservationType.General:
+                break;
+            default:
+                break;
+        }
+
+        return genAIService.extractInfofromReservationText(reservationText);
+        // return createEntitiesFromImageAnalysisResult(tripId, reservationText);
+    }
 
     /**
      * Provide the details of a Trip with the given id.
@@ -133,7 +186,8 @@ public class ReservationService {
 
         /* Analyze Text with Generative AI */
         List<Reservation> reservation = Arrays
-                .asList(new Reservation[] { new Reservation("2025-06-29", "flightTicket", "항공권 모바일 티켓", "인천 → 도쿠시마") });
+                .asList(new Reservation[] {
+                        new Reservation("2025-06-29", ReservationType.FlightTicket, "항공권 모바일 티켓", "인천 → 도쿠시마") });
 
         /* Save Data */
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
@@ -143,40 +197,6 @@ public class ReservationService {
         trip.getReservation().addAll(reservation);
 
         return tripRepository.save(trip).getReservation().subList(-1 * (reservation.size()), -1);
-    }
-
-    /**
-     * Create new empty trip.
-     */
-    public ReservationImageAnalysisResult uploadReservationImage(
-            List<MultipartFile> files) {
-
-        /* Extract Text from Image */
-        List<String> reservationText = files.stream().map(multipartFile -> {
-            try {
-                byte[] fileBytes = multipartFile.getBytes();
-                File tempFile = File.createTempFile("temp_tiff", ".tiff");
-                try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-                    fos.write(fileBytes);
-                }
-                tempFile.deleteOnExit(); // 프로그램 종료 시 삭제
-                return new FileUrlResource(tempFile.toURI().toURL());
-                // BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
-                // return new InputStreamResource(multipartFile.getInputStream());
-            } catch (Exception e) {
-                return null;
-            }
-        })
-                // .map(Utils::multipartFileToBufferedImage)
-                // .map(Utils::bufferedImageToTiffResource)
-                .map(visionService::extractTextfromImage)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-
-        log.info(String.format("[extractTextfromImage] reservationText=%s", reservationText.toString()));
-
-        return genAIService.extractInfofromReservationText(reservationText);
-        // return createEntitiesFromImageAnalysisResult(tripId, reservationText);
     }
 
     /**

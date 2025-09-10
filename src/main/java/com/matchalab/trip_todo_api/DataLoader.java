@@ -8,40 +8,50 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matchalab.trip_todo_api.model.Flight.Airline;
 import com.matchalab.trip_todo_api.model.Flight.Airport;
-import com.matchalab.trip_todo_api.model.Todo.PresetTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
+import com.matchalab.trip_todo_api.model.Todo.TodoPresetStockTodoContent;
 import com.matchalab.trip_todo_api.repository.AirlineRepository;
 import com.matchalab.trip_todo_api.repository.AirportRepository;
-import com.matchalab.trip_todo_api.repository.PresetTodoContentRepository;
+import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
+import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
+import com.matchalab.trip_todo_api.repository.TodoPresetStockTodoContentRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@Profile({ "!local", "local-init-data" })
 public class DataLoader implements CommandLineRunner {
 
     @Autowired
-    private PresetTodoContentRepository presetTodoContentRepository;
+    private StockTodoContentRepository stockTodoContentRepository;
     @Autowired
     private AirportRepository airportRepository;
     @Autowired
     private AirlineRepository airlineRepository;
+    @Autowired
+    private TodoPresetRepository todoPresetRepository;
+    @Autowired
+    private TodoPresetStockTodoContentRepository todoPresetStockTodoContentRepository;
     // @Autowired
     // private TripRepository tripRepository;
     // @Autowired
@@ -66,19 +76,43 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         try {
-            presetTodoContentRepository.saveAll(readPresetJson());
+            stockTodoContentRepository.deleteAll();
+            todoPresetRepository.deleteAll();
+            todoPresetStockTodoContentRepository.deleteAll();
+            log.info("Deleted All");
+
+            initializeTodoPreset();
 
             List<Airport> airports = new ArrayList<Airport>();
             airports = readCsv();
             airportRepository.saveAll(airports);
+            log.info("Saved: airports");
 
             List<Airline> airlines = new ArrayList<Airline>();
             airlines = readCsv_airline();
             airlineRepository.saveAll(airlines);
+            log.info("Saved: airlines");
 
         } catch (DataIntegrityViolationException ignore) {
             ignore.printStackTrace();
         }
+    }
+
+    private void initializeTodoPreset() throws Exception {
+        List<StockTodoContent> stockTodoContent = stockTodoContentRepository.saveAll(readStockTodoContentJson());
+        log.info("Saved: stockTodoContent");
+
+        TodoPreset defaultTodoPreset = todoPresetRepository.save(TodoPreset.builder().title("기본").build());
+        log.info("Saved: defaultTodoPreset");
+
+        defaultTodoPreset.getTodoPresetStockTodoContent().addAll(stockTodoContent.stream().map(content -> {
+            return TodoPresetStockTodoContent.builder().todoPreset(defaultTodoPreset).stockTodoContent(content)
+                    .isFlaggedToAdd(true).build();
+        }).toList());
+        log.info("Set: defaultTodoPreset.todoPresetStockTodoContent");
+
+        todoPresetRepository.save(defaultTodoPreset);
+        log.info("Saved: TodoPresetStockTodoContent");
     }
 
     private List<Airport> readCsv() throws IOException {
@@ -115,12 +149,12 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
-    public static List<PresetTodoContent> readPresetJson() throws Exception {
-        List<PresetTodoContent> presets = new ArrayList<PresetTodoContent>();
+    public static List<StockTodoContent> readStockTodoContentJson() throws Exception {
+        List<StockTodoContent> presets = new ArrayList<StockTodoContent>();
         try {
             ObjectMapper mapper = new ObjectMapper();
-            presets = mapper.readValue((new ClassPathResource("static/todoPreset.json")).getInputStream(),
-                    new TypeReference<List<PresetTodoContent>>() {
+            presets = mapper.readValue((new ClassPathResource("static/stockTodoContent.json")).getInputStream(),
+                    new TypeReference<List<StockTodoContent>>() {
                     });
 
         } catch (IOException e) {

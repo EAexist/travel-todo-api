@@ -31,10 +31,8 @@ public class FlightTodoContent {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String title;
-
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "flightTodoContent_flightRoute", joinColumns = @JoinColumn(name = "flight-todo-content_id"), inverseJoinColumns = @JoinColumn(name = "flight-route_id"))
+    @JoinTable(name = "flight-todo-content_flight-route", joinColumns = @JoinColumn(name = "flight-todo-content_id"), inverseJoinColumns = @JoinColumn(name = "flight-route_id"))
     @Builder.Default
     private List<FlightRoute> routes = new ArrayList<FlightRoute>();
 }

@@ -14,40 +14,25 @@ import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
+import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
-import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
-import com.matchalab.trip_todo_api.model.Todo.PresetTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
+import com.matchalab.trip_todo_api.model.Todo.TodoContent;
 
 @TestConfiguration
 public class TestConfig {
 
-    private Trip trip = Trip.builder().id(0L).title(
-            "Vaundy 보러 가는 도쿠시마 여행").startDateISOString(
-                    "2025-02-20T00:00:00.001Z")
-            .endDateISOString(
-                    "2025-02-25T00:00:00.001Z")
-            .build();
-
-    private List<Todo> todolist = new ArrayList<Todo>();
-    private List<TodoDTO> todoDTOlist = new ArrayList<TodoDTO>();
-
-    @Bean
-    List<Destination> destinations() {
-        return List.of(new Destination("도쿠시마", "시코쿠", "JP", ""),
-                new Destination("교토", "간사이", "JP", ""));
-    }
-
     @Bean
     Destination destination_tokushima() {
-        return new Destination("도쿠시마", "JP", "시코쿠", "");
+        return new Destination("도쿠시마", "JP", "시코쿠", "시코쿠");
     }
 
     @Bean
     DestinationDTO destinationDTO_tokushima() {
-        return new DestinationDTO(null, "도쿠시마", "JP", "시코쿠", "");
+        return new DestinationDTO(null, "도쿠시마", "JP", "시코쿠", "시코쿠");
     }
 
     @Bean
@@ -62,18 +47,22 @@ public class TestConfig {
 
     @Bean
     Destination destination_kyoto() {
-        return new Destination("교토", "JP", "간사이", "");
+        return new Destination("교토", "JP", "간사이", "간사이");
     }
 
     @Bean
     DestinationDTO destinationDTO_kyoto() {
-        return new DestinationDTO(null, "교토", "JP", "간사이", "");
+        return new DestinationDTO(null, "교토", "JP", "간사이", "간사이");
+    }
+
+    @Bean
+    Destination[] destinations() {
+        return new Destination[] { destination_tokushima(), destination_kyoto() };
     }
 
     @Bean
     DestinationDTO[] destinationDTOs() {
-        return (new DestinationDTO[] { new DestinationDTO(null, "도쿠시마", "JP", "시코쿠", "시코쿠"),
-                new DestinationDTO(null, "교토", "JP", "간사이", "간사이") });
+        return new DestinationDTO[] { destinationDTO_tokushima(), destinationDTO_kyoto() };
     }
 
     @Bean
@@ -150,34 +139,27 @@ public class TestConfig {
                                     "https://www.airbnb.co.kr/rooms/12317142?viralityEntryPoint=1&s=76"))
             }));
 
-    @Bean
-    PresetTodoContent presetTodoContent() {
-        return new PresetTodoContent(1L, "foreign",
-                "currency", "환전", new Icon("💱"));
-    }
+    StockTodoContent stockTodoContent = StockTodoContent.builder().id(0L).isStock(true).category("foreign").type(
+            "currency").title("환전").icon(new Icon("💱")).build();
+
+    CustomTodoContent customTodoContent = CustomTodoContent.builder().id(0L).isStock(false).category("goods").type(
+            "goods").title("필름카메라").icon(new Icon("📸")).build();
 
     @Bean
-    CustomTodoContent customTodoContent() {
-        return new CustomTodoContent(null, null, "goods",
-                "goods", "필름카메라", new Icon("📸"));
-    }
-
-    @Bean
-    TodoDTO presetTodoDTO() {
+    TodoDTO stockTodoDTO() {
         return TodoDTO.builder()
                 .id(null)
                 .orderKey(0)
                 .note("환전은 미리미리 할 것")
-                .category("foreign")
-                .type("currency")
-                .title("환전")
-                .icon(new Icon("💱"))
-                .completeDateISOString(null).presetId(1L).build();
+                .completeDateISOString(null)
+                .content(TodoContentDTO.builder().id(0L).isStock(true).category("foreign").type(
+                        "currency").title("환전").icon(new Icon("💱")).build())
+                .build();
     }
 
     @Bean
-    Todo presetTodo() {
-        Todo todo = new Todo(null, "환전은 미리미리 할 것", null, 0, null, null, null, null, null);
+    Todo stockTodo() {
+        Todo todo = new Todo(null, "환전은 미리미리 할 것", null, 0, null, stockTodoContent);
         return todo;
     }
 
@@ -187,11 +169,10 @@ public class TestConfig {
                 .id(null)
                 .orderKey(1)
                 .note("카메라 필름 챙겼는지 확인할 것")
-                .category("goods")
-                .type("goods")
-                .title("필름카메라")
-                .icon(new Icon("📸"))
-                .completeDateISOString("2025-02-23T00:00:00.001Z").presetId(null).build();
+                .completeDateISOString("2025-02-23T00:00:00.001Z")
+                .content(TodoContentDTO.builder().id(0L).isStock(false).category("goods").type(
+                        "goods").title("필름카메라").icon(new Icon("📸")).build())
+                .build();
     }
 
     @Bean
@@ -200,9 +181,8 @@ public class TestConfig {
                 "카메라 필름 챙겼는지 확인할 것",
                 "2025-02-23T00:00:00.001Z",
                 1,
-                null,
-                null,
-                null, null, null);
+                customTodoContent,
+                null);
         return todo;
     }
 
@@ -213,12 +193,18 @@ public class TestConfig {
                 .title("Vaundy 보러 가는 도쿠시마 여행")
                 .startDateISOString("2025-02-20T00:00:00.001Z")
                 .endDateISOString("2025-02-25T00:00:00.001Z")
-                .destination(List.of(destinationDTOs())).todolist(todoDTOlist).accomodation(accomodationDTOs).build();
+                .destination(List.of(destinationDTOs()))
+                .todolist(List.of(new TodoDTO[] { stockTodoDTO(), customTodoDTO() })).accomodation(accomodationDTOs)
+                .build();
     }
 
     @Bean
     Trip trip() {
-        trip.setTodolist(todolist);
-        return trip;
+        return Trip.builder().id(0L).title(
+                "Vaundy 보러 가는 도쿠시마 여행").startDateISOString(
+                        "2025-02-20T00:00:00.001Z")
+                .endDateISOString(
+                        "2025-02-25T00:00:00.001Z")
+                .build();
     }
 }

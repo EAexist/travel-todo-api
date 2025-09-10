@@ -1,6 +1,6 @@
 [
     {
-        "id": 1,
+        "isStock": true,
         "type": "accomodation",
         "category": "reservation",
         "title": "숙소 예약",
@@ -10,7 +10,7 @@
         }
     },
     {
-        "id": 2,
+        "isStock": true,
         "type": "passport",
         "category": "foreign",
         "title": "여권",
@@ -20,7 +20,7 @@
         }
     },
     {
-        "id": 3,
+        "isStock": true,
         "type": "currency",
         "category": "foreign",
         "title": "환전",
@@ -30,7 +30,7 @@
         }
     },
     {
-        "id": 4,
+        "isStock": true,
         "type": "roaming",
         "category": "foreign",
         "title": "로밍",
@@ -40,7 +40,7 @@
         }
     },
     {
-        "id": 5,
+        "isStock": true,
         "type": "visit-japan",
         "category": "foreign",
         "title": "Visit Japan",
@@ -50,7 +50,7 @@
         }
     },
     {
-        "id": 7,
+        "isStock": true,
         "type": "military-approvement",
         "category": "foreign",
         "title": "국외여행허가",
@@ -60,7 +60,7 @@
         }
     },
     {
-        "id": 8,
+        "isStock": true,
         "type": "goods",
         "category": "goods",
         "title": "세면도구",
@@ -70,7 +70,7 @@
         }
     },
     {
-        "id": 9,
+        "isStock": true,
         "type": "goods",
         "category": "goods",
         "title": "어댑터",
@@ -80,7 +80,7 @@
         }
     },
     {
-        "id": 11,
+        "isStock": true,
         "type": "goods",
         "category": "goods",
         "title": "캐리어",
@@ -90,7 +90,7 @@
         }
     },
     {
-        "id": 12,
+        "isStock": true,
         "type": "goods",
         "category": "goods",
         "title": "우산",
@@ -100,7 +100,7 @@
         }
     },
     {
-        "id": 10,
+        "isStock": true,
         "type": "goods",
         "category": "goods",
         "title": "선글라스",

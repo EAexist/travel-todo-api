@@ -30,27 +30,29 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.matchalab.trip_todo_api.config.RecommendedFlightTestConfig;
 import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
-import com.matchalab.trip_todo_api.exception.PresetTodoContentNotFoundException;
 import com.matchalab.trip_todo_api.model.Accomodation;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
+import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
-import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
-import com.matchalab.trip_todo_api.model.Todo.PresetTodoContent;
+import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.Todo.TodoContent;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
+import com.matchalab.trip_todo_api.model.mapper.TodoMapper;
 import com.matchalab.trip_todo_api.model.mapper.TripMapper;
 import com.matchalab.trip_todo_api.model.request.CreateTodoRequest;
-import com.matchalab.trip_todo_api.repository.PresetTodoContentRepository;
+import com.matchalab.trip_todo_api.repository.DestinationRepository;
+import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 import com.matchalab.trip_todo_api.repository.TodoRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;
 import com.matchalab.trip_todo_api.utils.TestUtils;
 import com.matchalab.trip_todo_api.utils.Utils;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -58,10 +60,9 @@ import lombok.extern.slf4j.Slf4j;
 @WithMockUser
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({ TestConfig.class, RecommendedFlightTestConfig.class })
-// @TestPropertySource(properties = { "spring.config.location =
-// classpath:application-test.yml" })
+
 @TestInstance(Lifecycle.PER_CLASS)
-@ActiveProfiles("local")
+@ActiveProfiles({ "local", "local-init-data" })
 @EnableWebSecurity
 public class TodoControllerIntegrationTest {
 
@@ -75,28 +76,30 @@ public class TodoControllerIntegrationTest {
     private TodoRepository todoRepository;
 
     @Autowired
-    private PresetTodoContentRepository presetTodoContentRepository;
+    private StockTodoContentRepository stockTodoContentRepository;
 
     @Autowired
     private UserAccountRepository userAccountRepository;
 
     @Autowired
+    private DestinationRepository destinationRepository;
+
+    @Autowired
     private TripMapper tripMapper;
+
+    @Autowired
+    private TodoMapper todoMapper;
 
     @Autowired
     private Accomodation[] accomodations;
 
     @Autowired
-    private Destination[] destinations;
+    private Destination destination_kyoto;
 
     @Autowired
-    private CustomTodoContent customTodoContent;
-
+    private Destination destination_osaka;
     @Autowired
-    private PresetTodoContent presetTodoContent;
-
-    @Autowired
-    private Todo presetTodo;
+    private Todo stockTodo;
 
     @Autowired
     private Todo customTodo;
@@ -106,8 +109,9 @@ public class TodoControllerIntegrationTest {
     private Long userAccountId;
 
     @BeforeEach
+    @Transactional
     void setUp() {
-        // presetTodoContentRepository.deleteAll();
+        // StockTodoContentRepository.deleteAll();
         // customTodoContentRepository.deleteAll();
         // todoRepository.deleteAll();
         // tripRepository.deleteAll();
@@ -115,8 +119,11 @@ public class TodoControllerIntegrationTest {
         // accomodationRepository.deleteAll();
         userAccountId = userAccountRepository.save(new UserAccount()).getId();
 
+        List<Destination> savedDestinations = destinationRepository.saveAll(List.of(new Destination(destination_kyoto),
+                new Destination(destination_osaka)));
+
         savedTrip = new Trip();
-        savedTrip.setDestination(Arrays.stream(destinations).toList());
+        savedTrip.setDestination(savedDestinations);
         savedTrip.setAccomodation(Arrays.stream(accomodations)
                 .map(acc -> {
                     Accomodation newAcc = new Accomodation(acc);
@@ -125,29 +132,17 @@ public class TodoControllerIntegrationTest {
                 })
                 .toList());
 
-        final record TodoSet<T extends TodoContent>(
-                Todo todo,
-                T content) {
-        }
-        ;
+        // List<Todo> savedTodos = Arrays
+        // .stream(new Todo[] { stockTodo, customTodo
+        // }).map(todo -> {
+        // todo.setTrip(savedTrip);
+        // return todo;
+        // }).toList();
 
-        List<Todo> savedTodos = Arrays
-                .stream(new TodoSet[] { new TodoSet<PresetTodoContent>(presetTodo, presetTodoContent),
-                        new TodoSet<CustomTodoContent>(customTodo, customTodoContent)
-                }).map(todoset -> {
-                    Todo newTodo = new Todo(todoset.todo);
-                    newTodo.setTrip(savedTrip);
-                    if (todoset.content instanceof PresetTodoContent) {
-                        newTodo.setPresetTodoContent(presetTodoContentRepository
-                                .findById(((PresetTodoContent) todoset.content).getId())
-                                .orElseThrow(
-                                        () -> new NotFoundException(((PresetTodoContent) todoset.content).getId())));
-                    } else {
-                        newTodo.setCustomTodoContent(new CustomTodoContent((CustomTodoContent) todoset.content));
-                    }
-                    return newTodo;
-                }).toList();
-        savedTrip.setTodolist(savedTodos);
+        Todo stockTodo_ = new Todo(stockTodo);
+        stockTodoContentRepository.save(stockTodo_.getStockTodoContent());
+        savedTrip.addTodo(stockTodo_);
+        savedTrip.addTodo(new Todo(customTodo));
         tripRepository.save(savedTrip);
         log.info(String.format("[setUp] savedTrip=%s", Utils.asJsonString(tripMapper.mapToTripDTO(savedTrip))));
     }
@@ -204,26 +199,26 @@ public class TodoControllerIntegrationTest {
     void createTodo_Given_ValidTripIdAndPresetTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
 
         Long id = savedTrip.getId();
-        Long presetId = 1L;
-        PresetTodoContent presetTodoContent = presetTodoContentRepository.findById(presetId)
-                .orElseThrow(() -> new PresetTodoContentNotFoundException(presetId));
+        Long stockId = 1L;
+        TodoContent StockTodoContent = stockTodoContentRepository.findById(stockId)
+                .orElseThrow(() -> new NotFoundException(stockId));
 
         ResultActions result = mockMvc.perform(post(String.format("/user/%s/trip/%s/todo", userAccountId, id))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(new CreateTodoRequest(null, null, presetId))))
+                .content(Utils.asJsonString(new CreateTodoRequest(null, null, stockId))))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id")
                         .isNotEmpty())
-                .andExpect(jsonPath("title").value(presetTodoContent.getTitle()))
+                .andExpect(jsonPath("title").value(StockTodoContent.getTitle()))
                 .andExpect(jsonPath("orderKey").value(0))
                 .andExpect(jsonPath("note").isEmpty());
 
         TodoDTO actualTodoDTO = TestUtils.asObject(result, TodoDTO.class);
 
-        assertThat(presetTodoContent.getIcon()).usingRecursiveComparison()
-                .isEqualTo(actualTodoDTO.icon());
+        assertThat(StockTodoContent.getIcon()).usingRecursiveComparison()
+                .isEqualTo(actualTodoDTO.content().getIcon());
 
         result.andExpect(header().string("Location",
                 String.format("http://localhost/user/%s/trip/%s/todo/%s", userAccountId, id, actualTodoDTO.id())));
@@ -234,11 +229,15 @@ public class TodoControllerIntegrationTest {
 
         Long id = savedTrip.getId();
 
-        Todo todo = savedTrip.getTodolist().stream().filter(todo_ -> todo_.getPresetTodoContent() == null).toList()
+        Todo todo = savedTrip.getTodolist().stream().filter(todo_ -> todo_.getStockTodoContent() == null).toList()
                 .getFirst();
 
-        TodoDTO todoDTOToPatch = TodoDTO.builder().id(9L).note("새로운 노트").category("goods").title("새로운 할 일 이름")
-                .icon(new Icon("🎁")).build();
+        TodoDTO todoDTOToPatch = TodoDTO.builder().note("새로운 노트")
+                .content(TodoContentDTO.builder().isStock(false).category("goods").type("goods")
+                        .title("새로운 할 일 이름").icon(
+                                new Icon("🎁"))
+                        .build())
+                .build();
 
         ResultActions result = mockMvc
                 .perform(patch(String.format("/user/%s/trip/%s/todo/%s", id, userAccountId, todo.getId()))
@@ -252,7 +251,7 @@ public class TodoControllerIntegrationTest {
 
         assertThat(actualTodoDTO).usingRecursiveComparison()
                 .ignoringFieldsOfTypes()
-                .ignoringFields("completeDateISOString", "id", "type")
+                .ignoringFields("completeDateISOString", "id", "content.id")
                 .isEqualTo(todoDTOToPatch);
 
         assertThat(todoRepository.findById(actualTodoDTO.id()).get().getCustomTodoContent().getId()).isEqualTo(
@@ -264,12 +263,14 @@ public class TodoControllerIntegrationTest {
 
         Long id = savedTrip.getId();
 
-        Todo todo = savedTrip.getTodolist().stream().filter(todo_ -> todo_.getPresetTodoContent() != null).toList()
+        Todo todo = savedTrip.getTodolist().stream().filter(todo_ -> todo_.getStockTodoContent() != null).toList()
                 .getFirst();
 
         TodoDTO todoDTOToPatch = TodoDTO.builder().id(9L).note("새로운 노트")
-                .completeDateISOString("2025-02-20T00:00:00.001Z").category("goods").title("새로운 할 일 이름")
-                .icon(new Icon("🎁")).build();
+                .completeDateISOString("2025-02-20T00:00:00.001Z")
+                .content(TodoContentDTO.builder().isStock(false).category("goods").title("새로운 할 일 이름").icon(
+                        new Icon("🎁")).build())
+                .build();
 
         ResultActions result = mockMvc
                 .perform(patch(String.format("/user/%s/trip/%s/todo/%s", userAccountId, id, todo.getId()))
@@ -286,10 +287,10 @@ public class TodoControllerIntegrationTest {
         assertThat(actualTodoDTO).usingRecursiveComparison()
                 .ignoringFieldsOfTypes()
                 .ignoringFields("note", "orderKey", "completeDateISOString")
-                .isEqualTo(tripMapper.mapToTodoDTO(todo));
+                .isEqualTo(todoMapper.mapToTodoDTO(todo));
 
-        assertThat(todoRepository.findById(actualTodoDTO.id()).get().getPresetTodoContent().getId()).isEqualTo(
-                todo.getPresetTodoContent().getId());
+        assertThat(todoRepository.findById(actualTodoDTO.id()).get().getStockTodoContent().getId()).isEqualTo(
+                todo.getStockTodoContent().getId());
     }
 
     /* @TODO */

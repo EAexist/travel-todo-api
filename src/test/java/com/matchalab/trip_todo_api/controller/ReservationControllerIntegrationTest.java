@@ -10,12 +10,6 @@ import java.io.FileInputStream;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -29,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.matchalab.trip_todo_api.model.Trip;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,14 +30,33 @@ import lombok.extern.slf4j.Slf4j;
 @AutoConfigureMockMvc
 @WithMockUser
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-// @TestPropertySource(properties = { "spring.config.location =
-// classpath:application-test.yml" })
-@ActiveProfiles("local")
+@ActiveProfiles({ "local", "local-init-data" })
 // @EnableWebSecurity
 public class ReservationControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    // @Test
+    // void testExtractTextFromImage() throws Exception {
+
+    // Long id = savedTrip.getId();
+    // File _file = new
+    // ClassPathResource("/image/accomodation-agoda-app-ios_1.png").getFile();
+    // MultipartFile file = new MockMultipartFile(_file.getName(), new
+    // FileInputStream(_file));
+
+    // ResultActions result = mockMvc
+    // .perform(post(String.format("/user/%s/trip/%s/reservation", userAccountId,
+    // id))
+    // .contentType(MediaType.APPLICATION_JSON)
+    // // .content(Utils.asJsonString(new MultipartFile[] { file
+    // // }))
+    // )
+    // .andDo(print())
+    // .andExpect(status().isOk())
+    // .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    // }
 
     @Test
     void testExtractTextFromImage() throws Exception {

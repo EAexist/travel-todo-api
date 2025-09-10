@@ -15,8 +15,10 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.event.NewFlightRouteCreatedEvent;
+import com.matchalab.trip_todo_api.event.NewTripCreatedEvent;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.model.Destination;
+import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.Flight.Airline;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.genAI.FlightRouteWithoutAirline;
@@ -25,6 +27,8 @@ import com.matchalab.trip_todo_api.model.mapper.FlightRouteMapper;
 import com.matchalab.trip_todo_api.repository.AirlineRepository;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.FlightRouteRepository;
+import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
+import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.service.AirlineLookupService;
 import com.matchalab.trip_todo_api.service.GenAIService;
 import com.matchalab.trip_todo_api.utils.Utils;
@@ -39,6 +43,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Setter
 public class NewEntityCreatedEventHandler {
+
+    @Autowired
+    private final TripRepository tripRepository;
+
+    @Autowired
+    private final TodoPresetRepository todoPresetRepository;
 
     @Autowired
     private final DestinationRepository destinationRepository;
@@ -57,6 +67,17 @@ public class NewEntityCreatedEventHandler {
 
     @Autowired
     private final ApplicationEventPublisher eventPublisher;
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void processNewTripCreated(NewTripCreatedEvent event) {
+        log.info(String.format("[processNewTripCreated] tripId: %s", event.getTripId()));
+        Long id = event.getTripId();
+        Trip trip = tripRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+
+        trip.setTodoPreset(todoPresetRepository.findByTitle("기본").orElseThrow(() -> new NotFoundException(null)));
+        tripRepository.save(trip);
+    }
 
     private FlightRoute processRecommendedFlightChatResult(FlightRouteWithoutAirline frWithoutAirline) {
 

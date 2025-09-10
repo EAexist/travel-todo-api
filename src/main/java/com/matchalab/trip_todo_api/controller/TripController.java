@@ -17,8 +17,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
-import com.matchalab.trip_todo_api.model.DTO.PresetDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.Todo.TodoPresetItem;
 import com.matchalab.trip_todo_api.service.TripService;
 import com.matchalab.trip_todo_api.utils.Utils;
 
@@ -77,10 +77,10 @@ public class TripController {
      * Provide the details of an Trip with the given id.
      */
     @GetMapping("/{tripId}/todoPreset")
-    public ResponseEntity<List<PresetDTO>> todoPreset(@PathVariable Long tripId) {
+    public ResponseEntity<List<TodoPresetItem>> getTodoPreset(@PathVariable Long tripId) {
         try {
-            List<PresetDTO> presetTodoContentDTOs = tripService.getTodoPreset(tripId);
-            return ResponseEntity.ok().body(presetTodoContentDTOs);
+            List<TodoPresetItem> StockTodoContentDTOs = tripService.getTodoPreset(tripId);
+            return ResponseEntity.ok().body(StockTodoContentDTOs);
         } catch (HttpClientErrorException e) {
             throw e;
         }
@@ -192,12 +192,12 @@ public class TripController {
     /**
      * Provide the details of an Trip with the given id.
      */
-    // @PostMapping("/{tripId}/presetTodo")
+    // @PostMapping("/{tripId}/stockTodo")
     // public ResponseEntity<List<TodoDTO>> createPresetTodo(@PathVariable Long
     // tripId,
-    // @RequestBody List<Long> presetIds) {
+    // @RequestBody List<Long> stockIds) {
     // try {
-    // List<TodoDTO> todoDTOs = tripService.createPresetTodo(tripId, presetIds);
+    // List<TodoDTO> todoDTOs = tripService.createPresetTodo(tripId, stockIds);
     // return
     // ResponseEntity.status(HttpStatus.SEE_OTHER).location(Utils.getLocation(new
     // Object())).body(todoDTOs);

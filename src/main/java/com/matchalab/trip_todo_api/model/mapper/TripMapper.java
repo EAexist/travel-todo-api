@@ -12,7 +12,6 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.matchalab.trip_todo_api.exception.PresetTodoContentNotFoundException;
 import com.matchalab.trip_todo_api.model.Accomodation;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Trip;
@@ -20,97 +19,46 @@ import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
-import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
-import com.matchalab.trip_todo_api.model.Todo.PresetTodoContent;
-import com.matchalab.trip_todo_api.model.Todo.Todo;
-import com.matchalab.trip_todo_api.model.Todo.TodoContent;
-import com.matchalab.trip_todo_api.repository.PresetTodoContentRepository;
+import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { TodoMapper.class })
+@NoArgsConstructor
+@Getter
+@Setter
 public abstract class TripMapper {
 
     @Autowired
-    protected PresetTodoContentRepository presetTodoContentRepository;
-
-    /*
-     * mapToTodoDTO
-     */
-
-    public TodoDTO mapToTodoDTO(Todo todo) {
-        TodoContent todoContent = (todo.getPresetTodoContent() != null) ? todo.getPresetTodoContent()
-                : todo.getCustomTodoContent();
-        return new TodoDTO(todo.getId(), todo.getOrderKey(), todo.getNote(), todo.getCompleteDateISOString(),
-                (todo.getPresetTodoContent() != null) ? todo.getPresetTodoContent().getId() : null,
-                todoContent.getCategory(), todoContent.getType(),
-                todoContent.getTitle(), todoContent.getIcon(),
-                (todo.getFlightTodoContent() != null) ? todo.getFlightTodoContent().getRoutes() : null);
-
-    }
-
-    /*
-     * mapToTodo
-     */
-    @Named("mapCustomTodoContent")
-    public CustomTodoContent mapCustomTodoContent(TodoDTO todoDTO) {
-        return todoDTO.presetId() != null ? null
-                : new CustomTodoContent(null, null, todoDTO.category(), todoDTO.type(), todoDTO.title(),
-                        todoDTO.icon());
-    }
-
-    // @Named("mapCustomTodoContent")
-    // public CustomTodoContent mapCustomTodoContent(TodoDTO todoDTO, Todo todo) {
-    // return updateCustomTodoContentFromDto(todoDTO, todo.getCustomTodoContent());
-    // }
-
-    @Named("mapCustomTodoContent")
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    public abstract CustomTodoContent updateCustomTodoContentFromDto(TodoDTO todoDTO,
-            @MappingTarget CustomTodoContent customTodoContent);
-
-    @Named("mapPresetTodoContent")
-    public PresetTodoContent mapPresetTodoContent(TodoDTO todoDTO) {
-        return todoDTO.presetId() != null
-                ? presetTodoContentRepository.findById(todoDTO.presetId())
-                        .orElseThrow(() -> new PresetTodoContentNotFoundException(todoDTO.presetId()))
-                // new PresetTodoContent(null, null, todoDTO.category(), todoDTO.type(),
-                // todoDTO.title(),
-                // todoDTO.iconId())
-                : null;
-    }
-
-    @Mapping(target = "customTodoContent", expression = "java(mapCustomTodoContent(todoDTO))")
-    @Mapping(target = "presetTodoContent", expression = "java(mapPresetTodoContent(todoDTO))")
-    public abstract Todo mapToTodo(TodoDTO todoDTO);
-
-    // @AfterMapping
-    // private void afterMapping(TodoDTO todoDTO, @MappingTarget Todo todo) {
-    // todo.getCustomTodoContent().setTodo(todo);
-    // }
+    protected StockTodoContentRepository stockTodoContentRepository;
 
     /*
      * mapToTripDTO
      */
 
-    @Named("mapTodolist")
-    public List<TodoDTO> mapTodolist(Trip trip) {
-        return (trip.getTodolist() != null) ? trip.getTodolist().stream().map(this::mapToTodoDTO).toList() : null;
-    }
+    // @Named("mapTodolist")
+    // public List<TodoDTO> mapTodolist(Trip trip) {
+    // return (trip.getTodolist() != null) ?
+    // trip.getTodolist().stream().map(todoMapper::mapToTodoDTO).toList() : null;
+    // }
 
-    @Named("mapTodolist")
-    public List<Todo> mapTodolist(TripDTO tripDTO) {
-        return (tripDTO.todolist() != null) ? tripDTO.todolist().stream().map(this::mapToTodo).toList() : null;
-    }
+    // @Named("mapTodolist")
+    // public List<Todo> mapTodolist(TripDTO tripDTO) {
+    // return (tripDTO.todolist() != null) ?
+    // tripDTO.todolist().stream().map(todoMapper::mapToTodo).toList() : null;
+    // }
 
-    @Named("mapTodolist")
-    public List<Todo> mapTodolist(TripDTO tripDTO, Trip trip) {
-        // log.info(String.format("[mapTodolist] trip=%s", asJsonString(trip)));
-        return (tripDTO.todolist() != null) ? tripDTO.todolist().stream().map(this::mapToTodo).toList()
-                : trip.getTodolist();
-    }
+    // @Named("mapTodolist")
+    // public List<Todo> mapTodolist(TripDTO tripDTO, Trip trip) {
+    // // log.info(String.format("[mapTodolist] trip=%s", asJsonString(trip)));
+    // return (tripDTO.todolist() != null) ?
+    // tripDTO.todolist().stream().map(todoMapper::mapToTodo).toList()
+    // : trip.getTodolist();
+    // }
 
     @Named("mapAccomodation")
     public List<AccomodationDTO> mapAccomodation(Trip trip) {
@@ -153,7 +101,7 @@ public abstract class TripMapper {
 
     @Mapping(target = "destination", expression = "java(mapDestination(trip))")
     @Mapping(target = "accomodation", expression = "java(mapAccomodation(trip))")
-    @Mapping(target = "todolist", expression = "java(mapTodolist(trip))")
+    // @Mapping(target = "todolist", expression = "java(mapTodolist(trip))")
     public abstract TripDTO mapToTripDTO(Trip trip);
 
     /*
@@ -161,7 +109,7 @@ public abstract class TripMapper {
      */
     @Mapping(target = "destination", expression = "java(mapDestination(tripDTO))")
     @Mapping(target = "accomodation", expression = "java(mapAccomodation(tripDTO))")
-    @Mapping(target = "todolist", expression = "java(mapTodolist(tripDTO))")
+    // @Mapping(target = "todolist", expression = "java(mapTodolist(tripDTO))")
     public abstract Trip mapToTrip(TripDTO tripDTO);
 
     @AfterMapping
@@ -185,10 +133,6 @@ public abstract class TripMapper {
     @Mapping(target = "recommendedReturnFlight", ignore = true)
     public abstract Destination mapToDestination(DestinationDTO destinationDTO);
 
-    // public PresetDTO mapToPresetDTO(PresetTodoContent presetTodoContent) {
-
-    // }
-
     // @Mapping(target = "destination", expression = "java(mapDestination(tripDTO,
     // trip))")
     // @Mapping(target = "accomodation", expression = "java(mapAccomodation(tripDTO,
@@ -202,25 +146,6 @@ public abstract class TripMapper {
     public abstract Trip updateTripFromDto(TripDTO tripDTO, @MappingTarget Trip trip);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    public abstract TodoDTO updateTodoDTOFromDto(TodoDTO todoDTOSource, @MappingTarget TodoDTO todoDTOTarget);
-
-    // @Mapping(target = "customTodoContent", expression =
-    // "java(updateCustomTodoContentFromDto(todoDTO, todo.getCustomTodoContent()))")
-    @Mapping(target = "id", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    public abstract Todo updateTodoFromDto(TodoDTO todoDTO, @MappingTarget Todo todo);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     public abstract Accomodation updateAccomodationFromDto(AccomodationDTO accomodationDTO,
             @MappingTarget Accomodation accomodation);
-
-    // protected static String asJsonString(final Object obj) {
-    // try {
-    // final ObjectMapper mapper = new ObjectMapper();
-    // final String jsonContent = mapper.writeValueAsString(obj);
-    // return jsonContent;
-    // } catch (Exception e) {
-    // throw new RuntimeException(e);
-    // }
-    // }
 }
