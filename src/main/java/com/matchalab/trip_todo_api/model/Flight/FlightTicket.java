@@ -1,15 +1,17 @@
 package com.matchalab.trip_todo_api.model.Flight;
 
+import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 
 @Builder
-public record FlightTicket(
-        Long id,
-        String flightNumber,
-        String departure,
-        String arrival,
-        String passengerName,
-        String departureDateTimeISOString,
-        String arrivalDateTimeISOString,
-        String qrCodeFilePath) {
+public class FlightTicket extends Flight {
+
+    @ManyToOne
+    Airport departureAirport;
+
+    @ManyToOne
+    Airport arrivalAirport;
+
+    String passengerName;
+    String qrCodeFilePath;
 }

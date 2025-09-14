@@ -6,7 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record AccomodationDTO(
-        Long id,
+        String id,
         String title,
         String roomTitle,
         int numberOfGuest,

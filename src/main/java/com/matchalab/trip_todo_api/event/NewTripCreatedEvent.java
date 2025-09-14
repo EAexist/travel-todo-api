@@ -6,9 +6,9 @@ import lombok.Getter;
 
 @Getter
 public class NewTripCreatedEvent extends ApplicationEvent {
-    private final Long tripId;
+    private final String tripId;
 
-    public NewTripCreatedEvent(Object source, Long tripId) {
+    public NewTripCreatedEvent(Object source, String tripId) {
         super(source);
         this.tripId = tripId;
     }

@@ -32,7 +32,7 @@ public class TodoController {
      * Provide the details of an Trip with the given id.
      */
     @PostMapping("/")
-    public ResponseEntity<TodoDTO> createTodo(@PathVariable Long tripId, @RequestBody TodoDTO requestbody) {
+    public ResponseEntity<TodoDTO> createTodo(@PathVariable String tripId, @RequestBody TodoDTO requestbody) {
         try {
             TodoDTO todoDTO = tripService.createTodo(tripId, requestbody);
             return ResponseEntity.created(Utils.getLocation(todoDTO.id())).body(todoDTO);
@@ -45,7 +45,7 @@ public class TodoController {
      * Provide the details of an Trip with the given id.
      */
     @PatchMapping("/{todoId}")
-    public ResponseEntity<TodoDTO> patchTodo(@PathVariable Long todoId, @RequestBody TodoDTO newTodoDTO) {
+    public ResponseEntity<TodoDTO> patchTodo(@PathVariable String todoId, @RequestBody TodoDTO newTodoDTO) {
         try {
             TodoDTO todoDTO = tripService.patchTodo(todoId, newTodoDTO);
             return ResponseEntity.ok().body(todoDTO);
@@ -58,7 +58,7 @@ public class TodoController {
      * Provide the details of an Trip with the given id.
      */
     @DeleteMapping("/{todoId}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long todoId) {
+    public ResponseEntity<Void> deleteTodo(@PathVariable String todoId) {
         try {
             tripService.deleteTodo(todoId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

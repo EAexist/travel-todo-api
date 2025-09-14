@@ -40,7 +40,7 @@ public class ReservationControllerIntegrationTest {
     // @Test
     // void testExtractTextFromImage() throws Exception {
 
-    // Long id = savedTrip.getId();
+    // String id = savedTrip.getId();
     // File _file = new
     // ClassPathResource("/image/accomodation-agoda-app-ios_1.png").getFile();
     // MultipartFile file = new MockMultipartFile(_file.getName(), new
@@ -61,7 +61,7 @@ public class ReservationControllerIntegrationTest {
     @Test
     void testExtractTextFromImage() throws Exception {
 
-        Long id = 0L;
+        String id = 0L;
         File _file = new ClassPathResource("/image/accomodation-agoda-app-ios_1.png").getFile();
         MultipartFile file = new MockMultipartFile(_file.getName(), new FileInputStream(_file));
 

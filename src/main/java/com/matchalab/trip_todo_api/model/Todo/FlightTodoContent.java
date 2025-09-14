@@ -28,8 +28,8 @@ import lombok.Setter;
 public class FlightTodoContent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "flight-todo-content_flight-route", joinColumns = @JoinColumn(name = "flight-todo-content_id"), inverseJoinColumns = @JoinColumn(name = "flight-route_id"))

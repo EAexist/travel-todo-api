@@ -1,7 +1,7 @@
 package com.matchalab.trip_todo_api.model.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -62,7 +62,7 @@ public class TripMapperTest {
 
     @BeforeAll
     public void setUp() throws Exception {
-        when(stockTodoContentRepository.findById(anyLong()))
+        when(stockTodoContentRepository.findById(anyString()))
                 .thenReturn(Optional.of(new StockTodoContent(0L, true, "foreign",
                         "currency", "환전", new Icon("💱"))));
     }

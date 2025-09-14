@@ -5,15 +5,10 @@ import org.hibernate.type.SqlTypes;
 
 import com.matchalab.trip_todo_api.model.Icon;
 
-import io.micrometer.common.lang.Nullable;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,8 +23,8 @@ import lombok.Setter;
 @Builder(builderMethodName = "todoContentBuilder")
 public class TodoContent {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @Builder.Default
     private Boolean isStock = false;

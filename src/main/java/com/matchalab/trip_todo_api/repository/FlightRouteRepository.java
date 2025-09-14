@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 
 // @NoRepositoryBean
-public interface FlightRouteRepository extends JpaRepository<FlightRoute, Long> {
+public interface FlightRouteRepository extends JpaRepository<FlightRoute, String> {
     Optional<FlightRoute> findByDepartureIATACodeAndArrivalIATACode(String departureIATACode, String arrivalIATACode);
 }

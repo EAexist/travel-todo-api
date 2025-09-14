@@ -12,7 +12,7 @@ package com.matchalab.trip_todo_api.model.Flight;
 // @Entity
 // @Builder
 // public record FlightRouteRecommendation(
-// // @Id @GeneratedValue(strategy = GenerationType.AUTO) Long id,
+// // @Id @GeneratedValue(strategy = GenerationType.UUID) String id,
 // // @ManyToOne @JoinColumn(name = "departure_airport_id") Airport departure,
 // // @ManyToOne @JoinColumn(name = "departure_airport_id") Airport departure,
 // // @ManyToOne @JoinColumn(name = "departure_airport_id") Airport departure,

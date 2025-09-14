@@ -23,8 +23,8 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class FlightRoute {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "departure_airport_id")

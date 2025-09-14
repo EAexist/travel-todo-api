@@ -72,7 +72,7 @@ public class NewEntityCreatedEventHandler {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void processNewTripCreated(NewTripCreatedEvent event) {
         log.info(String.format("[processNewTripCreated] tripId: %s", event.getTripId()));
-        Long id = event.getTripId();
+        String id = event.getTripId();
         Trip trip = tripRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
 
         trip.setTodoPreset(todoPresetRepository.findByTitle("기본").orElseThrow(() -> new NotFoundException(null)));
@@ -98,7 +98,7 @@ public class NewEntityCreatedEventHandler {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CompletableFuture<Destination> processNewDestinationAsync(NewDestinationCreatedEvent event) {
         log.info(String.format("[processNewDestinationAsync] destinationId: %s", event.getDestinationId()));
-        Long id = event.getDestinationId();
+        String id = event.getDestinationId();
         Destination destination = destinationRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
         RecommendedFlightChatResult recommendedFlightChatResult = genAIService
                 .getRecommendedFlight(destination.getTitle());
@@ -117,7 +117,7 @@ public class NewEntityCreatedEventHandler {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CompletableFuture<FlightRoute> processNewFlightRouteAsync(NewFlightRouteCreatedEvent event) {
         log.info(String.format("[processNewFlightRouteAsync] flightRouteId: %s", event.getFlightRouteId()));
-        Long id = event.getFlightRouteId();
+        String id = event.getFlightRouteId();
         FlightRoute flightRoute = flightRouteRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
         List<String> airlineIATAcodes = genAIService.getRecommendedAirline(flightRoute);
 

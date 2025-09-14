@@ -26,8 +26,8 @@ import lombok.Setter;
 public class Todo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     private String note;
     private String completeDateISOString;

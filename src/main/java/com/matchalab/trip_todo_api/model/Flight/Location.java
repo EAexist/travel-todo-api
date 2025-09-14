@@ -13,8 +13,8 @@ import lombok.Setter;
 public class Location {
 
     // @Id
-    // @GeneratedValue(strategy = GenerationType.AUTO)
-    // Long id;
+    // @GeneratedValue(strategy = GenerationType.UUID)
+    // String id;
 
     String name;
     String title;

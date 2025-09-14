@@ -106,7 +106,7 @@ public class TodoControllerIntegrationTest {
 
     private Trip savedTrip;
 
-    private Long userAccountId;
+    private String userAccountId;
 
     @BeforeEach
     @Transactional
@@ -150,7 +150,7 @@ public class TodoControllerIntegrationTest {
     @Test
     void createTodo_Given_ValidTripIdAndCustomTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
 
-        Long id = savedTrip.getId();
+        String id = savedTrip.getId();
 
         ResultActions result = mockMvc.perform(post(String.format("/user/%s/trip/%s/todo", userAccountId, id))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -172,7 +172,7 @@ public class TodoControllerIntegrationTest {
     // createTodo_Given_ValidTripIdAndFlightTodoDTO_When_RequestPost_Then_CreateTodo()
     // throws Exception {
 
-    // Long id = savedTrip.getId();
+    // String id = savedTrip.getId();
 
     // ResultActions result =
     // mockMvc.perform(post(String.format("/user/%s/trip/%s/todo", userAccountId,
@@ -198,8 +198,8 @@ public class TodoControllerIntegrationTest {
     @Test
     void createTodo_Given_ValidTripIdAndPresetTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
 
-        Long id = savedTrip.getId();
-        Long stockId = 1L;
+        String id = savedTrip.getId();
+        String stockId = "ID";
         TodoContent StockTodoContent = stockTodoContentRepository.findById(stockId)
                 .orElseThrow(() -> new NotFoundException(stockId));
 
@@ -227,7 +227,7 @@ public class TodoControllerIntegrationTest {
     @Test
     void patchTodo_Given_NewContentAndOrderKey_When_RequestPatchCustomTodo_Then_UpdateTodo() throws Exception {
 
-        Long id = savedTrip.getId();
+        String id = savedTrip.getId();
 
         Todo todo = savedTrip.getTodolist().stream().filter(todo_ -> todo_.getStockTodoContent() == null).toList()
                 .getFirst();
@@ -261,12 +261,12 @@ public class TodoControllerIntegrationTest {
     @Test
     void patchTodo_Given_NewContentAndOrderKey_When_RequestPatchPresetTodo_Then_UpdateTodo() throws Exception {
 
-        Long id = savedTrip.getId();
+        String id = savedTrip.getId();
 
         Todo todo = savedTrip.getTodolist().stream().filter(todo_ -> todo_.getStockTodoContent() != null).toList()
                 .getFirst();
 
-        TodoDTO todoDTOToPatch = TodoDTO.builder().id(9L).note("새로운 노트")
+        TodoDTO todoDTOToPatch = TodoDTO.builder().id("ID").note("새로운 노트")
                 .completeDateISOString("2025-02-20T00:00:00.001Z")
                 .content(TodoContentDTO.builder().isStock(false).category("goods").title("새로운 할 일 이름").icon(
                         new Icon("🎁")).build())

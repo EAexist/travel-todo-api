@@ -1,1 +1,1 @@
-docker compose up -d && gradle clean bootRun --args='--spring.profiles.active=local'
+docker compose up -d && gradle clean bootRun --args='--spring.profiles.active=local-init-data'

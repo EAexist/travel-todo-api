@@ -22,6 +22,7 @@ import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
 import com.matchalab.trip_todo_api.model.Flight.Flight;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
+import com.matchalab.trip_todo_api.model.mapper.ReservationMapper;
 import com.matchalab.trip_todo_api.repository.ReservationRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 
@@ -48,6 +49,9 @@ public class ReservationService {
     @Autowired
     private GenAIService genAIService;
 
+    @Autowired
+    private ReservationMapper reservationMapper;
+
     // public ReservationService(TripRepository tripRepository, VisionService
     // visionService, GenAIService genAIService) {
     // this.tripRepository = tripRepository;
@@ -63,11 +67,11 @@ public class ReservationService {
         return analyzeReservationScreenImage(files, ReservationType.General);
     }
 
-    public ReservationImageAnalysisResult analyzeReservationScreenImage(
+    public List<Reservation> analyzeReservationScreenImage(
             List<MultipartFile> files, ReservationType reservationType) {
 
         /* Extract Text from Image */
-        List<String> reservationText = files.stream().map(multipartFile -> {
+        List<String> text = files.stream().map(multipartFile -> {
             try {
                 byte[] fileBytes = multipartFile.getBytes();
                 File tempFile = File.createTempFile("temp_tiff", ".tiff");
@@ -90,27 +94,43 @@ public class ReservationService {
 
         log.info(String.format("[extractTextfromImage] reservationText=%s", reservationText.toString()));
 
+        return analyzeReservationText(text, reservationType);
+        // return createEntitiesFromImageAnalysisResult(tripId, reservationText);
+    }
+
+    public List<Reservation> analyzeReservationText(
+            String text, ReservationType reservationType) {
+
+        List<Reservation> reservation;
+
         switch (reservationType) {
             case ReservationType.Flight:
+                reservation = genAIService.extractAccomodationReservationFromText(text).stream()
+                        .map(reservationMapper::mapToReservation).toList();
                 break;
             case ReservationType.FlightTicket:
+                reservation = genAIService.extractAccomodationReservationFromText(text).stream()
+                        .map(reservationMapper::mapToReservation).toList();
                 break;
             case ReservationType.Accomodation:
+                reservation = genAIService.extractAccomodationReservationFromText(text).stream()
+                        .map(reservationMapper::mapToReservation).toList();
                 break;
             case ReservationType.General:
+                reservation = genAIService.extractAccomodationReservationFromText(text).stream()
+                        .map(reservationMapper::mapToReservation).toList();
                 break;
             default:
                 break;
         }
-
-        return genAIService.extractInfofromReservationText(reservationText);
-        // return createEntitiesFromImageAnalysisResult(tripId, reservationText);
+        reservation.stream().forEach(r -> r.setRawText(text));
+        return reservationRepository.saveAll(reservation);
     }
 
     /**
      * Provide the details of a Trip with the given id.
      */
-    public List<Reservation> getReservation(Long tripId) {
+    public List<Reservation> getReservation(String tripId) {
         List<Reservation> reservation = tripRepository.findById(tripId)
                 .orElseThrow(() -> new TripNotFoundException(tripId)).getReservation();
         return reservation;
@@ -119,7 +139,7 @@ public class ReservationService {
     /**
      * Provide the details of a Trip with the given id.
      */
-    public Reservation setLocalAppStorageFileUri(Long tripId, Long reservationId,
+    public Reservation setLocalAppStorageFileUri(String tripId, String reservationId,
             String localAppStorageFileUri) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new TripNotFoundException(tripId));
@@ -131,7 +151,7 @@ public class ReservationService {
     /**
      * Create new empty trip.
      */
-    // private List<Reservation> analyzeFlightTicketTextAndCreateReservation(Long
+    // private List<Reservation> analyzeFlightTicketTextAndCreateReservation(String
     // tripId, List<String> text) {
 
     // /* Analyze Text with Generative AI */
@@ -178,7 +198,7 @@ public class ReservationService {
     /**
      * Create new empty trip.
      */
-    public List<Reservation> analyzeFlightTicketAndCreateReservation(Long tripId,
+    public List<Reservation> analyzeFlightTicketAndCreateReservation(String tripId,
             List<MultipartFile> files) {
 
         /* Extract Text from Image */
@@ -220,7 +240,7 @@ public class ReservationService {
     /**
      * Create new empty trip.
      */
-    public ReservationImageAnalysisResult saveImageAnalysisResult(Long tripId,
+    public ReservationImageAnalysisResult saveImageAnalysisResult(String tripId,
             ReservationImageAnalysisResult reservationImageAnalysisResult) {
 
         /* Save Data */

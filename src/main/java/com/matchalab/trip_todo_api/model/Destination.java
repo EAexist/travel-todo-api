@@ -31,8 +31,8 @@ import lombok.Setter;
 public class Destination {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @ManyToMany(mappedBy = "destination")
     @JsonIgnore

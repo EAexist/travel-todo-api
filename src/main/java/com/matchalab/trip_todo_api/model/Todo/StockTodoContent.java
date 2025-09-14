@@ -40,7 +40,7 @@ public class StockTodoContent extends TodoContent {
 
     @Builder
     public StockTodoContent(
-            Long id,
+            String id,
             Boolean isStock,
             String category,
             String type,

@@ -8,14 +8,14 @@ import lombok.Builder;
 /* https://github.com/projectlombok/lombok/issues/3883 */
 @Builder
 public record TripSummaryDTO(
-        @Nullable Long id,
+        @Nullable String id,
         boolean isInitialized,
         @Nullable String title,
         @Nullable String startDateISOString,
         @Nullable String endDateISOString,
         @Nullable List<String> destination) {
 
-    public TripSummaryDTO(Long id,
+    public TripSummaryDTO(String id,
             boolean isInitialized,
             String title,
             String startDateISOString,

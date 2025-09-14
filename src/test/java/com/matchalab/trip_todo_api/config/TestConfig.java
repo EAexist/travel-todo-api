@@ -18,13 +18,25 @@ import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
+import com.matchalab.trip_todo_api.model.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.Todo.TodoContent;
+import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 
 @TestConfiguration
 public class TestConfig {
+
+    @Bean
+    UserAccount userAccount() {
+        return UserAccount.builder().id("ID").nickname("nickname").kakaoId("kakaoId").googleId("googleId").build();
+    }
+
+    @Bean
+    UserAccountDTO userAccountDTO() {
+        return UserAccountDTO.builder().id("ID").nickname("nickname").build();
+    }
 
     @Bean
     Destination destination_tokushima() {
@@ -140,10 +152,10 @@ public class TestConfig {
                                     "https://www.airbnb.co.kr/rooms/12317142?viralityEntryPoint=1&s=76"))
             }));
 
-    StockTodoContent stockTodoContent = StockTodoContent.builder().id(0L).isStock(true).category("foreign").type(
+    StockTodoContent stockTodoContent = StockTodoContent.builder().id("ID").isStock(true).category("foreign").type(
             "currency").title("환전").icon(new Icon("💱")).build();
 
-    CustomTodoContent customTodoContent = CustomTodoContent.builder().id(0L).isStock(false).category("goods").type(
+    CustomTodoContent customTodoContent = CustomTodoContent.builder().id("ID").isStock(false).category("goods").type(
             "goods").title("필름카메라").icon(new Icon("📸")).build();
 
     @Bean
@@ -153,7 +165,7 @@ public class TestConfig {
                 .orderKey(0)
                 .note("환전은 미리미리 할 것")
                 .completeDateISOString(null)
-                .content(TodoContentDTO.builder().id(0L).isStock(true).category("foreign").type(
+                .content(TodoContentDTO.builder().id("currency").isStock(true).category("foreign").type(
                         "currency").title("환전").icon(new Icon("💱")).build())
                 .build();
     }
@@ -171,7 +183,7 @@ public class TestConfig {
                 .orderKey(1)
                 .note("카메라 필름 챙겼는지 확인할 것")
                 .completeDateISOString("2025-02-23T00:00:00.001Z")
-                .content(TodoContentDTO.builder().id(0L).isStock(false).category("goods").type(
+                .content(TodoContentDTO.builder().id("ID").isStock(false).category("goods").type(
                         "goods").title("필름카메라").icon(new Icon("📸")).build())
                 .build();
     }
@@ -189,7 +201,7 @@ public class TestConfig {
 
     @Bean
     Trip trip() {
-        return Trip.builder().id(0L).title(
+        return Trip.builder().id("ID").title(
                 "Vaundy 보러 가는 도쿠시마 여행").startDateISOString(
                         "2025-02-20T00:00:00.001Z")
                 .endDateISOString(
@@ -199,7 +211,7 @@ public class TestConfig {
 
     @Bean
     Trip tripHydrated() {
-        return Trip.builder().id(0L).title(
+        return Trip.builder().id("ID").title(
                 "Vaundy 보러 가는 도쿠시마 여행").startDateISOString(
                         "2025-02-20T00:00:00.001Z")
                 .endDateISOString(
@@ -213,7 +225,7 @@ public class TestConfig {
     @Bean
     TripDTO tripDTO() {
         return TripDTO.builder()
-                .id(0L)
+                .id("ID")
                 .title("Vaundy 보러 가는 도쿠시마 여행")
                 .startDateISOString("2025-02-20T00:00:00.001Z")
                 .endDateISOString("2025-02-25T00:00:00.001Z")

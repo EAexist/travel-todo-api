@@ -3,7 +3,7 @@ package com.matchalab.trip_todo_api.service.EventHandler;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
@@ -125,7 +125,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
         // GenAIService genAIService = new GenAIService();
         newEntityCreatedEventHandler.setGenAIService(new GenAIService());
 
-        lenient().when(destinationRepository.findById(anyLong()))
+        lenient().when(destinationRepository.findById(anyString()))
                 .thenReturn(Optional.of(DestinationFactory.createValidDestination("오사카")));
 
         lenient().when(destinationRepository.save(any(Destination.class))).thenAnswer(invocation -> {
@@ -136,7 +136,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
             return invocation.getArgument(0);
         });
 
-        lenient().when(flightRouteRepository.findById(anyLong()))
+        lenient().when(flightRouteRepository.findById(anyString()))
                 .thenReturn(Optional.of(new FlightRoute(new Airport("ICN"),
                         new Airport("KIX"))));
 
@@ -175,7 +175,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
             throws Exception {
 
         CompletableFuture<Destination> future = newEntityCreatedEventHandler
-                .processNewDestinationAsync(new NewDestinationCreatedEvent(this, 0L));
+                .processNewDestinationAsync(new NewDestinationCreatedEvent(this, "ID"));
         Destination destination = future.get();
 
         log.info(String.format("destination: %s", Utils.asJsonString(destination)));
@@ -205,7 +205,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
             throws Exception {
 
         CompletableFuture<FlightRoute> future = newEntityCreatedEventHandler
-                .processNewFlightRouteAsync(new NewFlightRouteCreatedEvent(this, 0L));
+                .processNewFlightRouteAsync(new NewFlightRouteCreatedEvent(this, "ID"));
         FlightRoute flightRoute = future.get();
 
         log.info(String.format("FlightRoute: %s", Utils.asJsonString(flightRoute)));

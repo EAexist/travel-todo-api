@@ -76,29 +76,15 @@ public class TripService {
     /**
      * Provide the details of a Trip with the given id.
      */
-    public TripDTO getTrip(Long tripId) {
+    public TripDTO getTrip(String tripId) {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
-        return tripMapper.mapToTripDTO(trip);
-    }
-
-    /**
-     * Create new empty trip.
-     */
-    public TripDTO createTrip(Long userId) {
-        UserAccount userAccount = userAccountRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(userId));
-        Trip trip = new Trip();
-        trip.setUserAccount(userAccount);
-        trip = tripRepository.save(trip);
-        // eventPublisher.publishEvent(new NewTripCreatedEvent(this, trip.getId()));
-
         return tripMapper.mapToTripDTO(trip);
     }
 
     /**
      * Update the content of a Trip.
      */
-    public TripDTO patchTrip(Long tripId, TripDTO newTripDTO) {
+    public TripDTO patchTrip(String tripId, TripDTO newTripDTO) {
 
         Trip previousTrip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 
@@ -110,7 +96,7 @@ public class TripService {
     /**
      * Create new todo.
      */
-    // public List<FlightRoute> getFlightRoute(Long tripId) {
+    // public List<FlightRoute> getFlightRoute(String tripId) {
     // return tripRepository.findById(tripId).orElseThrow(() -> new
     // TripNotFoundException(tripId))
     // .getFlightRoute();
@@ -119,7 +105,7 @@ public class TripService {
     /**
      * Create new todo.
      */
-    public TodoDTO createTodo(Long tripId, TodoDTO todoDTO) {
+    public TodoDTO createTodo(String tripId, TodoDTO todoDTO) {
         Todo newTodo = todoMapper.mapToTodo(todoDTO);
         log.info(Utils.asJsonString(todoDTO));
         log.info(Utils.asJsonString(newTodo));
@@ -169,7 +155,7 @@ public class TripService {
     /**
      * Change contents or orderKey of todo.
      */
-    public TodoDTO patchTodo(Long todoId, TodoDTO newTodoDTO) {
+    public TodoDTO patchTodo(String todoId, TodoDTO newTodoDTO) {
         Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new NotFoundException(todoId));
         log.info(Utils.asJsonString(newTodoDTO));
         log.info(Utils.asJsonString(todoMapper.mapToTodoDTO(todo)));
@@ -189,7 +175,7 @@ public class TripService {
     /**
      * Create new todo.
      */
-    public void deleteTodo(Long todoId) {
+    public void deleteTodo(String todoId) {
         todoRepository.findById(todoId).ifPresentOrElse(entity -> todoRepository.delete(entity),
                 () -> new NotFoundException(todoId));
     }
@@ -197,7 +183,7 @@ public class TripService {
     /**
      * Create new todo.
      */
-    public List<TodoPresetItem> getTodoPreset(Long tripId) {
+    public List<TodoPresetItem> getTodoPreset(String tripId) {
 
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 
@@ -246,7 +232,7 @@ public class TripService {
     /**
      * Create new empty trip.
      */
-    public DestinationDTO createDestination(Long tripId, DestinationDTO destinationDTO) {
+    public DestinationDTO createDestination(String tripId, DestinationDTO destinationDTO) {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 
         destinationRepository
@@ -271,7 +257,7 @@ public class TripService {
     /**
      * Create new todo.
      */
-    public void deleteDestination(Long destinationId) {
+    public void deleteDestination(String destinationId) {
         destinationRepository.findById(destinationId).ifPresentOrElse(entity -> destinationRepository.delete(entity),
                 () -> new NotFoundException(destinationId));
     }
@@ -279,7 +265,7 @@ public class TripService {
     /**
      * Provide the details of a Accomodation with the given trip_id.
      */
-    public List<AccomodationDTO> getAccomodation(Long tripId) {
+    public List<AccomodationDTO> getAccomodation(String tripId) {
         List<AccomodationDTO> accomodations = tripRepository.findById(tripId)
                 .orElseThrow(() -> new TripNotFoundException(tripId)).getAccomodation().stream()
                 .map(accomodation -> tripMapper.mapToAccomodationDTO(accomodation)).toList();
@@ -289,7 +275,7 @@ public class TripService {
     /**
      * Create new empty accomodation.
      */
-    public AccomodationDTO createAccomodation(Long tripId) {
+    public AccomodationDTO createAccomodation(String tripId) {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
         Accomodation newAccomodation = new Accomodation();
         // newAccomodation.setTrip(trip);
@@ -300,7 +286,7 @@ public class TripService {
     /**
      * Change contents of accomodation.
      */
-    public AccomodationDTO patchAccomodation(Long accomodationId, AccomodationDTO newAccomodationDTO) {
+    public AccomodationDTO patchAccomodation(String accomodationId, AccomodationDTO newAccomodationDTO) {
         Accomodation accomodation = tripMapper.updateAccomodationFromDto(newAccomodationDTO,
                 accomodationRepository.findById(accomodationId)
                         .orElseThrow(() -> new NotFoundException(accomodationId)));
@@ -311,14 +297,14 @@ public class TripService {
     /**
      * Create new todo.
      */
-    public void deleteAccomodation(Long accomodationId) {
+    public void deleteAccomodation(String accomodationId) {
         accomodationRepository.findById(accomodationId).ifPresentOrElse(entity -> accomodationRepository.delete(entity),
                 () -> new NotFoundException(accomodationId));
     }
     /**
      * Create new empty custom todo.
      */
-    // public TodoDTO createCustomTodo(Long tripId, String category) {
+    // public TodoDTO createCustomTodo(String tripId, String category) {
     // Todo newTodo = new Todo();
     // Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new
     // TripNotFoundException(tripId));
@@ -331,7 +317,7 @@ public class TripService {
     /**
      * Create new preset todo.
      */
-    // public List<TodoDTO> createPresetTodo(Long tripId, List<Long> stockIds) {
+    // public List<TodoDTO> createPresetTodo(String tripId, List<String> stockIds) {
     // return stockIds.stream().map((stockId) -> {
     // Todo newTodo = new Todo();
     // Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new

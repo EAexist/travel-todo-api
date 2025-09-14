@@ -20,7 +20,7 @@ import lombok.Setter;
 public class TodoContentDTO {
 
     @Nullable
-    private Long id;
+    private String id;
 
     @Builder.Default
     private Boolean isStock = false;

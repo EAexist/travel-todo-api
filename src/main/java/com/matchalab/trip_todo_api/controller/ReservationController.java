@@ -35,7 +35,7 @@ public class ReservationController {
      * Provide the details of a Trip with the given id.
      */
     @GetMapping(value = "/")
-    public ResponseEntity<List<Reservation>> getReservation(@PathVariable Long tripId) {
+    public ResponseEntity<List<Reservation>> getReservation(@PathVariable String tripId) {
         try {
             return ResponseEntity.ok().body(reservationService.getReservation(tripId));
         } catch (HttpClientErrorException e) {
@@ -47,8 +47,8 @@ public class ReservationController {
      * Provide the details of a Trip with the given id.
      */
     @PatchMapping(value = "/{reservationId}")
-    public ResponseEntity<Reservation> setLocalAppStorageFileUri(@PathVariable Long tripId,
-            @PathVariable Long reservationId, @RequestBody Map<String, String> body) {
+    public ResponseEntity<Reservation> setLocalAppStorageFileUri(@PathVariable String tripId,
+            @PathVariable String reservationId, @RequestBody Map<String, String> body) {
         try {
             return ResponseEntity.ok().body(reservationService.setLocalAppStorageFileUri(tripId, reservationId,
                     body.get("localAppStorageFileUri")));
@@ -61,7 +61,7 @@ public class ReservationController {
      * Provide the details of a Trip with the given id.
      */
     @PostMapping(value = "/", params = "images")
-    public ResponseEntity<ReservationImageAnalysisResult> createReservationFromImage(@PathVariable Long tripId,
+    public ResponseEntity<ReservationImageAnalysisResult> createReservationFromImage(@PathVariable String tripId,
             @RequestParam("image") List<MultipartFile> files, @RequestParam ReservationType reservationType) {
         try {
             return ResponseEntity.ok().body(
@@ -75,19 +75,21 @@ public class ReservationController {
     /**
      * Provide the details of a Trip with the given id.
      */
-    @PostMapping(value = "/flight")
-    public ResponseEntity<List<Reservation>> createFlightTicketReservationFromImage(@PathVariable Long tripId,
-            @RequestParam("image") List<MultipartFile> files) {
-        try {
-            return ResponseEntity.created(null).body(reservationService.analyzeFlightTicketAndCreateReservation(tripId,
-                    files));
-        } catch (HttpClientErrorException e) {
-            throw e;
-        }
-    }
+    // @PostMapping(value = "/flight")
+    // public ResponseEntity<List<Reservation>>
+    // createFlightTicketReservationFromImage(@PathVariable String tripId,
+    // @RequestParam("image") List<MultipartFile> files) {
+    // try {
+    // return
+    // ResponseEntity.created(null).body(reservationService.analyzeFlightTicketAndCreateReservation(tripId,
+    // files));
+    // } catch (HttpClientErrorException e) {
+    // throw e;
+    // }
+    // }
 
     @PostMapping(value = "", params = "text")
-    public ResponseEntity<ReservationImageAnalysisResult> createReservationFromText(@PathVariable Long tripId,
+    public ResponseEntity<ReservationImageAnalysisResult> createReservationFromText(@PathVariable String tripId,
             @RequestParam("text") String text) {
         try {
             return ResponseEntity.ok().body(reservationService.saveImageAnalysisResult(tripId,

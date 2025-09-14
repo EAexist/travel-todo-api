@@ -14,7 +14,7 @@ public class TestService {
     private DestinationRepository destinationRepository;
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED) // New transaction
-    public Destination findDestinationById(Long destinationId) {
+    public Destination findDestinationById(String destinationId) {
 
         Destination destination = destinationRepository.findById(destinationId).orElseThrow();
         destination.getRecommendedOutboundFlight().size();

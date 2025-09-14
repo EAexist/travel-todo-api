@@ -134,7 +134,7 @@ public class TripControllerIntegrationTest {
      */
     private Trip savedTrip;
 
-    private Long userAccountId;
+    private String userAccountId;
 
     /*
      * Event
@@ -193,7 +193,7 @@ public class TripControllerIntegrationTest {
     @Transactional
     void trip_Given_ValidTripId_When_RequestGet_Then_CorrectTripDTO() throws Exception {
 
-        Long id = savedTrip.getId();
+        String id = savedTrip.getId();
 
         ResultActions result = mockMvc.perform(get(String.format("/user/%s/trip/%s", userAccountId, id)))
                 .andDo(print())
@@ -216,7 +216,7 @@ public class TripControllerIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").isNotEmpty());
 
-        Long createdTripid = TestUtils.asObject(result, TripDTO.class).id();
+        String createdTripid = TestUtils.asObject(result, TripDTO.class).id();
         result.andExpect(header().string("Location",
                 String.format("http://localhost/user/%s/trip/%s", userAccountId, createdTripid)));
 
@@ -289,7 +289,7 @@ public class TripControllerIntegrationTest {
     void createDestination_Given_ValidTripIdAndDestinationDTO_When_RequestPost_Then_AddDestinationToTrip()
             throws Exception {
 
-        Long tripId = savedTrip.getId();
+        String tripId = savedTrip.getId();
 
         ResultActions result = mockMvc
                 .perform(post(String.format("/user/%s/trip/%s/destination", userAccountId, tripId))
@@ -316,7 +316,7 @@ public class TripControllerIntegrationTest {
     @Transactional
     void createDestination_Given_AlreadyExistingDestination_Then_DoNotCreateRedundantDestination() throws Exception {
 
-        Long destinationId_osaka = destinationRepository.findByCountryISOAndTitle("JP", "오사카")
+        String destinationId_osaka = destinationRepository.findByCountryISOAndTitle("JP", "오사카")
                 .orElseThrow(() -> new NotFoundException(null)).getId();
 
         ResultActions result = mockMvc
@@ -333,7 +333,7 @@ public class TripControllerIntegrationTest {
     }
 
     @Transactional
-    private Destination findDestinationWithRecommendedFlights(Long destinationId) {
+    private Destination findDestinationWithRecommendedFlights(String destinationId) {
         Destination destination = destinationRepository.findById(destinationId).orElseThrow();
         destination.getRecommendedOutboundFlight().size();
         destination.getRecommendedReturnFlight().size();
@@ -354,7 +354,7 @@ public class TripControllerIntegrationTest {
         // .content(Utils.asJsonString(destinationDTO_tokushima)))
         // .andDo(print());
 
-        // Long destinationId = TestUtils.asObject(result, DestinationDTO.class).id();
+        // String destinationId = TestUtils.asObject(result, DestinationDTO.class).id();
 
         // Awaitility.await().atMost(5, TimeUnit.SECONDS).until(() -> {
         // Destination destination = testService.findDestinationById(destinationId);
@@ -407,7 +407,7 @@ public class TripControllerIntegrationTest {
     // accomodationPlan_Given_TripWithAccomodation_When_RequestGet_Then_AllAccomodations()
     // throws Exception {
 
-    // Long id = savedTrip.getId();
+    // String id = savedTrip.getId();
 
     // ResultActions result =
     // mockMvc.perform(get(String.format("/user/%s/trip/%s/accomodation",
@@ -435,7 +435,7 @@ public class TripControllerIntegrationTest {
     @Transactional
     void createAccomodation_When_RequestPost_Then_CreateNewAccomodation() throws Exception {
 
-        Long id = savedTrip.getId();
+        String id = savedTrip.getId();
 
         ResultActions result = mockMvc.perform(post(String.format("/user/%s/trip/%s/accomodation", userAccountId, id))
                 .contentType(MediaType.APPLICATION_JSON))

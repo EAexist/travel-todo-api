@@ -2,7 +2,7 @@ package com.matchalab.trip_todo_api.model.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -57,13 +57,13 @@ public class TodoMapperTest {
 
     @BeforeAll
     public void setUp() throws Exception {
-        when(stockTodoContentRepository.findById(anyLong()))
+        when(stockTodoContentRepository.findById(anyString()))
                 .thenReturn(Optional.of(new StockTodoContent(0L, true, "foreign",
                         "currency", "환전", new Icon("💱"))));
     }
 
     @Test
-    void mapToTodo_Given_customToDoDTO_When_mapped_Then_correctTodo() {
+    void mapToTodo_Given_customTodoDTO_When_mapped_Then_correctTodo() {
 
         Todo mappedTodo = todoMapper.mapToTodo(customTodoDTO);
         assertNotNull(customTodoDTO);
@@ -73,7 +73,7 @@ public class TodoMapperTest {
     }
 
     @Test
-    void mapToTodoDTO_Given_customToDo_When_mapped_Then_correctTodoDTO() {
+    void mapToTodoDTO_Given_customTodo_When_mapped_Then_correctTodoDTO() {
         TodoDTO mappedTodoDTO = todoMapper.mapToTodoDTO(customTodo);
         assertNotNull(customTodo);
         assertNotNull(mappedTodoDTO);

@@ -8,7 +8,7 @@ import lombok.Builder;
 /* https://github.com/projectlombok/lombok/issues/3883 */
 @Builder
 public record TripDTO(
-        @Nullable Long id,
+        @Nullable String id,
         boolean isInitialized,
         @Nullable String title,
         @Nullable String startDateISOString,
@@ -17,7 +17,7 @@ public record TripDTO(
         @Nullable List<TodoDTO> todolist,
         @Nullable List<AccomodationDTO> accomodation) {
 
-    public TripDTO(Long id,
+    public TripDTO(String id,
             boolean isInitialized,
             String title,
             String startDateISOString,

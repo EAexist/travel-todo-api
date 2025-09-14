@@ -41,8 +41,8 @@ import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 public class Trip {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     private String title;
     private String startDateISOString;
@@ -51,9 +51,9 @@ public class Trip {
     @Builder.Default
     private boolean isInitialized = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userAccount_id")
-    private UserAccount userAccount;
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "userAccount_id")
+    // private UserAccount userAccount;
 
     @Builder.Default
     @ManyToMany(cascade = { CascadeType.MERGE })
@@ -72,16 +72,16 @@ public class Trip {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Flight> flight = new ArrayList<Flight>();
 
-    @Builder.Default
-    @JdbcTypeCode(SqlTypes.JSON)
-    private List<FlightRoute> recommendedFlight = new ArrayList<FlightRoute>();
+    // @Builder.Default
+    // @JdbcTypeCode(SqlTypes.JSON)
+    // private List<FlightRoute> recommendedFlight = new ArrayList<FlightRoute>();
 
     @Builder.Default
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Reservation> reservation = new ArrayList<Reservation>();
 
     @Nullable
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private TodoPreset todoPreset;
 
     public Trip(Trip trip) {

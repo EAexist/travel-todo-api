@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import com.google.cloud.vertexai.VertexAI;
 import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
+import com.matchalab.trip_todo_api.model.genAI.AnalyzeFlightBookingReservationDTO;
+import com.matchalab.trip_todo_api.model.genAI.AnalyzeFlightTicketReservationDTO;
 import com.matchalab.trip_todo_api.model.genAI.RecommendedFlightChatResult;
 
 import lombok.RequiredArgsConstructor;
@@ -113,6 +115,55 @@ public class GenAIService {
         // default:
         // break;
         // }
+    }
+
+    private <T> T getConvertedChatModelResult(String text, String promptTemplate) {
+
+        BeanOutputConverter<T> outputConverter = new BeanOutputConverter<>(
+                new ParameterizedTypeReference<T>() {
+                });
+
+        Prompt prompt = new PromptTemplate(promptTemplate)
+                .create(Map.of("format", outputConverter.getFormat(), "reservationText", text));
+
+        Generation resultgeneration = geminiChatModel.call(prompt).getResult();
+        T result = outputConverter
+                .convert(resultgeneration.getOutput().getText());
+
+        return result;
+    }
+
+    public List<AnalyzeFlightBookingReservationDTO> extractFlightReservationFromText(String text) {
+
+        String promptTemplate = """
+                다음 항공권 예약 내역으로 AnalyzeFlightReservationDTO를 생성해.
+                {format}\nText: {reservationText}
+                """;
+        return (getConvertedChatModelResult(
+                text,
+                promptTemplate));
+    }
+
+    public List<AnalyzeFlightTicketReservationDTO> extractFlightTicketReservationFromText(String text) {
+
+        String promptTemplate = """
+                다음 항공권 예약 내역으로 AnalyzeFlightReservationDTO를 생성해.
+                {format}\nText: {reservationText}
+                """;
+        return (getConvertedChatModelResult(
+                text,
+                promptTemplate));
+    }
+
+    public List<AnalyzeFlightBookingReservationDTO> extractAccomodationReservationFromText(String text) {
+
+        String promptTemplate = """
+                다음 항공권 예약 내역으로 AnalyzeFlightReservationDTO를 생성해.
+                {format}\nText: {reservationText}
+                """;
+        return (getConvertedChatModelResult(
+                text,
+                promptTemplate));
     }
 
     public <T> List<T> extractReservationfromText(List<String> text, String textContextTitle) {

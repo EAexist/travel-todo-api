@@ -1,8 +1,15 @@
 package com.matchalab.trip_todo_api.model.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
+import java.util.List;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.matchalab.trip_todo_api.model.Trip;
+import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
 import com.matchalab.trip_todo_api.model.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 
@@ -12,15 +19,15 @@ import lombok.extern.slf4j.Slf4j;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { TripMapper.class })
 public abstract class UserAccountMapper {
 
-    public abstract UserAccountDTO mapToUserAccountDTO(UserAccount userAccount);
-    // {
-    // return new UserAccountDTO(userAccount.getId(), userAccount.getNickname(),
-    // userAccount.getTrip().stream().map(trip -> trip.getId()).toList());
-    // };
+    @Autowired // Or @Inject for CDI
+    protected TripMapper tripMapper; // MapStruct injects this
 
-    // public UserAccountDTO mapToUserAccountDTO(UserAccount userAccount) {
-    // return new UserAccountDTO(userAccount.getId(), userAccount.getNickname(),
-    // userAccount.getTrip().stream().map(trip -> trip.getId()).toList());
-    // };
+    @Named("mapToTripSummary")
+    public List<TripSummaryDTO> mapToTripSummary(List<Trip> trip) {
+        return trip.stream().map(tripMapper::mapToTripSummaryDTO).toList();
+    }
+
+    @Mapping(target = "tripSummary", expression = "java(mapToTripSummary(userAccount.getTrip()))")
+    public abstract UserAccountDTO mapToUserAccountDTO(UserAccount userAccount);
 
 }

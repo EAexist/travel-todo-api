@@ -38,7 +38,7 @@ public class CustomTodoContent extends TodoContent {
 
     @Builder
     public CustomTodoContent(
-            Long id,
+            String id,
             Boolean isStock,
             String category,
             String type,

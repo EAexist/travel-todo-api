@@ -6,9 +6,9 @@ import lombok.Getter;
 
 @Getter
 public class NewFlightRouteCreatedEvent extends ApplicationEvent {
-    private final Long flightRouteId;
+    private final String flightRouteId;
 
-    public NewFlightRouteCreatedEvent(Object source, Long flightRouteId) {
+    public NewFlightRouteCreatedEvent(Object source, String flightRouteId) {
         super(source);
         this.flightRouteId = flightRouteId;
     }

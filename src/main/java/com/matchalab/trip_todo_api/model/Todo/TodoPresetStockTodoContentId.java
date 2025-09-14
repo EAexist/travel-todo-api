@@ -16,12 +16,12 @@ import lombok.Setter;
 public class TodoPresetStockTodoContentId implements Serializable {
 
     @JoinColumn(name = "todo-preset_id")
-    private Long todoPresetId;
+    private String todoPresetId;
 
     @JoinColumn(name = "stock-todo-content_id")
-    private Long stockTodoContentId;
+    private String stockTodoContentId;
 
-    public TodoPresetStockTodoContentId(Long todoPresetId, Long stockTodoContentId) {
+    public TodoPresetStockTodoContentId(String todoPresetId, String stockTodoContentId) {
         this.todoPresetId = todoPresetId;
         this.stockTodoContentId = stockTodoContentId;
     }

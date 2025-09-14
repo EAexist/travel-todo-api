@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record TodoDTO(
-        Long id,
+        String id,
         int orderKey,
         String note,
         String completeDateISOString,
