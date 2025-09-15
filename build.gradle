@@ -84,6 +84,9 @@ dependencies {
     /* Jsoup */
     implementation "org.jsoup:jsoup:1.21.2"
 
+    /* jakarta.mail */
+    implementation "com.sun.mail:jakarta.mail:2.0.2"
+
     /* Test */
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core:3.27.2'
