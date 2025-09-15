@@ -3,7 +3,7 @@
 // import org.hibernate.annotations.JdbcTypeCode;
 // import org.hibernate.type.SqlTypes;
 
-// import com.matchalab.trip_todo_api.enums.ReservationType;
+// import com.matchalab.trip_todo_api.enums.ReservationCategory;
 // import com.matchalab.trip_todo_api.model.Accomodation;
 // import com.matchalab.trip_todo_api.model.Flight.Flight;
 
@@ -38,7 +38,7 @@
 // // Trip trip;
 
 // String dateTimeISOString;
-// ReservationType type;
+// ReservationCategory type;
 // String title;
 // String subtitle;
 
@@ -63,7 +63,7 @@
 
 // public Reservation(
 // String dateTimeISOString,
-// ReservationType type,
+// ReservationCategory type,
 // String title,
 // String subtitle) {
 // this.dateTimeISOString = dateTimeISOString;

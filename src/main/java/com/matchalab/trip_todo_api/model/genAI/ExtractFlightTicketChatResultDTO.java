@@ -1,11 +1,10 @@
 package com.matchalab.trip_todo_api.model.genAI;
 
-public record AnalyzeFlightBookingReservationDTO(
+public record ExtractFlightTicketChatResultDTO(
         String reservationDetailLink,
         String flightNumber,
         String departureAirportIATACode,
         String arrivalAirportIATACode,
-        int numberOfPassenger,
-        String[] passengerNames,
+        String passengerName,
         String departureDateTimeISOString) {
 }

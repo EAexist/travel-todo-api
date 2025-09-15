@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.matchalab.trip_todo_api.enums.ReservationType;
+import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.service.ReservationService;
@@ -43,6 +43,20 @@ public class ReservationController {
         }
     }
 
+    @PostMapping(value = "/", params = "text")
+    public ResponseEntity<List<Reservation>> createReservationFromText(@PathVariable String tripId,
+            @RequestParam("text") String textToAnalyze, @RequestParam ReservationCategory cateogry) {
+        try {
+            List<Reservation> reservations = reservationService.extractReservationFromText(textToAnalyze,
+                    cateogry);
+            return ResponseEntity.ok().body(reservationService.saveReservation(tripId, reservations));
+        } catch (HttpClientErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     /**
      * Provide the details of a Trip with the given id.
      */
@@ -60,17 +74,20 @@ public class ReservationController {
     /**
      * Provide the details of a Trip with the given id.
      */
-    @PostMapping(value = "/", params = "images")
-    public ResponseEntity<ReservationImageAnalysisResult> createReservationFromImage(@PathVariable String tripId,
-            @RequestParam("image") List<MultipartFile> files, @RequestParam ReservationType reservationType) {
-        try {
-            return ResponseEntity.ok().body(
-                    reservationService.saveImageAnalysisResult(tripId, reservationService.analyzeReservationScreenImage(
-                            files, reservationType)));
-        } catch (HttpClientErrorException e) {
-            throw e;
-        }
-    }
+    // @PostMapping(value = "/", params = "images")
+    // public ResponseEntity<ReservationImageAnalysisResult>
+    // createReservationFromImage(@PathVariable String tripId,
+    // @RequestParam("image") List<MultipartFile> files, @RequestParam
+    // ReservationCategory reservationType) {
+    // try {
+    // return ResponseEntity.ok().body(
+    // reservationService.saveImageAnalysisResult(tripId,
+    // reservationService.analyzeReservationScreenImage(
+    // files, reservationType)));
+    // } catch (HttpClientErrorException e) {
+    // throw e;
+    // }
+    // }
 
     /**
      * Provide the details of a Trip with the given id.
@@ -87,16 +104,5 @@ public class ReservationController {
     // throw e;
     // }
     // }
-
-    @PostMapping(value = "", params = "text")
-    public ResponseEntity<ReservationImageAnalysisResult> createReservationFromText(@PathVariable String tripId,
-            @RequestParam("text") String text) {
-        try {
-            return ResponseEntity.ok().body(reservationService.saveImageAnalysisResult(tripId,
-                    reservationService.uploadReservationText(text)));
-        } catch (HttpClientErrorException e) {
-            throw e;
-        }
-    }
 
 }

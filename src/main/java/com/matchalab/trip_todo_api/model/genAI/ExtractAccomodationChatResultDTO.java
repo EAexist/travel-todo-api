@@ -2,7 +2,7 @@ package com.matchalab.trip_todo_api.model.genAI;
 
 import com.matchalab.trip_todo_api.enums.AccomodationType;
 
-public record AnalyzeAccomodationReservationDTO(
+public record ExtractAccomodationChatResultDTO(
         String reservationDetailLink,
         String accomodationTitle,
         String roomTitle,

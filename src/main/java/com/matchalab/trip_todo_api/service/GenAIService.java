@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
@@ -16,10 +17,12 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 
 import com.google.cloud.vertexai.VertexAI;
+import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
-import com.matchalab.trip_todo_api.model.genAI.AnalyzeFlightBookingReservationDTO;
-import com.matchalab.trip_todo_api.model.genAI.AnalyzeFlightTicketReservationDTO;
+import com.matchalab.trip_todo_api.model.genAI.ExtractAccomodationChatResultDTO;
+import com.matchalab.trip_todo_api.model.genAI.ExtractFlightBookingChatResultDTO;
+import com.matchalab.trip_todo_api.model.genAI.ExtractFlightTicketChatResultDTO;
 import com.matchalab.trip_todo_api.model.genAI.RecommendedFlightChatResult;
 
 import lombok.RequiredArgsConstructor;
@@ -30,10 +33,20 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class GenAIService {
 
-    private final VertexAiGeminiChatModel geminiChatModel = new VertexAiGeminiChatModel(new VertexAI(),
-            VertexAiGeminiChatOptions.builder().model("gemini-2.0-flash-lite").build(),
-            ToolCallingManager.builder().build(),
-            new RetryTemplate(), null);
+    /*
+     * @depreacted Use Chatclient instead.
+     */
+    // private final VertexAiGeminiChatModel geminiChatModel = new
+    // VertexAiGeminiChatModel(new VertexAI(),
+    // VertexAiGeminiChatOptions.builder().build(),
+    // ToolCallingManager.builder().build(),
+    // new RetryTemplate(), null);
+
+    private final ChatClient chatClient;
+
+    public GenAIService(ChatClient.Builder chatClientBuilder) {
+        this.chatClient = chatClientBuilder.build();
+    }
 
     /**
      * This method downloads an image from a URL and sends its contents to the
@@ -50,238 +63,186 @@ public class GenAIService {
      */
 
     // public ReservationImageAnalysisResult
-    // extractReservationInfofromText(List<String> text) {
+    // extractInfofromReservationText(List<String> text) {
 
     // BeanOutputConverter<ReservationImageAnalysisResult> outputConverter = new
     // BeanOutputConverter<>(
     // new ParameterizedTypeReference<ReservationImageAnalysisResult>() {
     // });
 
-    // String format = outputConverter.getFormat();
-    // String template = """
-    // Instruction: 다음 Text로 ReservationImageAnalysisResult를 생성해. 항공권 예약 내역이라면
-    // Flight만 생성하고, 숙소 예약 내역이라면 AccomodationDTO만 생성해. 찾을 수 없는 속성은 무시해.
+    // String promptTemplate = "
+    // 다음 줄의 예약 내역 텍스트로 ReservationImageAnalysisResult를 생성해.
+    // ReservationImageAnalysisResult에 포함되는 새로운 예약 내역마다 다음 규칙에 따라 객체를 하나씩 생성해서 리스트
+    // 속성에 추가해. {reservationTypeInstruction}
     // {format}\nText: {reservationText}
-    // """;
+    // ";
+    // String reservationTypeInstruction = "*예약 내역 종류 - 추가할 객체 이름"
+    // + String.format("*%s - %s\n", "숙소 예약", "accomodationDTO")
+    // + String.format("*%s - %s\n", "항공편 모바일 탑승권", "flightTicket")
+    // + String.format("*%s - %s\n", "모바일 탑승권이 아닌 항공권 예약 내역", "flight");
+    // Prompt prompt = new PromptTemplate(promptTemplate)
+    // .create(Map.of("format", outputConverter.getFormat(),
+    // "reservationTypeInstruction",
+    // reservationTypeInstruction, "reservationText", text));
 
-    // Prompt prompt = new PromptTemplate(template)
-    // .create(Map.of("format", format, "reservationText", text));
+    // Generation resultgeneration = geminiChatModel.call(prompt).getResult();
+    // ReservationImageAnalysisResult result = outputConverter
+    // .convert(resultgeneration.getOutput().getText());
 
-    // Generation generation = geminiChatModel.call(prompt).getResult();
-
-    // ReservationImageAnalysisResult reservationImageAnalysisResult =
-    // outputConverter
-    // .convert(generation.getOutput().getText());
-
-    // return reservationImageAnalysisResult;
+    // return result;
     // }
 
-    public ReservationImageAnalysisResult extractInfofromReservationText(List<String> text) {
+    /*
+     * @depreacted Use callWithBeanOutput instead.
+     */
+    // private <T> T getConvertedChatModelResult(String text, String promptTemplate)
+    // {
 
-        BeanOutputConverter<ReservationImageAnalysisResult> outputConverter = new BeanOutputConverter<>(
-                new ParameterizedTypeReference<ReservationImageAnalysisResult>() {
-                });
+    // BeanOutputConverter<T> outputConverter = new BeanOutputConverter<>(
+    // new ParameterizedTypeReference<T>() {
+    // });
 
-        String promptTemplate = """
-                다음 줄의 예약 내역 텍스트로 ReservationImageAnalysisResult를 생성해. ReservationImageAnalysisResult에 포함되는 새로운 예약 내역마다 다음 규칙에 따라 객체를 하나씩 생성해서 리스트 속성에 추가해. {reservationTypeInstruction}
-                {format}\nText: {reservationText}
-                """;
-        String reservationTypeInstruction = "*예약 내역 종류 - 추가할 객체 이름"
-                + String.format("*%s - %s\n", "숙소 예약", "accomodationDTO")
-                + String.format("*%s - %s\n", "항공편 모바일 탑승권", "flightTicket")
-                + String.format("*%s - %s\n", "모바일 탑승권이 아닌 항공권 예약 내역", "flight");
-        Prompt prompt = new PromptTemplate(promptTemplate)
-                .create(Map.of("format", outputConverter.getFormat(), "reservationTypeInstruction",
-                        reservationTypeInstruction, "reservationText", text));
+    // Prompt prompt = new PromptTemplate(promptTemplate)
+    // .create(Map.of("format", outputConverter.getFormat(), "reservationText",
+    // text));
 
-        Generation resultgeneration = geminiChatModel.call(prompt).getResult();
-        ReservationImageAnalysisResult result = outputConverter
-                .convert(resultgeneration.getOutput().getText());
+    // Generation resultgeneration = geminiChatModel.call(prompt).getResult();
+    // T result = outputConverter
+    // .convert(resultgeneration.getOutput().getText());
 
-        return result;
-
-        // switch (reservationType) {
-        // case ReservationType.Accomodation:
-        // // result = extractStructuredReservationInfofromText<AccomodationDTO>(text)
-        // result = ReservationImageAnalysisResult.builder().accomodationDTO(
-        // this.<AccomodationDTO>extractStructuredReservationInfofromText(text)).build();
-        // break;
-        // case ReservationType.FlightTicket:
-        // break;
-        // case ReservationType.Flight:
-        // break;
-        // case ReservationType.Invalid:
-        // break;
-        // default:
-        // break;
-        // }
-    }
-
-    private <T> T getConvertedChatModelResult(String text, String promptTemplate) {
-
-        BeanOutputConverter<T> outputConverter = new BeanOutputConverter<>(
-                new ParameterizedTypeReference<T>() {
-                });
-
-        Prompt prompt = new PromptTemplate(promptTemplate)
-                .create(Map.of("format", outputConverter.getFormat(), "reservationText", text));
-
-        Generation resultgeneration = geminiChatModel.call(prompt).getResult();
-        T result = outputConverter
-                .convert(resultgeneration.getOutput().getText());
-
-        return result;
-    }
-
-    public List<AnalyzeFlightBookingReservationDTO> extractFlightReservationFromText(String text) {
-
-        String promptTemplate = """
-                다음 항공권 예약 내역으로 AnalyzeFlightReservationDTO를 생성해.
-                {format}\nText: {reservationText}
-                """;
-        return (getConvertedChatModelResult(
-                text,
-                promptTemplate));
-    }
-
-    public List<AnalyzeFlightTicketReservationDTO> extractFlightTicketReservationFromText(String text) {
-
-        String promptTemplate = """
-                다음 항공권 예약 내역으로 AnalyzeFlightReservationDTO를 생성해.
-                {format}\nText: {reservationText}
-                """;
-        return (getConvertedChatModelResult(
-                text,
-                promptTemplate));
-    }
-
-    public List<AnalyzeFlightBookingReservationDTO> extractAccomodationReservationFromText(String text) {
-
-        String promptTemplate = """
-                다음 항공권 예약 내역으로 AnalyzeFlightReservationDTO를 생성해.
-                {format}\nText: {reservationText}
-                """;
-        return (getConvertedChatModelResult(
-                text,
-                promptTemplate));
-    }
+    // return result;
+    // }
 
     public <T> List<T> extractReservationfromText(List<String> text, String textContextTitle) {
 
-        BeanOutputConverter<T> outputConverter = new BeanOutputConverter<>(
-                new ParameterizedTypeReference<T>() {
-                });
-
-        String format = outputConverter.getFormat();
-        String template = """
-                다음 줄이 {textContextTitle}이라면 결과를 생성해. 찾을 수 없는 속성은 무시해. {textContextTitle}이 아니면 무시해.
-                        {format}\nText: {reservationText}
-                        """;
+        String template = "다음 줄이 {textContextTitle}이라면 결과를 생성해. 찾을 수 없는 속성은 무시해. {textContextTitle}이 아니면 무시해. {format}\nText: {reservationText}";
 
         Prompt prompt = new PromptTemplate(template)
-                .create(Map.of("format", format, "reservationText", text));
+                .create(Map.of("reservationText", text));
 
-        Generation generation = geminiChatModel.call(prompt).getResult();
-
-        T reservationImageAnalysisResult = outputConverter
-                .convert(generation.getOutput().getText());
+        T reservationImageAnalysisResult = callWithBeanOutput(prompt);
 
         return Arrays.asList(reservationImageAnalysisResult);
     }
 
-    public List<FlightRoute> getFlightRoute(String destinationTitle) {
+    public List<ExtractFlightBookingChatResultDTO> extractFlightBookingFromText(String textToAnalyze) {
 
-        BeanOutputConverter<List<FlightRoute>> outputConverter = new BeanOutputConverter<>(
-                new ParameterizedTypeReference<List<FlightRoute>>() {
-                });
+        String promptTemplate = "항공권 예약 내역 텍스트에서 결과를 추출해.\n TextToAnalyze: {textToAnalyze}";
+        return (callWithBeanOutput(generateTextAnalysisPrompt(textToAnalyze, promptTemplate)));
+    }
 
-        String format = outputConverter.getFormat();
-        String departureTitle = "한국";
-        String language = "Korean";
-        String template = """
-                {departureTitle}에서 {destinationTitle}로 여행할 때 직항 항공 노선을 이용할거야. 출발 공항과 도착 공항의 짝을 알려줘. 최대한 많이 알려줘. 한국인이 많이 이용하는 순서대로 나열해.
-                {format} Provide Answer in {language}""";
+    public List<ExtractFlightTicketChatResultDTO> extractFlightTicketReservationFromText(String textToAnalyze) {
 
-        Prompt prompt = new PromptTemplate(template)
-                .create(Map.of("departureTitle", departureTitle, "destinationTitle", destinationTitle, "format",
-                        format, "language", language));
+        String promptTemplate = "항공권 텍스트에서 결과를 추출해.\n TextToAnalyze: {textToAnalyze}";
+        return (callWithBeanOutput(generateTextAnalysisPrompt(textToAnalyze, promptTemplate)));
+    }
 
-        Generation generation = geminiChatModel.call(prompt).getResult();
+    public List<ExtractAccomodationChatResultDTO> extractAccomodationReservationFromText(String textToAnalyze) {
 
-        List<FlightRoute> recommendedFlight = outputConverter
-                .convert(generation.getOutput().getText());
+        String promptTemplate = "숙박 예약 내역 텍스트에서 결과를 추출해.\n TextToAnalyze: {textToAnalyze}";
+        return (callWithBeanOutput(generateTextAnalysisPrompt(textToAnalyze, promptTemplate)));
+    }
 
-        return recommendedFlight;
+    public ReservationCategory classifyReservation(String textToAnalyze) {
+
+        String promptTemplate = "Classify the following reservation: \n TextToAnalyze: {textToAnalyze}";
+
+        ReservationCategoryChatResultDTO result = callWithBeanOutput(
+                generateTextAnalysisPrompt(textToAnalyze, promptTemplate));
+
+        switch (result.category()) {
+            case Not_Reservation:
+                throw new IllegalArgumentException("Unknown status: " + result.category());
+            case FlightReservation:
+                return ReservationCategory.FlightBooking;
+            case ConfirmedFlightTicket:
+                return ReservationCategory.FlightTicket;
+            case Accomodation:
+                return ReservationCategory.Accomodation;
+            case Other_Reservation:
+                return ReservationCategory.General;
+            default:
+                throw new IllegalArgumentException("Unknown status: " + result.category());
+        }
     }
 
     public RecommendedFlightChatResult getRecommendedFlight(String destinationTitle) {
 
-        BeanOutputConverter<RecommendedFlightChatResult> outputConverter = new BeanOutputConverter<>(
-                new ParameterizedTypeReference<RecommendedFlightChatResult>() {
-                });
-
-        String format = outputConverter.getFormat();
         String departureTitle = "한국";
         String language = "Korean";
-        String template = """
-                {departureTitle}에서 {destinationTitle}로 여행할 때 이용할 수 있는 모든 outbound/return 직항 항공 노선을 한국에서 많이 이용하는 순서대로 나열해.
-                {format}""";
+        String template = "{departureTitle}에서 {destinationTitle}로 여행할 때 이용할 수 있는 모든 outbound/return 직항 항공 노선을 한국에서 많이 이용하는 순서대로 나열해.";
 
         Prompt prompt = new PromptTemplate(template)
-                .create(Map.of("departureTitle", departureTitle, "destinationTitle", destinationTitle, "format",
-                        format, "language", language));
+                .create(Map.of("departureTitle", departureTitle, "destinationTitle", destinationTitle, "language",
+                        language));
 
-        Generation generation = geminiChatModel.call(prompt).getResult();
-
-        RecommendedFlightChatResult recommendedFlight = outputConverter
-                .convert(generation.getOutput().getText());
+        RecommendedFlightChatResult recommendedFlight = callWithBeanOutput(prompt);
 
         return recommendedFlight;
     }
 
     public List<String> getRecommendedAirline(FlightRoute flightRoute) {
 
-        BeanOutputConverter<List<String>> outputConverter = new BeanOutputConverter<>(
-                new ParameterizedTypeReference<List<String>>() {
-                });
-
-        String format = outputConverter.getFormat();
         String language = "Korean";
-        String template = """
-                출발:{departureAirportIATA},도착:{destinationAirportIATA} 에 해당하는 모든 항공 노선 목록에 대해 각 노선을 운영하는 항공사의 Offical IATA Code를 최대한 많이 알려줘. 노선의 한국인 이용객이 많은 순서대로 나열해.
-                {format}""";
+        String template = "출발:{departureAirportIATA},도착:{destinationAirportIATA} 에 해당하는 모든 항공 노선 목록에 대해 각 노선을 운영하는 항공사의 Offical IATA Code를 최대한 많이 알려줘. 노선의 한국인 이용객이 많은 순서대로 나열해.";
 
         Prompt prompt = new PromptTemplate(template)
                 .create(Map.of("departureAirportIATA", flightRoute.getDeparture().getIATACode(),
-                        "destinationAirportIATA", flightRoute.getArrival().getIATACode(), "format",
-                        format, "language", language));
+                        "destinationAirportIATA", flightRoute.getArrival().getIATACode(), "language", language));
 
-        Generation generation = geminiChatModel.call(prompt).getResult();
-
-        List<String> recommendedAirlines = outputConverter
-                .convert(generation.getOutput().getText());
+        List<String> recommendedAirlines = callWithBeanOutput(prompt);
 
         return recommendedAirlines;
+    }
+
+    private <T> T callWithBeanOutput(Prompt prompt) {
+
+        BeanOutputConverter<T> outputConverter = new BeanOutputConverter<>(
+                new ParameterizedTypeReference<T>() {
+                });
+
+        T result = chatClient.prompt(prompt).call().entity(new ParameterizedTypeReference<T>() {
+        });
+
+        return result;
+    }
+
+    private Prompt generateTextAnalysisPrompt(String textToAnalyze, String promptTemplate) {
+
+        return new PromptTemplate(promptTemplate)
+                .create(Map.of("textToAnalyze", textToAnalyze));
+    }
+
+    private enum ReservationCategoryChatResultEnum {
+        Not_Reservation,
+        FlightReservation,
+        ConfirmedFlightTicket,
+        Accomodation,
+        Other_Reservation
+    }
+
+    private record ReservationCategoryChatResultDTO(
+            ReservationCategoryChatResultEnum category) {
     }
 
     // public ReservationImageAnalysisResult
     // classifyAndExtractInfofromReservationText(List<String> text) {
 
-    // BeanOutputConverter<ReservationType> outputConverter = new
+    // BeanOutputConverter<ReservationCategory> outputConverter = new
     // BeanOutputConverter<>(
-    // new ParameterizedTypeReference<ReservationType>() {
+    // new ParameterizedTypeReference<ReservationCategory>() {
     // });
 
-    // String classifyingPromptTemplate = """
-    // 줄의 예약 내역 텍스트를 다음 타입 중 하나로 분류하고 해당하는 ReservationType값을 반환해.
+    // String classifyingPromptTemplate = "
+    // 줄의 예약 내역 텍스트를 다음 타입 중 하나로 분류하고 해당하는 ReservationCategory값을 반환해.
     // {reservationTypeToExplanation}
     // {format}\nText: {reservationText}
-    // """;
+    // ";
     // String reservationTypeToExplanation = String.format("{}\n",
-    // ReservationType.Accomodation)
-    // + String.format("{}: 항공편 모바일 탑승권\n", ReservationType.FlightTicket)
-    // + String.format("{}: 모바일 탑승권이 아닌 항공권 예약 내역\n", ReservationType.Flight)
-    // + String.format("{}: 이전 옵션 중 어느것도 해당하지 않음.\n", ReservationType.Invalid);
+    // ReservationCategory.Accomodation)
+    // + String.format("{}: 항공편 모바일 탑승권\n", ReservationCategory.FlightTicket)
+    // + String.format("{}: 모바일 탑승권이 아닌 항공권 예약 내역\n", ReservationCategory.Flight)
+    // + String.format("{}: 이전 옵션 중 어느것도 해당하지 않음.\n", ReservationCategory.Invalid);
     // Prompt classifyingPrompt = new PromptTemplate(classifyingPromptTemplate)
     // .create(Map.of("format", classifyingOutputConverter.getFormat(),
     // "reservationTypeToExplanation",
@@ -289,7 +250,7 @@ public class GenAIService {
 
     // Generation classifyingResultgeneration =
     // geminiChatModel.call(classifyingPrompt).getResult();
-    // ReservationType reservationType = classifyingOutputConverter
+    // ReservationCategory reservationType = classifyingOutputConverter
     // .convert(classifyingResultgeneration.getOutput().getText());
 
     // log.info(String.format("reservationType={}", reservationType));
@@ -301,17 +262,17 @@ public class GenAIService {
     // ReservationImageAnalysisResult result;
 
     // // switch (reservationType) {
-    // // case ReservationType.Accomodation:
+    // // case ReservationCategory.Accomodation:
     // // // result =
     // extractStructuredReservationInfofromText<AccomodationDTO>(text)
     // // result = ReservationImageAnalysisResult.builder().accomodationDTO(
     // this.<AccomodationDTO>extractStructuredReservationInfofromText(text)).build();
     // // break;
-    // // case ReservationType.FlightTicket:
+    // // case ReservationCategory.FlightTicket:
     // // break;
-    // // case ReservationType.Flight:
+    // // case ReservationCategory.Flight:
     // // break;
-    // // case ReservationType.Invalid:
+    // // case ReservationCategory.Invalid:
     // // break;
     // // default:
     // // break;

@@ -3,7 +3,7 @@ package com.matchalab.trip_todo_api.model.Reservation;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import com.matchalab.trip_todo_api.enums.ReservationType;
+import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.model.Accomodation;
 import com.matchalab.trip_todo_api.model.Flight.Flight;
 import com.matchalab.trip_todo_api.model.Flight.FlightBooking;
@@ -36,7 +36,7 @@ public class Reservation {
     private String id;
 
     // String dateTimeISOString;
-    ReservationType type;
+    ReservationCategory type;
     // String title;
     // String subtitle;
 
