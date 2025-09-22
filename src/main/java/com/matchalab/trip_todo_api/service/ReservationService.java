@@ -1,17 +1,13 @@
 package com.matchalab.trip_todo_api.service;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,16 +15,15 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amadeus.exceptions.NotFoundException;
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
-import com.matchalab.trip_todo_api.model.Accomodation;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.DTO.ReservationImageAnalysisResult;
-import com.matchalab.trip_todo_api.model.Flight.Flight;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
+import com.matchalab.trip_todo_api.model.genAI.ExtractReservationChatResultDTO;
 import com.matchalab.trip_todo_api.model.mapper.ReservationMapper;
 import com.matchalab.trip_todo_api.repository.ReservationRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
+import com.matchalab.trip_todo_api.service.ChatModelService.ChatModelService;
+import com.matchalab.trip_todo_api.utils.Utils;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -49,15 +44,15 @@ public class ReservationService {
     private VisionService visionService;
 
     @Autowired
-    private GenAIService genAIService;
+    private ChatModelService chatModelService;
 
     @Autowired
     private ReservationMapper reservationMapper;
 
     // public ReservationService(TripRepository tripRepository, VisionService
-    // visionService, GenAIService genAIService) {
+    // visionService, ChatModelService chatModelService) {
     // this.tripRepository = tripRepository;
-    // this.genAIService = genAIService;
+    // this.chatModelService = chatModelService;
     // this.visionService = visionService;
     // }
 
@@ -101,51 +96,62 @@ public class ReservationService {
     // // return createEntitiesFromImageAnalysisResult(tripId, reservationText);
     // }
 
-    public List<Reservation> saveReservation(
-            String tripId, List<Reservation> reservation) throws Exception {
+    public List<Reservation> saveReservation(String tripId, List<Reservation> reservation) throws Exception {
 
-        Boolean isAdded = tripRepository.findById(tripId).orElseThrow(() -> new NotFoundException(null))
-                .getReservation()
-                .addAll(reservation);
+        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new NotFoundException(null));
+
+        Boolean isAdded = trip.getReservation().addAll(reservation);
+
+        log.info("[ReservationService.saveReservation] " + Utils.asJsonString(trip.getReservation()));
+
+        trip = tripRepository.save(trip);
 
         if (isAdded) {
-            return tripRepository.findById(tripId).orElseThrow(() -> new NotFoundException(null)).getReservation();
+            return trip.getReservation();
         } else {
             throw new Exception();
         }
     }
 
     public List<Reservation> extractReservationFromText(
-            String textToAnalyze, ReservationCategory category) {
+            String confirmationText, ReservationCategory category) throws Exception {
 
-        List<Reservation> reservation;
+        List<Reservation> reservation = new ArrayList<Reservation>();
 
-        if (category == ReservationCategory.Unknown) {
-            category = genAIService.classifyReservation(textToAnalyze);
-        }
+        ExtractReservationChatResultDTO chatResult = chatModelService
+                .extractReservationFromText(confirmationText);
 
-        switch (category) {
-            case ReservationCategory.FlightBooking:
-                reservation = genAIService.extractAccomodationReservationFromText(textToAnalyze).stream()
-                        .map(reservationMapper::mapToReservation).toList();
-                break;
-            case ReservationCategory.FlightTicket:
-                reservation = genAIService.extractAccomodationReservationFromText(textToAnalyze).stream()
-                        .map(reservationMapper::mapToReservation).toList();
-                break;
-            case ReservationCategory.Accomodation:
-                reservation = genAIService.extractAccomodationReservationFromText(textToAnalyze).stream()
-                        .map(reservationMapper::mapToReservation).toList();
-                break;
-            case ReservationCategory.General:
-                reservation = genAIService.extractAccomodationReservationFromText(textToAnalyze).stream()
-                        .map(reservationMapper::mapToReservation).toList();
-                break;
-            default:
-                reservation = new ArrayList<Reservation>();
-                break;
-        }
-        reservation.stream().forEach(r -> r.setRawText(textToAnalyze));
+        reservation.addAll(chatResult.flightBookings().stream().map(reservationMapper::mapToReservation).toList());
+
+        reservation.addAll(chatResult.flightTickets().stream().map(reservationMapper::mapToReservation).toList());
+
+        reservation.addAll(chatResult.accomodations().stream().map(reservationMapper::mapToReservation).toList());
+
+        reservation.addAll(chatResult.otherReservations().stream().map(reservationMapper::mapToReservation).toList());
+
+        // if (chatResult.flightBookings() != null) {
+        // if (!reservation
+        // .addAll(chatResult.flightBookings().stream().map(reservationMapper::mapToReservation).toList()))
+        // throw new Exception();
+        // }
+        // if (chatResult.flightTickets() != null) {
+        // if (!reservation
+        // .addAll(chatResult.flightTickets().stream().map(reservationMapper::mapToReservation).toList()))
+        // throw new Exception();
+        // }
+        // if (chatResult.accomodations() != null) {
+        // if (!reservation
+        // .addAll(chatResult.accomodations().stream().map(reservationMapper::mapToReservation).toList()))
+        // throw new Exception();
+        // }
+        // if (chatResult.otherReservations() != null) {
+        // if (!reservation
+        // .addAll(chatResult.otherReservations().stream().map(reservationMapper::mapToReservation).toList()))
+        // throw new Exception();
+        // }
+
+        reservation.stream()
+                .forEach(r -> r.setRawText(chatResult.partOfTextAndLinksThatContainsReservationInformation()));
         return reservation;
     }
 
@@ -178,7 +184,7 @@ public class ReservationService {
 
     // /* Analyze Text with Generative AI */
     // // List<Reservation> reservation =
-    // genAIService.extractReservationfromText(text,
+    // chatModelService.extractReservationfromText(text,
     // // "항공권 모바일 티켓");
     // List<Reservation> reservation = Arrays.asList(new Reservation[] {
     // new Reservation(dateTimeISOString = "2025-06-29", "flightTicket", "항공권 모바일
@@ -251,7 +257,8 @@ public class ReservationService {
     // public ReservationImageAnalysisResult uploadReservationText(
     // String text) {
 
-    // return genAIService.extractReservationfromText(Arrays.asList(new String[] {
+    // return chatModelService.extractReservationfromText(Arrays.asList(new
+    // String[] {
     // text }));
     // }
 
@@ -261,37 +268,43 @@ public class ReservationService {
     // public ReservationImageAnalysisResult uploadReservationLink(
     // String url) {
 
-    // return genAIService.extractReservationfromText(Arrays.asList(new String[] {
+    // return chatModelService.extractReservationfromText(Arrays.asList(new
+    // String[] {
     // url }));
     // }
 
     /**
      * Create new empty trip.
      */
-    public ReservationImageAnalysisResult saveImageAnalysisResult(String tripId,
-            ReservationImageAnalysisResult reservationImageAnalysisResult) {
+    // public ReservationImageAnalysisResult saveImageAnalysisResult(String tripId,
+    // ReservationImageAnalysisResult reservationImageAnalysisResult) {
 
-        /* Save Data */
-        ReservationImageAnalysisResult.ReservationImageAnalysisResultBuilder savedResultBuilder = ReservationImageAnalysisResult
-                .builder();
-        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
+    // /* Save Data */
+    // ReservationImageAnalysisResult.ReservationImageAnalysisResultBuilder
+    // savedResultBuilder = ReservationImageAnalysisResult
+    // .builder();
+    // Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new
+    // TripNotFoundException(tripId));
 
-        List<Accomodation> accomodation = reservationImageAnalysisResult.accomodation();
-        // accomodation.stream().forEach(acc -> {
-        // acc.setTrip(trip);
-        // });
-        trip.getAccomodation().addAll(accomodation);
-        savedResultBuilder = savedResultBuilder
-                .accomodation(tripRepository.save(trip).getAccomodation().subList(-1 * (accomodation.size()), -1));
+    // List<Accomodation> accomodation =
+    // reservationImageAnalysisResult.accomodation();
+    // // accomodation.stream().forEach(acc -> {
+    // // acc.setTrip(trip);
+    // // });
+    // trip.getAccomodation().addAll(accomodation);
+    // savedResultBuilder = savedResultBuilder
+    // .accomodation(tripRepository.save(trip).getAccomodation().subList(-1 *
+    // (accomodation.size()), -1));
 
-        List<Flight> flight = reservationImageAnalysisResult.flight();
-        // flight.stream().forEach(fl -> {
-        // fl.setTrip(trip);
-        // });
-        trip.getFlight().addAll(flight);
-        savedResultBuilder = savedResultBuilder
-                .flight(tripRepository.save(trip).getFlight().subList(-1 * (flight.size()), -1));
+    // List<Flight> flight = reservationImageAnalysisResult.flight();
+    // // flight.stream().forEach(fl -> {
+    // // fl.setTrip(trip);
+    // // });
+    // trip.getFlight().addAll(flight);
+    // savedResultBuilder = savedResultBuilder
+    // .flight(tripRepository.save(trip).getFlight().subList(-1 * (flight.size()),
+    // -1));
 
-        return savedResultBuilder.build();
-    }
+    // return savedResultBuilder.build();
+    // }
 }

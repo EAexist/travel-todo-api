@@ -1,5 +1,7 @@
-package com.matchalab.trip_todo_api.model.Flight;
+package com.matchalab.trip_todo_api.model.Reservation;
 
+import com.matchalab.trip_todo_api.model.Flight.Airport;
+import com.matchalab.trip_todo_api.model.Flight.Flight;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 
 import jakarta.annotation.Nullable;
@@ -9,18 +11,18 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Builder
-public class FlightBooking extends Flight {
+@SuperBuilder
+public class FlightTicket extends Flight {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Nullable
@@ -32,8 +34,6 @@ public class FlightBooking extends Flight {
     @ManyToOne
     Airport arrivalAirport;
 
-    @Nullable
-    int numberOfPassenger;
-
-    String[] passengerNames;
+    String passengerName;
+    // String qrCodeFilePath;
 }

@@ -26,13 +26,13 @@ public class HtmlParserServiceTest {
     @InjectMocks
     private HtmlParserService htmlParserService;
 
-    String agoda_gmail_source_html;
+    String agoda_gmail_html_html;
     String agoda_gmail_text;
 
     @BeforeAll
     public void setup() throws IOException {
-        agoda_gmail_source_html = StreamUtils.copyToString(
-                (new ClassPathResource("text/accomodation/agoda/gmail_source_ko.txt")).getInputStream(),
+        agoda_gmail_html_html = StreamUtils.copyToString(
+                (new ClassPathResource("text/accomodation/agoda/gmail_html_ko.txt")).getInputStream(),
                 StandardCharsets.UTF_8);
         agoda_gmail_text = StreamUtils.copyToString(
                 (new ClassPathResource("text/accomodation/agoda/gmail_text_ko.txt")).getInputStream(),
@@ -42,7 +42,7 @@ public class HtmlParserServiceTest {
     @Test
     void TestExtractTextAndLink() throws IOException {
 
-        String extractedTextAndLink = htmlParserService.extractTextAndLink(agoda_gmail_source_html);
+        String extractedTextAndLink = htmlParserService.extractTextAndLink(agoda_gmail_html_html);
 
         assertThat(extractedTextAndLink).isNotEmpty();
 

@@ -2,17 +2,22 @@ package com.matchalab.trip_todo_api.model.genAI;
 
 import com.matchalab.trip_todo_api.enums.AccomodationType;
 
+import jakarta.annotation.Nullable;
+import lombok.Builder;
+
+@Builder
 public record ExtractAccomodationChatResultDTO(
-        String reservationDetailLink,
+        @Nullable String reservationDetailHrefLink,
+        @Nullable String reservationNumberOrCode,
         String accomodationTitle,
-        String roomTitle,
-        int numberOfGuest,
-        String clientName,
-        String checkinDateISOString,
-        String checkoutDateISOString,
-        String checkinAvailableSinceThisTimeISOString,
-        String checkinAvailableUntilThisTimeISOString,
-        String checkoutDeadlineTimeISOString,
-        String location,
+        @Nullable String roomTitle,
+        @Nullable int numberOfGuest,
+        @Nullable String clientName,
+        @Nullable String checkinDateISOString,
+        @Nullable String checkoutDateISOString,
+        @Nullable String checkinAvailableSinceThisTimeISOString,
+        @Nullable String checkinAvailableUntilThisTimeISOString,
+        @Nullable String checkoutDeadlineTimeISOString,
+        @Nullable String location,
         AccomodationType accomodationType) {
 }

@@ -1,21 +1,20 @@
 package com.matchalab.trip_todo_api.model.Reservation;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import javax.validation.constraints.Size;
 
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.model.Accomodation;
-import com.matchalab.trip_todo_api.model.Flight.Flight;
-import com.matchalab.trip_todo_api.model.Flight.FlightBooking;
-import com.matchalab.trip_todo_api.model.Flight.FlightTicket;
 
 import jakarta.annotation.Nullable;
+import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,15 +34,24 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    ReservationCategory category;
     // String dateTimeISOString;
-    ReservationCategory type;
     // String title;
     // String subtitle;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     String rawText;
 
     @Nullable
-    String link;
+    String code;
+
+    String note;
+
+    @Nullable
+    @Column(length = 2048)
+    @Size(max = 2048, message = "primaryHrefLink cannot exceed 2048 characters.")
+    String primaryHrefLink;
 
     @Nullable
     String serverFileUri;
@@ -63,11 +71,15 @@ public class Reservation {
     @Nullable
     private FlightTicket flightTicket;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Nullable
+    private GeneralReservation generalReservation;
+
     public Reservation(
             Reservation reservation) {
-        type = reservation.getType();
+        category = reservation.getCategory();
         rawText = reservation.getRawText();
-        link = reservation.getLink();
+        primaryHrefLink = reservation.getPrimaryHrefLink();
         serverFileUri = reservation.getServerFileUri();
         localAppStorageFileUri = reservation.getLocalAppStorageFileUri();
         accomodation = reservation.getAccomodation();

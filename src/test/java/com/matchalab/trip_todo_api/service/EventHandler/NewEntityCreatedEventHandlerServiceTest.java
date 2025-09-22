@@ -1,22 +1,16 @@
 package com.matchalab.trip_todo_api.service.EventHandler;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import org.checkerframework.checker.units.qual.K;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 
-import com.matchalab.trip_todo_api.DataLoader;
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.event.NewFlightRouteCreatedEvent;
 import com.matchalab.trip_todo_api.event.handler.NewEntityCreatedEventHandler;
@@ -39,15 +32,11 @@ import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Flight.Airline;
 import com.matchalab.trip_todo_api.model.Flight.Airport;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
-import com.matchalab.trip_todo_api.model.genAI.FlightRouteWithoutAirline;
-import com.matchalab.trip_todo_api.model.genAI.RecommendedFlightChatResult;
-import com.matchalab.trip_todo_api.model.mapper.FlightRouteMapper;
+import com.matchalab.trip_todo_api.model.mapper.FlightRouteMapperImpl;
 import com.matchalab.trip_todo_api.repository.AirlineRepository;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.FlightRouteRepository;
-import com.matchalab.trip_todo_api.service.GenAIService;
 import com.matchalab.trip_todo_api.utils.Utils;
-import com.matchalab.trip_todo_api.model.mapper.FlightRouteMapperImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -122,8 +111,9 @@ public class NewEntityCreatedEventHandlerServiceTest {
 
     @BeforeEach
     void setup() {
-        // GenAIService genAIService = new GenAIService();
-        newEntityCreatedEventHandler.setGenAIService(new GenAIService());
+        // GeminiChatModelService geminiChatModelService = new GeminiChatModelService();
+        // newEntityCreatedEventHandler.setGeminiChatModelService(new
+        // GeminiChatModelService());
 
         lenient().when(destinationRepository.findById(anyString()))
                 .thenReturn(Optional.of(DestinationFactory.createValidDestination("오사카")));
@@ -137,13 +127,13 @@ public class NewEntityCreatedEventHandlerServiceTest {
         });
 
         lenient().when(flightRouteRepository.findById(anyString()))
-                .thenReturn(Optional.of(new FlightRoute(new Airport("ICN"),
-                        new Airport("KIX"))));
+                .thenReturn(Optional.of(new FlightRoute(AirportFactory.createValidAirport("ICN"),
+                        AirportFactory.createValidAirport("KIX"))));
 
         lenient().when(flightRouteRepository.findByDepartureIATACodeAndArrivalIATACode(anyString(), anyString()))
                 .thenAnswer(invocation -> {
-                    return Optional.of(new FlightRoute(new Airport(invocation.getArgument(0)),
-                            new Airport(invocation.getArgument(1))));
+                    return Optional.of(new FlightRoute(AirportFactory.createValidAirport(invocation.getArgument(0)),
+                            AirportFactory.createValidAirport(invocation.getArgument(1))));
                 });
 
         lenient().when(airlineRepository.findById(anyString())).thenAnswer(invocation -> {
@@ -157,7 +147,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
         // new Airport(frWithoutAirline.arrivalAirportIATACode()), null);
         // });
 
-        // when(genAIService.getRecommendedFlight(anyString())).thenReturn(
+        // when(geminiChatModelService.getRecommendedFlight(anyString())).thenReturn(
         // RecommendedFlightChatResult.builder()
         // .recommendedOutboundFlight(
         // List.of(FlightRouteWithoutAirline.builder().departureAirportIATACode("ICN")

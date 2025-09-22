@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class HtmlParserService {
 
     private final String quotedPrintableIndicator = "quoted-printable";
+    private final String base64Indicator = "Content-Transfer-Encoding: base64";
 
     private Optional<String> extractHtml(String rawText) {
         String startTag = "<Html";
@@ -39,13 +40,13 @@ public class HtmlParserService {
         }
     }
 
-    private String decodeQuotedPrintable(String encodedBody) {
+    private String decodeMIMEString(String encodedBody, String encoding) {
         try {
-            // log.info("[decodeQuotedPrintable] encodedBody:\n" + encodedBody);
+            // log.info("[decodeMIMEString] encodedBody:\n" + encodedBody);
             InputStream encodedStream = new ByteArrayInputStream(encodedBody.getBytes(StandardCharsets.ISO_8859_1));
-            InputStream decodedStream = MimeUtility.decode(encodedStream, "quoted-printable");
+            InputStream decodedStream = MimeUtility.decode(encodedStream, encoding);
             String decodedContent = new String(decodedStream.readAllBytes());
-            // log.info("[decodeQuotedPrintable] decodedContent:\n" + decodedContent);
+            // log.info("[decodeMIMEString] decodedContent:\n" + decodedContent);
             return decodedContent;
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -58,11 +59,22 @@ public class HtmlParserService {
         }
     }
 
+    private String decodeQuotedPrintableEncoding(String encodedBody) {
+        return decodeMIMEString(encodedBody, "quoted-printable");
+    }
+
+    private String decodeBase64Encoding(String encodedBody) {
+        return decodeMIMEString(encodedBody, "base64");
+    }
+
     public String extractTextAndLink(String rawText) {
-        Boolean isQuotedPrintable = rawText.contains(quotedPrintableIndicator);
+        Boolean isQuotedPrintableEncoded = rawText.contains(quotedPrintableIndicator);
+        Boolean isBase64Encoded = rawText.contains(base64Indicator);
         String result = extractHtml(rawText).map(html -> {
-            if (isQuotedPrintable) {
-                html = decodeQuotedPrintable(html);
+            if (isQuotedPrintableEncoded) {
+                html = decodeQuotedPrintableEncoding(html);
+            } else if (isBase64Encoded) {
+                html = decodeBase64Encoding(html);
             }
             Document doc = Jsoup.parse(html);
 
@@ -79,7 +91,8 @@ public class HtmlParserService {
                 preprocessedContent.append(text).append(": ").append(href).append("\n");
             }
             return preprocessedContent.toString();
-        }).orElse(isQuotedPrintable ? decodeQuotedPrintable(rawText) : rawText);
+        }).orElse(isQuotedPrintableEncoded ? decodeQuotedPrintableEncoding(rawText)
+                : isBase64Encoded ? decodeBase64Encoding(rawText) : rawText);
 
         result = result
                 .replaceAll("\\s*(\\r?\\n)\\s*", "\n")

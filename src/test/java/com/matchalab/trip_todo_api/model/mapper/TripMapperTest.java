@@ -63,7 +63,7 @@ public class TripMapperTest {
     @BeforeAll
     public void setUp() throws Exception {
         when(stockTodoContentRepository.findById(anyString()))
-                .thenReturn(Optional.of(new StockTodoContent(0L, true, "foreign",
+                .thenReturn(Optional.of(new StockTodoContent("0", true, "foreign",
                         "currency", "환전", new Icon("💱"))));
     }
 

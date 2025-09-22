@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -29,11 +29,9 @@ import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.FlightRouteRepository;
 import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
-import com.matchalab.trip_todo_api.service.AirlineLookupService;
-import com.matchalab.trip_todo_api.service.GenAIService;
+import com.matchalab.trip_todo_api.service.ChatModelService.ChatModelService;
 import com.matchalab.trip_todo_api.utils.Utils;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +61,7 @@ public class NewEntityCreatedEventHandler {
     private final AirlineRepository airlineRepository;
 
     @Autowired
-    private GenAIService genAIService;
+    private ChatModelService chatModelService;
 
     @Autowired
     private final ApplicationEventPublisher eventPublisher;
@@ -100,7 +98,7 @@ public class NewEntityCreatedEventHandler {
         log.info(String.format("[processNewDestinationAsync] destinationId: %s", event.getDestinationId()));
         String id = event.getDestinationId();
         Destination destination = destinationRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
-        RecommendedFlightChatResult recommendedFlightChatResult = genAIService
+        RecommendedFlightChatResult recommendedFlightChatResult = chatModelService
                 .getRecommendedFlight(destination.getTitle());
         destination.setRecommendedOutboundFlight(recommendedFlightChatResult.recommendedOutboundFlight().stream()
                 .map(this::processRecommendedFlightChatResult).toList());
@@ -119,7 +117,7 @@ public class NewEntityCreatedEventHandler {
         log.info(String.format("[processNewFlightRouteAsync] flightRouteId: %s", event.getFlightRouteId()));
         String id = event.getFlightRouteId();
         FlightRoute flightRoute = flightRouteRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
-        List<String> airlineIATAcodes = genAIService.getRecommendedAirline(flightRoute);
+        List<String> airlineIATAcodes = chatModelService.getRecommendedAirline(flightRoute);
 
         List<Airline> airlines = airlineIATAcodes.stream().map(airlineRepository::findById).filter(Optional::isPresent)
                 .map(Optional::get)

@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.matchalab.trip_todo_api.DataLoader;
-import com.matchalab.trip_todo_api.config.RecommendedFlightTestConfig;
+import com.matchalab.trip_todo_api.config.MockDestinationConfig;
 import com.matchalab.trip_todo_api.config.TestAsyncConfig;
 import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
@@ -64,12 +64,12 @@ import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@ActiveProfiles({ "local" })
 @AutoConfigureMockMvc
 @WithMockUser
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import({ TestConfig.class, RecommendedFlightTestConfig.class, TestAsyncConfig.class })
+@Import({ TestConfig.class, MockDestinationConfig.class, TestAsyncConfig.class })
 @TestInstance(Lifecycle.PER_CLASS)
-@ActiveProfiles({ "local", "local-init-data" })
 @EnableWebSecurity
 @RecordApplicationEvents
 public class TripControllerIntegrationTest {

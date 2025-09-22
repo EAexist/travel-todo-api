@@ -7,7 +7,7 @@ import com.matchalab.trip_todo_api.model.Flight.Airport;
 import com.matchalab.trip_todo_api.model.Destination;
 
 @TestConfiguration
-public class RecommendedFlightTestConfig {
+public class MockDestinationConfig {
 
     @Bean
     String KansaiIntlIATA() {

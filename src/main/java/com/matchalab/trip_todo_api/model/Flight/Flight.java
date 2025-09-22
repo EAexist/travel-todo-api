@@ -5,17 +5,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-@Builder(builderMethodName = "todoContentBuilder")
+@SuperBuilder
 public class Flight {
 
     @Id
@@ -24,9 +24,9 @@ public class Flight {
 
     String flightNumber;
 
-    Airport departureAirport;
+    // Airport departureAirport;
 
-    Airport arrivalAirport;
+    // Airport arrivalAirport;
 
     String departureDateTimeISOString;
 }

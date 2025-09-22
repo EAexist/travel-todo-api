@@ -27,7 +27,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import com.matchalab.trip_todo_api.config.RecommendedFlightTestConfig;
 import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.model.Accomodation;
@@ -36,8 +35,6 @@ import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
-import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
-import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.Todo.TodoContent;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
@@ -59,7 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 @AutoConfigureMockMvc
 @WithMockUser
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import({ TestConfig.class, RecommendedFlightTestConfig.class })
+@Import({ TestConfig.class })
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ActiveProfiles({ "local", "local-init-data" })

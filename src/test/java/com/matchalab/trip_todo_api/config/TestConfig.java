@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
+import com.matchalab.trip_todo_api.enums.AccomodationType;
 import com.matchalab.trip_todo_api.model.Accomodation;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Icon;
@@ -81,38 +82,38 @@ public class TestConfig {
     @Bean
     Accomodation[] accomodations() {
         return new Accomodation[] {
-                new Accomodation(
-                        null,
-                        "Hostel PAQ Tokushima",
-                        "혼성 도미토리 내 베드",
-                        2,
-                        "PYO HYEON",
-                        "2025-02-20T00:00:00.001Z",
-                        "2025-02-22T00:00:00.001Z",
-                        "2025-07-01T18:00:00",
-                        "2025-07-01T21:00:00",
-                        "2025-07-01T10:00:00",
-                        "도쿠시마",
-                        "dorm",
-                        Map.of(
+                Accomodation.builder()
+                        .type(AccomodationType.DORMITORY)
+                        .title("Hostel PAQ Tokushima")
+                        .roomTitle("혼성 도미토리 내 베드")
+                        .location("도쿠시마")
+                        .numberOfGuest(2)
+                        .clientName("PYO HYEON")
+                        .checkinDateISOString("2025-02-20T00:00:00.001Z")
+                        .checkoutDateISOString("2025-02-22T00:00:00.001Z")
+                        .checkinStartTimeISOString("2025-07-01T18:00:00")
+                        .checkinEndTimeISOString("2025-07-01T21:00:00")
+                        .checkoutTimeISOString("2025-07-01T10:00:00")
+                        .links(Map.of(
                                 "googleMap", "https://maps.app.goo.gl/81rvb62d2LKrYPNV7", "airbnb",
-                                "https://www.airbnb.co.kr/hotels/35388028?guests=1&adults=1&s=67&unique_share_id=be1c9ac3-c029-4927-a05e-efe2166f1903")),
-                new Accomodation(
-                        null,
-                        "Yoshiko 님의 숙소",
-                        "",
-                        2,
-                        "PYO HYEON",
-                        "2025-02-23T00:00:00.001Z",
-                        "2025-02-24T00:00:00.001Z",
-                        "2025-07-01T17:00:00",
-                        "2025-07-01T21:00:00",
-                        "2025-07-01T10:00:00",
-                        "나루토",
-                        "airbnb",
-                        Map.of(
+                                "https://www.airbnb.co.kr/hotels/35388028?guests=1&adults=1&s=67&unique_share_id=be1c9ac3-c029-4927-a05e-efe2166f1903"))
+                        .build(),
+                Accomodation.builder()
+                        .type(AccomodationType.AIRBNB)
+                        .title("Yoshiko 님의 숙소")
+                        .roomTitle("혼성 도미토리 내 베드")
+                        .location("나루토")
+                        .numberOfGuest(2)
+                        .clientName("PYO HYEON")
+                        .checkinDateISOString("2025-02-23T00:00:00.001Z")
+                        .checkoutDateISOString("2025-02-24T00:00:00.001Z")
+                        .checkinStartTimeISOString("2025-07-01T17:00:00")
+                        .checkinEndTimeISOString("2025-07-01T21:00:00")
+                        .checkoutTimeISOString("2025-07-01T10:00:00")
+                        .links(Map.of(
                                 "googleMap", "https://maps.app.goo.gl/yGivrbvsiyPBDVyR8", "airbnb",
                                 "https://www.airbnb.co.kr/rooms/12317142?viralityEntryPoint=1&s=76"))
+                        .build()
         };
     }
 

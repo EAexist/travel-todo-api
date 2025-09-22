@@ -68,16 +68,16 @@ public class Trip {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Accomodation> accomodation = new ArrayList<Accomodation>();
 
-    @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Flight> flight = new ArrayList<Flight>();
+    // @Builder.Default
+    // @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    // private List<Flight> flight = new ArrayList<Flight>();
 
     // @Builder.Default
     // @JdbcTypeCode(SqlTypes.JSON)
     // private List<FlightRoute> recommendedFlight = new ArrayList<FlightRoute>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Reservation> reservation = new ArrayList<Reservation>();
 
     @Nullable
@@ -85,12 +85,14 @@ public class Trip {
     private TodoPreset todoPreset;
 
     public Trip(Trip trip) {
+        this();
         this.title = trip.getTitle();
         this.startDateISOString = trip.getStartDateISOString();
         this.endDateISOString = trip.getEndDateISOString();
         this.destination = trip.getDestination();
         this.todolist = trip.getTodolist();
         this.accomodation = trip.getAccomodation();
+        this.reservation = trip.getReservation();
     }
 
     public void addTodo(Todo todo) {

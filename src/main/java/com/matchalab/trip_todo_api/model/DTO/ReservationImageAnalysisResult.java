@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.matchalab.trip_todo_api.model.Accomodation;
 import com.matchalab.trip_todo_api.model.Flight.Flight;
-import com.matchalab.trip_todo_api.model.Flight.FlightTicket;
+import com.matchalab.trip_todo_api.model.Reservation.FlightTicket;
 
 import jakarta.annotation.Nullable;
 import lombok.Builder;
