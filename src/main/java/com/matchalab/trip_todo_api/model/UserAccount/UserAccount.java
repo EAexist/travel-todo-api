@@ -50,6 +50,9 @@ public class UserAccount {
     @Builder.Default
     private List<Trip> trip = new ArrayList<Trip>();
 
+    @Nullable
+    private String activeTripId;
+
     public UserAccount() {
         this.nickname = "guest";
         this.trip = new ArrayList<Trip>();
@@ -71,5 +74,15 @@ public class UserAccount {
         this();
         this.googleId = googleUserDTO.idToken();
         this.googleProfile = googleUserDTO.user();
+    }
+
+    public void removeTrip(Trip trip) {
+        this.trip.remove(trip);
+        trip.setUserAccount(null);
+    }
+
+    public Trip addTrip(Trip trip) {
+        this.trip.add(trip);
+        return trip;
     }
 }

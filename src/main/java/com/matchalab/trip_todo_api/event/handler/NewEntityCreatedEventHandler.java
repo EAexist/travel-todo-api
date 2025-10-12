@@ -80,8 +80,8 @@ public class NewEntityCreatedEventHandler {
     private FlightRoute processRecommendedFlightChatResult(FlightRouteWithoutAirline frWithoutAirline) {
 
         return flightRouteRepository
-                .findByDepartureIATACodeAndArrivalIATACode(frWithoutAirline.departureAirportIATACode(),
-                        frWithoutAirline.arrivalAirportIATACode())
+                .findByDepartureIataCodeAndArrivalIataCode(frWithoutAirline.departureAirportIataCode(),
+                        frWithoutAirline.arrivalAirportIataCode())
                 .orElseGet(() -> {
                     FlightRoute flightRoute = flightRouteRepository
                             .save(flightRouteMapper.mapToFlightRoute(frWithoutAirline));

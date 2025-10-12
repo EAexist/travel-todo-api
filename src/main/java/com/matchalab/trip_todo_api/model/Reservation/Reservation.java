@@ -35,7 +35,7 @@ public class Reservation {
     private String id;
 
     ReservationCategory category;
-    // String dateTimeISOString;
+    // String dateTimeIsoString;
     // String title;
     // String subtitle;
 

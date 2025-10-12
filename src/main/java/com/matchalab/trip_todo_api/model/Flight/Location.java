@@ -18,11 +18,11 @@ public class Location {
 
     String name;
     String title;
-    String countryISO;
+    String iso2DigitNationCode;
 
     @Nullable
     String region;
 
     @Nullable
-    String IATACode;
+    String iataCode;
 }

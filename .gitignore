@@ -27,3 +27,5 @@ src/main/resources/*
 !src/main/resources/static
 *.pem
 test-local.sh
+
+src/main/java/com/matchalab/trip_todo_api/.deprecated/

@@ -56,9 +56,17 @@ public class ReservationController {
             String parsedConfirmationText = htmlParserService
                     .extractTextAndLink(createReservationDTO.confirmationText());
 
+            ReservationCategory category;
+            try {
+                category = createReservationDTO.category() != null
+                        ? ReservationCategory.valueOf(createReservationDTO.category())
+                        : ReservationCategory.UNKNOWN;
+            } catch (IllegalArgumentException e) {
+                category = ReservationCategory.UNKNOWN;
+            }
+
             List<Reservation> reservations = reservationService.extractReservationFromText(
-                    parsedConfirmationText,
-                    ReservationCategory.valueOf(createReservationDTO.category()));
+                    parsedConfirmationText, category);
 
             log.info("[createReservationFromText] reservations extracted:\n" + Utils.asJsonString(reservations));
             reservations = reservationService.saveReservation(tripId, reservations);

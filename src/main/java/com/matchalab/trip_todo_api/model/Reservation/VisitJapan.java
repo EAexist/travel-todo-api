@@ -1,7 +1,5 @@
 package com.matchalab.trip_todo_api.model.Reservation;
 
-import java.util.List;
-
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,21 +11,18 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+@RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
-@AllArgsConstructor
 @Builder
-public class GeneralReservation {
+public class VisitJapan {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String title;
+
     @Nullable
-    private int numberOfClient;
-    @Nullable
-    private List<String> clientNames;
-    @Nullable
-    private String dateTimeIsoString;
+    String dateTimeIsoString;
 }

@@ -76,8 +76,8 @@ public class GeminiChatModelService implements ChatModelService {
         String template = "출발:{departureAirportIATA},도착:{destinationAirportIATA} 에 해당하는 모든 항공 노선 목록에 대해 각 노선을 운영하는 항공사의 Offical IATA Code를 최대한 많이 알려줘. 노선의 한국인 이용객이 많은 순서대로 나열해.";
 
         Prompt prompt = new PromptTemplate(template)
-                .create(Map.of("departureAirportIATA", flightRoute.getDeparture().getIATACode(),
-                        "destinationAirportIATA", flightRoute.getArrival().getIATACode(), "language", language));
+                .create(Map.of("departureAirportIATA", flightRoute.getDeparture().getIataCode(),
+                        "destinationAirportIATA", flightRoute.getArrival().getIataCode(), "language", language));
 
         List<String> recommendedAirlines = callWithBeanOutput(prompt.getUserMessage().getText(),
                 new BeanOutputConverter<>(new ParameterizedTypeReference<List<String>>() {

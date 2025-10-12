@@ -50,9 +50,9 @@ public class MockReservationConfig {
                 .reservationDetailHrefLink(null)
                 .reservationNumberOrCode("K9N96A")
                 .flightNumber("ZE671")
-                .departureAirportIATACode("ICN")
-                .arrivalAirportIATACode("TKS")
-                .departureDateTimeISOString("2025-02-20")
+                .departureAirportIataCode("ICN")
+                .arrivalAirportIataCode("TKS")
+                .departureDateTimeIsoString("2025-02-20")
                 .passengerName("PYO HYEON")
                 .build();
     }
@@ -67,7 +67,7 @@ public class MockReservationConfig {
                 .flightTicket(
                         FlightTicket.builder()
                                 .flightNumber("ZE671")
-                                .departureDateTimeISOString("2025-02-20")
+                                .departureDateTimeIsoString("2025-02-20")
                                 .departureAirport(AirportFactory.createValidAirport("ICN"))
                                 .arrivalAirport(AirportFactory.createValidAirport("TKS"))
                                 .passengerName("PYO HYEON")
@@ -82,7 +82,7 @@ public class MockReservationConfig {
             .flightBooking(
                     FlightBooking.builder()
                             .flightNumber("ZE671")
-                            .departureDateTimeISOString("2025-02-20")
+                            .departureDateTimeIsoString("2025-02-20")
                             .departureAirport(AirportFactory.createValidAirport("ICN"))
                             .arrivalAirport(AirportFactory.createValidAirport("TKS"))
                             .numberOfPassenger(1)
@@ -119,11 +119,11 @@ public class MockReservationConfig {
                                 .location("Tokushima city nakatouriimachi 2-5, 도쿠시마, 일본, 770-0844")
                                 .numberOfGuest(1)
                                 .clientName("PYO HYEON")
-                                .checkinDateISOString("2025-02-24")
-                                .checkoutDateISOString("2025-02-25")
-                                .checkinStartTimeISOString("15:00")
-                                .checkinEndTimeISOString(null)
-                                .checkoutTimeISOString("10:00")
+                                .checkinDateIsoString("2025-02-24")
+                                .checkoutDateIsoString("2025-02-25")
+                                .checkinStartTimeIsoString("15:00")
+                                .checkinEndTimeIsoString(null)
+                                .checkoutTimeIsoString("10:00")
                                 .build())
                 .build();
     }
@@ -139,7 +139,7 @@ public class MockReservationConfig {
                         GeneralReservation.builder()
                                 .title("Teshima Art Museum")
                                 .numberOfClient(1)
-                                .dateTimeISOString("2025-02-22")
+                                .dateTimeIsoString("2025-02-22")
                                 .build())
                 .build();
     }
@@ -155,7 +155,7 @@ public class MockReservationConfig {
                         GeneralReservation.builder()
                                 .title("Teshima Art Museum")
                                 .numberOfClient(1)
-                                .dateTimeISOString("2025-02-22")
+                                .dateTimeIsoString("2025-02-22")
                                 .build())
                 .build();
     }

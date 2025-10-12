@@ -18,14 +18,14 @@ public abstract class FlightRouteMapper {
     @Autowired
     protected AirportRepository airportRepository;
 
-    private Airport getAirport(String airportIATACode) {
-        return airportRepository.findById(airportIATACode).orElse(new Airport(airportIATACode));
+    private Airport getAirport(String airportIataCode) {
+        return airportRepository.findById(airportIataCode).orElse(new Airport(airportIataCode));
     }
 
     public FlightRoute mapToFlightRoute(FlightRouteWithoutAirline frWithoutAirline) {
 
-        return new FlightRoute(getAirport(frWithoutAirline.departureAirportIATACode()),
-                getAirport(frWithoutAirline.arrivalAirportIATACode()));
+        return new FlightRoute(getAirport(frWithoutAirline.departureAirportIataCode()),
+                getAirport(frWithoutAirline.arrivalAirportIataCode()));
 
     }
 

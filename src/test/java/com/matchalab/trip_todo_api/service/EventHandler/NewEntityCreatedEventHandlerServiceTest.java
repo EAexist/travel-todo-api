@@ -130,32 +130,32 @@ public class NewEntityCreatedEventHandlerServiceTest {
                 .thenReturn(Optional.of(new FlightRoute(AirportFactory.createValidAirport("ICN"),
                         AirportFactory.createValidAirport("KIX"))));
 
-        lenient().when(flightRouteRepository.findByDepartureIATACodeAndArrivalIATACode(anyString(), anyString()))
+        lenient().when(flightRouteRepository.findByDepartureIataCodeAndArrivalIataCode(anyString(), anyString()))
                 .thenAnswer(invocation -> {
                     return Optional.of(new FlightRoute(AirportFactory.createValidAirport(invocation.getArgument(0)),
                             AirportFactory.createValidAirport(invocation.getArgument(1))));
                 });
 
         lenient().when(airlineRepository.findById(anyString())).thenAnswer(invocation -> {
-            return airlines.stream().filter(al -> al.getIATACode().equals(invocation.getArgument(0))).findAny();
+            return airlines.stream().filter(al -> al.getIataCode().equals(invocation.getArgument(0))).findAny();
         });
         // when(flightRouteMapper.mapToFlightRoute(any(FlightRouteWithoutAirline.class))).thenAnswer(invocation
         // -> {
         // FlightRouteWithoutAirline frWithoutAirline = invocation.getArgument(0);
         // return new FlightRoute(null, new
-        // Airport(frWithoutAirline.departureAirportIATACode()),
-        // new Airport(frWithoutAirline.arrivalAirportIATACode()), null);
+        // Airport(frWithoutAirline.departureAirportIataCode()),
+        // new Airport(frWithoutAirline.arrivalAirportIataCode()), null);
         // });
 
         // when(geminiChatModelService.getRecommendedFlight(anyString())).thenReturn(
         // RecommendedFlightChatResult.builder()
         // .recommendedOutboundFlight(
-        // List.of(FlightRouteWithoutAirline.builder().departureAirportIATACode("ICN")
-        // .arrivalAirportIATACode("KIX")
+        // List.of(FlightRouteWithoutAirline.builder().departureAirportIataCode("ICN")
+        // .arrivalAirportIataCode("KIX")
         // .build()))
         // .recommendedReturnFlight(
-        // List.of(FlightRouteWithoutAirline.builder().departureAirportIATACode("KIX")
-        // .arrivalAirportIATACode("ICN").build()))
+        // List.of(FlightRouteWithoutAirline.builder().departureAirportIataCode("KIX")
+        // .arrivalAirportIataCode("ICN").build()))
         // .build());
 
     }
@@ -177,7 +177,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
                         AirportFactory.createValidAirport("KIX"))));
 
         assertThat(destination.getRecommendedOutboundFlight().stream()
-                .filter(f -> f.getDeparture().getIATACode().equals("CJJ")).toList().getFirst())
+                .filter(f -> f.getDeparture().getIataCode().equals("CJJ")).toList().getFirst())
                 .usingRecursiveComparison()
                 .ignoringFieldsOfTypes(FlightRoute.class, Airport.class)
                 .isEqualTo(List.of(new FlightRoute(AirportFactory.createValidAirport("CJJ"),

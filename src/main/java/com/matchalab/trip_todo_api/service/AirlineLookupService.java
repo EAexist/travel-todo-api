@@ -25,10 +25,10 @@ public class AirlineLookupService {
     public void loadAirlineLookupMap() {
         airlineLookupMap.putAll(
                 repository.findAll().stream()
-                        .collect(Collectors.toMap(Airline::getIATACode, Airline::getName)));
+                        .collect(Collectors.toMap(Airline::getIataCode, Airline::getName)));
     }
 
-    public Optional<String> get(String IATACode) {
-        return Optional.ofNullable(airlineLookupMap.getOrDefault(IATACode, null));
+    public Optional<String> get(String iataCode) {
+        return Optional.ofNullable(airlineLookupMap.getOrDefault(iataCode, null));
     }
 }

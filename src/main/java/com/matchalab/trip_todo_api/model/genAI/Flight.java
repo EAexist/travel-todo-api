@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record Flight(
-        String departureAirportIATACode,
-        String arrivalAirportIATACode,
-        String airlineCompanyIATACode) {
+        String departureAirportIataCode,
+        String arrivalAirportIataCode,
+        String airlineCompanyIataCode) {
 }

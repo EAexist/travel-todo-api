@@ -13,11 +13,11 @@ public record ExtractAccomodationChatResultDTO(
         @Nullable String roomTitle,
         @Nullable int numberOfGuest,
         @Nullable String clientName,
-        @Nullable String checkinDateISOString,
-        @Nullable String checkoutDateISOString,
-        @Nullable String checkinAvailableSinceThisTimeISOString,
-        @Nullable String checkinAvailableUntilThisTimeISOString,
-        @Nullable String checkoutDeadlineTimeISOString,
+        @Nullable String checkinDateIsoString,
+        @Nullable String checkoutDateIsoString,
+        @Nullable String checkinAvailableSinceThisTimeIsoString,
+        @Nullable String checkinAvailableUntilThisTimeIsoString,
+        @Nullable String checkoutDeadlineTimeIsoString,
         @Nullable String location,
         AccomodationType accomodationType) {
 }

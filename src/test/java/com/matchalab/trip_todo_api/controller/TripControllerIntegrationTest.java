@@ -243,7 +243,7 @@ public class TripControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("title").value(tripDTOToPatch.title()))
-                .andExpect(jsonPath("startDateISOString").value(tripDTOToPatch.startDateISOString()));
+                .andExpect(jsonPath("startDateIsoString").value(tripDTOToPatch.startDateIsoString()));
 
         TripDTO actualTripDTO = TestUtils.asObject(result, TripDTO.class);
 
@@ -255,7 +255,7 @@ public class TripControllerIntegrationTest {
 
         assertThat(actualTripDTO).usingRecursiveComparison()
                 // .ignoringFieldsOfTypes(TripDTO.class)
-                .ignoringFields("title", "startDateISOString")
+                .ignoringFields("title", "startDateIsoString")
                 .isEqualTo(tripMapper.mapToTripDTO(savedTrip));
     }
 
@@ -301,7 +301,7 @@ public class TripControllerIntegrationTest {
                 .andExpect(jsonPath("id")
                         .isNotEmpty())
                 .andExpect(jsonPath("title").value(destinationDTO_tokushima.title()))
-                .andExpect(jsonPath("countryISO").value(destinationDTO_tokushima.countryISO()))
+                .andExpect(jsonPath("iso2DigitNationCode").value(destinationDTO_tokushima.iso2DigitNationCode()))
                 .andExpect(jsonPath("region").value(destinationDTO_tokushima.region()))
                 .andExpect(jsonPath("description").value(destinationDTO_tokushima.description()));
 
@@ -316,7 +316,7 @@ public class TripControllerIntegrationTest {
     @Transactional
     void createDestination_Given_AlreadyExistingDestination_Then_DoNotCreateRedundantDestination() throws Exception {
 
-        String destinationId_osaka = destinationRepository.findByCountryISOAndTitle("JP", "오사카")
+        String destinationId_osaka = destinationRepository.findByiso2DigitNationCodeAndTitle("JP", "오사카")
                 .orElseThrow(() -> new NotFoundException(null)).getId();
 
         ResultActions result = mockMvc
@@ -366,7 +366,7 @@ public class TripControllerIntegrationTest {
 
         // assertThat(bestFlightRouteResult)
         // .usingRecursiveComparison()
-        // .comparingOnlyFields("IATACode")
+        // .comparingOnlyFields("IataCode")
         // // .ignoringFieldsOfTypes(FlightRoute.class, Airport.class)
         // .isEqualTo(List.of(new FlightRoute(AirportFactory.createValidAirport("ICN"),
         // AirportFactory.createValidAirport("KIX"))));

@@ -40,7 +40,7 @@ public class Destination {
     private List<Trip> trip = new ArrayList<Trip>();
 
     private String title;
-    private String countryISO;
+    private String iso2DigitNationCode;
     private String region;
     private String description;
 
@@ -58,18 +58,18 @@ public class Destination {
         this();
         this.id = destination.getId();
         this.description = destination.getDescription();
-        this.countryISO = destination.getCountryISO();
+        this.iso2DigitNationCode = destination.getIso2DigitNationCode();
         this.title = destination.getTitle();
         this.region = destination.getRegion();
     }
 
     public Destination(String title,
-            String countryISO,
+            String iso2DigitNationCode,
             String region,
             String description) {
         this();
         this.title = title;
-        this.countryISO = countryISO;
+        this.iso2DigitNationCode = iso2DigitNationCode;
         this.region = region;
         this.description = description;
     }

@@ -1,74 +1,53 @@
-// package com.matchalab.trip_todo_api.model.Reservation;
+package com.matchalab.trip_todo_api.model.Reservation;
 
-// import org.hibernate.annotations.JdbcTypeCode;
-// import org.hibernate.type.SqlTypes;
+import com.matchalab.trip_todo_api.enums.ReservationCategory;
+import com.matchalab.trip_todo_api.model.Accomodation;
 
-// import com.matchalab.trip_todo_api.enums.ReservationCategory;
-// import com.matchalab.trip_todo_api.model.Accomodation;
-// import com.matchalab.trip_todo_api.model.Flight.Flight;
+import jakarta.annotation.Nullable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-// import jakarta.annotation.Nullable;
-// import jakarta.persistence.CascadeType;
-// import jakarta.persistence.Entity;
-// import jakarta.persistence.FetchType;
-// import jakarta.persistence.GeneratedValue;
-// import jakarta.persistence.GenerationType;
-// import jakarta.persistence.Id;
-// import jakarta.persistence.OneToOne;
-// import lombok.AllArgsConstructor;
-// import lombok.Builder;
-// import lombok.Getter;
-// import lombok.RequiredArgsConstructor;
-// import lombok.Setter;
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
+public class ReservationDTO {
 
-// @RequiredArgsConstructor
-// @AllArgsConstructor
-// @Entity
-// @Getter
-// @Setter
-// @Builder
-// public class ReservationDTO {
+    private String id;
 
-// @Id
-// @GeneratedValue(strategy = GenerationType.UUID)
-// private String id;
+    ReservationCategory category;
+    // String rawText;
 
-// // @ManyToOne(fetch = FetchType.LAZY)
-// // @JoinColumn(name = "user_id")
-// // Trip trip;
+    @Nullable
+    String code;
 
-// String dateTimeISOString;
-// ReservationCategory type;
-// String title;
-// String subtitle;
+    String note;
 
-// String rawText;
+    @Nullable
+    String primaryHrefLink;
 
-// @Nullable
-// String link;
+    @Nullable
+    String serverFileUri;
 
-// @Nullable
-// String serverFileUri;
+    @Nullable
+    String localAppStorageFileUri;
 
-// @Nullable
-// String localAppStorageFileUri;
+    @Nullable
+    VisitJapan visitJapan;
 
-// @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-// @Nullable
-// Accomodation accomodation;
+    @Nullable
+    Accomodation accomodation;
 
-// @JdbcTypeCode(SqlTypes.JSON)
-// @Nullable
-// private Flight flight;
+    @Nullable
+    FlightBooking flightBooking;
 
-// public Reservation(
-// String dateTimeISOString,
-// ReservationCategory type,
-// String title,
-// String subtitle) {
-// this.dateTimeISOString = dateTimeISOString;
-// this.type = type;
-// this.title = title;
-// this.subtitle = subtitle;
-// }
-// }
+    @Nullable
+    FlightTicket flightTicket;
+
+    @Nullable
+    GeneralReservation generalReservation;
+}

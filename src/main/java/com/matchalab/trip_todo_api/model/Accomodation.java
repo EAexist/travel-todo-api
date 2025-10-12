@@ -1,5 +1,7 @@
 package com.matchalab.trip_todo_api.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,13 +10,11 @@ import org.hibernate.type.SqlTypes;
 
 import com.matchalab.trip_todo_api.enums.AccomodationType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,8 +24,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Accomodation {
 
@@ -42,14 +42,16 @@ public class Accomodation {
     private String location;
     private int numberOfGuest;
     private String clientName;
-    private String checkinDateISOString;
-    private String checkoutDateISOString;
-    private String checkinStartTimeISOString;
-    private String checkinEndTimeISOString;
-    private String checkoutTimeISOString;
+    private String checkinDateIsoString;
+    private String checkoutDateIsoString;
+    private String checkinStartTimeIsoString;
+    private String checkinEndTimeIsoString;
+    private String checkoutTimeIsoString;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, String> links;
+    @Column(columnDefinition = "jsonb")
+    @Builder.Default
+    private List<Link> links = new ArrayList<Link>();
 
     public Accomodation(Accomodation accomodation) {
         this.title = accomodation.getTitle();
@@ -57,11 +59,11 @@ public class Accomodation {
         this.roomTitle = accomodation.getRoomTitle();
         this.numberOfGuest = accomodation.getNumberOfGuest();
         this.clientName = accomodation.getClientName();
-        this.checkinDateISOString = accomodation.getCheckinDateISOString();
-        this.checkoutDateISOString = accomodation.getCheckoutDateISOString();
-        this.checkinStartTimeISOString = accomodation.getCheckinStartTimeISOString();
-        this.checkinEndTimeISOString = accomodation.getCheckinEndTimeISOString();
-        this.checkoutTimeISOString = accomodation.getCheckoutTimeISOString();
+        this.checkinDateIsoString = accomodation.getCheckinDateIsoString();
+        this.checkoutDateIsoString = accomodation.getCheckoutDateIsoString();
+        this.checkinStartTimeIsoString = accomodation.getCheckinStartTimeIsoString();
+        this.checkinEndTimeIsoString = accomodation.getCheckinEndTimeIsoString();
+        this.checkoutTimeIsoString = accomodation.getCheckoutTimeIsoString();
         this.location = accomodation.getLocation();
         this.type = accomodation.getType();
         this.links = accomodation.getLinks();

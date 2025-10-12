@@ -248,7 +248,7 @@ public class TodoControllerIntegrationTest {
 
         assertThat(actualTodoDTO).usingRecursiveComparison()
                 .ignoringFieldsOfTypes()
-                .ignoringFields("completeDateISOString", "id", "content.id")
+                .ignoringFields("completeDateIsoString", "id", "content.id")
                 .isEqualTo(todoDTOToPatch);
 
         assertThat(todoRepository.findById(actualTodoDTO.id()).get().getCustomTodoContent().getId()).isEqualTo(
@@ -264,7 +264,7 @@ public class TodoControllerIntegrationTest {
                 .getFirst();
 
         TodoDTO todoDTOToPatch = TodoDTO.builder().id("ID").note("새로운 노트")
-                .completeDateISOString("2025-02-20T00:00:00.001Z")
+                .completeDateIsoString("2025-02-20T00:00:00.001Z")
                 .content(TodoContentDTO.builder().isStock(false).category("goods").title("새로운 할 일 이름").icon(
                         new Icon("🎁")).build())
                 .build();
@@ -278,12 +278,12 @@ public class TodoControllerIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("note").value(todoDTOToPatch.note()))
                 .andExpect(jsonPath("orderKey").value(todoDTOToPatch.orderKey()))
-                .andExpect(jsonPath("completeDateISOString").value(todoDTOToPatch.completeDateISOString()));
+                .andExpect(jsonPath("completeDateIsoString").value(todoDTOToPatch.completeDateIsoString()));
 
         TodoDTO actualTodoDTO = TestUtils.asObject(result, TodoDTO.class);
         assertThat(actualTodoDTO).usingRecursiveComparison()
                 .ignoringFieldsOfTypes()
-                .ignoringFields("note", "orderKey", "completeDateISOString")
+                .ignoringFields("note", "orderKey", "completeDateIsoString")
                 .isEqualTo(todoMapper.mapToTodoDTO(todo));
 
         assertThat(todoRepository.findById(actualTodoDTO.id()).get().getStockTodoContent().getId()).isEqualTo(

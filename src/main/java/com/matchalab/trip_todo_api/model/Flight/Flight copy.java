@@ -37,6 +37,6 @@
 // Airport arrival;
 // int numberOfPassenger;
 // String[] passengerNames;
-// String departureDateTimeISOString;
-// // String arrivalDateTimeISOString;
+// String departureDateTimeIsoString;
+// // String arrivalDateTimeIsoString;
 // }

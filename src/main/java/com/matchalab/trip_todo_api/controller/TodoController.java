@@ -31,9 +31,10 @@ public class TodoController {
     /**
      * Provide the details of an Trip with the given id.
      */
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<TodoDTO> createTodo(@PathVariable String tripId, @RequestBody TodoDTO requestbody) {
         try {
+            log.info(String.format("[TodoController.createTodo] %s %s", tripId, Utils.asJsonString(requestbody)));
             TodoDTO todoDTO = tripService.createTodo(tripId, requestbody);
             return ResponseEntity.created(Utils.getLocation(todoDTO.id())).body(todoDTO);
         } catch (HttpClientErrorException e) {

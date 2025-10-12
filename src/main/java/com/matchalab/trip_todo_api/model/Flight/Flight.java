@@ -28,5 +28,5 @@ public class Flight {
 
     // Airport arrivalAirport;
 
-    String departureDateTimeISOString;
+    String departureDateTimeIsoString;
 }

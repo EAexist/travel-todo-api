@@ -53,4 +53,13 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
+
+    public static String timeStringToIsoDateTimeString(String timeString, String dateOnlyIsoString) {
+        return (timeString != null
+                && timeString.length() == 5
+                && dateOnlyIsoString != null)
+                        ? String.format("%sT%s", dateOnlyIsoString,
+                                timeString)
+                        : timeString;
+    }
 }

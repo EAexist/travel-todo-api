@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.event.NewTripCreatedEvent;
@@ -90,6 +91,10 @@ public class TripService {
 
         Trip trip = tripMapper.updateTripFromDto(newTripDTO, previousTrip);
 
+        // log.info(String.format("%s, %s, %s", previousTrip.getIsInitialized(),
+        // newTripDTO.isInitialized(),
+        // trip.getIsInitialized()));
+
         return tripMapper.mapToTripDTO(tripRepository.save(trip));
     }
 
@@ -105,51 +110,18 @@ public class TripService {
     /**
      * Create new todo.
      */
+    @Transactional
     public TodoDTO createTodo(String tripId, TodoDTO todoDTO) {
         Todo newTodo = todoMapper.mapToTodo(todoDTO);
         log.info(Utils.asJsonString(todoDTO));
         log.info(Utils.asJsonString(newTodo));
-        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
         newTodo.setId(null);
         newTodo.setOrderKey(0);
-        // newTodo.setTrip(trip);
-        if (newTodo.getCustomTodoContent() != null) {
-            if (newTodo.getCustomTodoContent().getType() == null) {
-                newTodo.getCustomTodoContent().setIcon(new Icon("⭐️", "tossface"));
-                String title = "";
-                // switch (newTodo.getCustomTodoContent().getCategory()) {
-                // case "reservation":
-                // title = "새 예약";
-                // break;
-                // case "foreign":
-                // title = "새 할 일";
-                // break;
-                // case "goods":
-                // title = "새 짐 챙기기";
-                // break;
-                // default:
-                // break;
-                // }
-                newTodo.getCustomTodoContent().setTitle(title);
-            } else {
-                switch (newTodo.getCustomTodoContent().getType()) {
-                    case "flight":
-                        newTodo.getCustomTodoContent().setIcon(new Icon("✈️", "tossface"));
-                        newTodo.getCustomTodoContent().setTitle("항공권 예약");
-                        break;
-                    case "flightTicket":
-                        newTodo.getCustomTodoContent().setIcon(new Icon("🛫", "tossface"));
-                        newTodo.getCustomTodoContent().setTitle("체크인");
-                        break;
-                    default:
-                        newTodo.getCustomTodoContent().setIcon(new Icon("⭐️", "tossface"));
-                        newTodo.getCustomTodoContent().setTitle("새 할 일");
-                        break;
-                }
-            }
-        }
+        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
+        trip.addTodo(newTodo);
+        tripRepository.save(trip);
 
-        return todoMapper.mapToTodoDTO(todoRepository.save(newTodo));
+        return todoMapper.mapToTodoDTO(newTodo);
     }
 
     /**
@@ -236,7 +208,7 @@ public class TripService {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 
         destinationRepository
-                .findByCountryISOAndTitle(destinationDTO.countryISO(), destinationDTO.title())
+                .findByiso2DigitNationCodeAndTitle(destinationDTO.iso2DigitNationCode(), destinationDTO.title())
                 .map(dest -> {
                     trip.getDestination().add(dest);
                     destinationRepository.save(dest);
@@ -262,37 +234,43 @@ public class TripService {
                 () -> new NotFoundException(destinationId));
     }
 
-    /**
-     * Provide the details of a Accomodation with the given trip_id.
-     */
-    public List<AccomodationDTO> getAccomodation(String tripId) {
-        List<AccomodationDTO> accomodations = tripRepository.findById(tripId)
-                .orElseThrow(() -> new TripNotFoundException(tripId)).getAccomodation().stream()
-                .map(accomodation -> tripMapper.mapToAccomodationDTO(accomodation)).toList();
-        return accomodations;
-    }
+    // /**
+    // * Provide the details of a Accomodation with the given trip_id.
+    // */
+    // public List<AccomodationDTO> getAccomodation(String tripId) {
+    // List<AccomodationDTO> accomodations = tripRepository.findById(tripId)
+    // .orElseThrow(() -> new
+    // TripNotFoundException(tripId)).getAccomodation().stream()
+    // .map(accomodation -> tripMapper.mapToAccomodationDTO(accomodation)).toList();
+    // return accomodations;
+    // }
 
-    /**
-     * Create new empty accomodation.
-     */
-    public AccomodationDTO createAccomodation(String tripId) {
-        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
-        Accomodation newAccomodation = new Accomodation();
-        // newAccomodation.setTrip(trip);
-        trip.getAccomodation().add(newAccomodation);
-        return tripMapper.mapToAccomodationDTO(tripRepository.save(trip).getAccomodation().getLast());
-    }
+    // /**
+    // * Create new empty accomodation.
+    // */
+    // public AccomodationDTO createAccomodation(String tripId) {
+    // Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new
+    // TripNotFoundException(tripId));
+    // Accomodation newAccomodation = new Accomodation();
+    // // newAccomodation.setTrip(trip);
+    // trip.getAccomodation().add(newAccomodation);
+    // return
+    // tripMapper.mapToAccomodationDTO(tripRepository.save(trip).getAccomodation().getLast());
+    // }
 
-    /**
-     * Change contents of accomodation.
-     */
-    public AccomodationDTO patchAccomodation(String accomodationId, AccomodationDTO newAccomodationDTO) {
-        Accomodation accomodation = tripMapper.updateAccomodationFromDto(newAccomodationDTO,
-                accomodationRepository.findById(accomodationId)
-                        .orElseThrow(() -> new NotFoundException(accomodationId)));
+    // /**
+    // * Change contents of accomodation.
+    // */
+    // public AccomodationDTO patchAccomodation(String accomodationId,
+    // AccomodationDTO newAccomodationDTO) {
+    // Accomodation accomodation =
+    // tripMapper.updateAccomodationFromDto(newAccomodationDTO,
+    // accomodationRepository.findById(accomodationId)
+    // .orElseThrow(() -> new NotFoundException(accomodationId)));
 
-        return tripMapper.mapToAccomodationDTO(accomodationRepository.save(accomodation));
-    }
+    // return
+    // tripMapper.mapToAccomodationDTO(accomodationRepository.save(accomodation));
+    // }
 
     /**
      * Create new todo.

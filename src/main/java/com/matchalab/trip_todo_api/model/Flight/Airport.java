@@ -19,8 +19,8 @@ import lombok.Setter;
 public class Airport {
 
     @Id
-    @CsvBindByName(column = "IATACode", required = true)
-    private String IATACode;
+    @CsvBindByName(column = "IataCode", required = true)
+    private String iataCode;
 
     @CsvBindByName(column = "airportName", required = true)
     private String airportName;
@@ -28,10 +28,10 @@ public class Airport {
     @CsvBindByName(column = "cityName", required = true)
     private String cityName;
 
-    @CsvBindByName(column = "countryISO", required = true)
-    private String countryISO;
+    @CsvBindByName(column = "iso2DigitNationCode", required = true)
+    private String iso2DigitNationCode;
 
-    public Airport(String IATACode) {
-        this.IATACode = IATACode;
+    public Airport(String iataCode) {
+        this.iataCode = iataCode;
     }
 }

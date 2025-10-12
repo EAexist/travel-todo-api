@@ -46,7 +46,7 @@ public abstract class TodoMapper {
         TodoContentDTO todoContentDTO = (todo.getStockTodoContent() != null)
                 ? new TodoContentDTO(todo.getStockTodoContent())
                 : new TodoContentDTO(todo.getCustomTodoContent());
-        return new TodoDTO(todo.getId(), todo.getOrderKey(), todo.getNote(), todo.getCompleteDateISOString(),
+        return new TodoDTO(todo.getId(), todo.getOrderKey(), todo.getNote(), todo.getCompleteDateIsoString(),
                 todoContentDTO);
     }
 
@@ -61,8 +61,10 @@ public abstract class TodoMapper {
     @Named("mapToCustomTodoContent")
     public abstract CustomTodoContent mapToCustomTodoContentHelper(TodoContentDTO content);
 
-    @Named("mapToStockTodoContent")
-    public abstract StockTodoContent mapToStockTodoContentHelper(TodoContentDTO content);
+    public StockTodoContent mapToStockTodoContentHelper(TodoContentDTO content) {
+        return stockTodoContentRepository.findById(content.getId())
+                .orElseThrow(() -> new NotFoundException(content.getId()));
+    }
 
     @Named("mapToCustomTodoContent")
     public CustomTodoContent mapToCustomTodoContent(TodoContentDTO content) {

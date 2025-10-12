@@ -16,8 +16,8 @@ import com.matchalab.trip_todo_api.model.genAI.ExtractFlightBookingChatResultDTO
 import com.matchalab.trip_todo_api.model.genAI.ExtractFlightTicketChatResultDTO;
 import com.matchalab.trip_todo_api.model.genAI.ExtractGeneralReservationChatResultDTO;
 import com.matchalab.trip_todo_api.repository.AirportRepository;
+import com.matchalab.trip_todo_api.utils.Utils;
 
-import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -27,8 +27,8 @@ public abstract class ReservationMapper {
     @Autowired
     protected AirportRepository airportRepository;
 
-    private Airport getAirport(String airportIATACode) {
-        return airportRepository.findById(airportIATACode).orElse(new Airport(airportIATACode));
+    private Airport getAirport(String airportIataCode) {
+        return airportRepository.findById(airportIataCode).orElse(new Airport(airportIataCode));
     }
 
     public Accomodation mapToAccomodation(ExtractAccomodationChatResultDTO dto) {
@@ -38,32 +38,35 @@ public abstract class ReservationMapper {
                 .location(dto.location())
                 .numberOfGuest(dto.numberOfGuest())
                 .clientName(dto.clientName())
-                .checkinDateISOString(dto.checkinDateISOString())
-                .checkoutDateISOString(dto.checkoutDateISOString())
-                .checkinStartTimeISOString(dto.checkinAvailableSinceThisTimeISOString())
-                .checkinEndTimeISOString(dto.checkinAvailableUntilThisTimeISOString())
-                .checkoutTimeISOString(dto.checkoutDeadlineTimeISOString())
+                .checkinDateIsoString(dto.checkinDateIsoString())
+                .checkoutDateIsoString(dto.checkoutDateIsoString())
+                .checkinStartTimeIsoString(Utils.timeStringToIsoDateTimeString(
+                        dto.checkinAvailableSinceThisTimeIsoString(), dto.checkinDateIsoString()))
+                .checkinEndTimeIsoString(Utils.timeStringToIsoDateTimeString(
+                        dto.checkinAvailableUntilThisTimeIsoString(), dto.checkinDateIsoString()))
+                .checkoutTimeIsoString(Utils.timeStringToIsoDateTimeString(dto.checkoutDeadlineTimeIsoString(),
+                        dto.checkoutDateIsoString()))
                 .build();
     }
 
     public FlightBooking mapToFlightBooking(ExtractFlightBookingChatResultDTO dto) {
         return FlightBooking.builder()
                 .flightNumber(dto.flightNumber())
-                .departureAirport(getAirport(dto.departureAirportIATACode()))
-                .arrivalAirport(getAirport(dto.arrivalAirportIATACode()))
+                .departureAirport(getAirport(dto.departureAirportIataCode()))
+                .arrivalAirport(getAirport(dto.arrivalAirportIataCode()))
                 .numberOfPassenger(dto.numberOfPassenger())
                 .passengerNames(dto.passengerNames())
-                .departureDateTimeISOString(dto.departureDateTimeISOString())
+                .departureDateTimeIsoString(dto.departureDateTimeIsoString())
                 .build();
     }
 
     public FlightTicket mapToFlightTicket(ExtractFlightTicketChatResultDTO dto) {
         return FlightTicket.builder()
                 .flightNumber(dto.flightNumber())
-                .departureAirport(getAirport(dto.departureAirportIATACode()))
-                .arrivalAirport(getAirport(dto.arrivalAirportIATACode()))
+                .departureAirport(getAirport(dto.departureAirportIataCode()))
+                .arrivalAirport(getAirport(dto.arrivalAirportIataCode()))
                 .passengerName(dto.passengerName())
-                .departureDateTimeISOString(dto.departureDateTimeISOString())
+                .departureDateTimeIsoString(dto.departureDateTimeIsoString())
                 .build();
     }
 
@@ -71,8 +74,8 @@ public abstract class ReservationMapper {
         return GeneralReservation.builder()
                 .title(dto.title())
                 .numberOfClient(dto.numberOfClient())
-                .clientName(dto.clientName())
-                .dateTimeISOString(dto.reservationDateTimeISOString())
+                .clientNames(dto.clientNames())
+                .dateTimeIsoString(dto.reservationDateTimeIsoString())
                 .build();
     }
 

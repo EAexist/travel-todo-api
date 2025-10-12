@@ -89,11 +89,11 @@ public class TestConfig {
                         .location("도쿠시마")
                         .numberOfGuest(2)
                         .clientName("PYO HYEON")
-                        .checkinDateISOString("2025-02-20T00:00:00.001Z")
-                        .checkoutDateISOString("2025-02-22T00:00:00.001Z")
-                        .checkinStartTimeISOString("2025-07-01T18:00:00")
-                        .checkinEndTimeISOString("2025-07-01T21:00:00")
-                        .checkoutTimeISOString("2025-07-01T10:00:00")
+                        .checkinDateIsoString("2025-02-20T00:00:00.001Z")
+                        .checkoutDateIsoString("2025-02-22T00:00:00.001Z")
+                        .checkinStartTimeIsoString("2025-07-01T18:00:00")
+                        .checkinEndTimeIsoString("2025-07-01T21:00:00")
+                        .checkoutTimeIsoString("2025-07-01T10:00:00")
                         .links(Map.of(
                                 "googleMap", "https://maps.app.goo.gl/81rvb62d2LKrYPNV7", "airbnb",
                                 "https://www.airbnb.co.kr/hotels/35388028?guests=1&adults=1&s=67&unique_share_id=be1c9ac3-c029-4927-a05e-efe2166f1903"))
@@ -105,11 +105,11 @@ public class TestConfig {
                         .location("나루토")
                         .numberOfGuest(2)
                         .clientName("PYO HYEON")
-                        .checkinDateISOString("2025-02-23T00:00:00.001Z")
-                        .checkoutDateISOString("2025-02-24T00:00:00.001Z")
-                        .checkinStartTimeISOString("2025-07-01T17:00:00")
-                        .checkinEndTimeISOString("2025-07-01T21:00:00")
-                        .checkoutTimeISOString("2025-07-01T10:00:00")
+                        .checkinDateIsoString("2025-02-23T00:00:00.001Z")
+                        .checkoutDateIsoString("2025-02-24T00:00:00.001Z")
+                        .checkinStartTimeIsoString("2025-07-01T17:00:00")
+                        .checkinEndTimeIsoString("2025-07-01T21:00:00")
+                        .checkoutTimeIsoString("2025-07-01T10:00:00")
                         .links(Map.of(
                                 "googleMap", "https://maps.app.goo.gl/yGivrbvsiyPBDVyR8", "airbnb",
                                 "https://www.airbnb.co.kr/rooms/12317142?viralityEntryPoint=1&s=76"))
@@ -165,7 +165,7 @@ public class TestConfig {
                 .id(null)
                 .orderKey(0)
                 .note("환전은 미리미리 할 것")
-                .completeDateISOString(null)
+                .completeDateIsoString(null)
                 .content(TodoContentDTO.builder().id("currency").isStock(true).category("foreign").type(
                         "currency").title("환전").icon(new Icon("💱")).build())
                 .build();
@@ -183,7 +183,7 @@ public class TestConfig {
                 .id(null)
                 .orderKey(1)
                 .note("카메라 필름 챙겼는지 확인할 것")
-                .completeDateISOString("2025-02-23T00:00:00.001Z")
+                .completeDateIsoString("2025-02-23T00:00:00.001Z")
                 .content(TodoContentDTO.builder().id("ID").isStock(false).category("goods").type(
                         "goods").title("필름카메라").icon(new Icon("📸")).build())
                 .build();
@@ -203,9 +203,9 @@ public class TestConfig {
     @Bean
     Trip trip() {
         return Trip.builder().id("ID").title(
-                "Vaundy 보러 가는 도쿠시마 여행").startDateISOString(
+                "Vaundy 보러 가는 도쿠시마 여행").startDateIsoString(
                         "2025-02-20T00:00:00.001Z")
-                .endDateISOString(
+                .endDateIsoString(
                         "2025-02-25T00:00:00.001Z")
                 .build();
     }
@@ -213,9 +213,9 @@ public class TestConfig {
     @Bean
     Trip tripHydrated() {
         return Trip.builder().id("ID").title(
-                "Vaundy 보러 가는 도쿠시마 여행").startDateISOString(
+                "Vaundy 보러 가는 도쿠시마 여행").startDateIsoString(
                         "2025-02-20T00:00:00.001Z")
-                .endDateISOString(
+                .endDateIsoString(
                         "2025-02-25T00:00:00.001Z")
                 .destination(List.of(destinations()))
                 .todolist(List.of(new Todo[] { stockTodo(), customTodo() }))
@@ -228,8 +228,8 @@ public class TestConfig {
         return TripDTO.builder()
                 .id("ID")
                 .title("Vaundy 보러 가는 도쿠시마 여행")
-                .startDateISOString("2025-02-20T00:00:00.001Z")
-                .endDateISOString("2025-02-25T00:00:00.001Z")
+                .startDateIsoString("2025-02-20T00:00:00.001Z")
+                .endDateIsoString("2025-02-25T00:00:00.001Z")
                 .destination(List.of(destinationDTOs()))
                 .todolist(List.of(new TodoDTO[] { stockTodoDTO(), customTodoDTO() })).accomodation(accomodationDTOs)
                 .build();
@@ -240,8 +240,8 @@ public class TestConfig {
         return TripSummaryDTO.builder()
                 .id(trip().getId())
                 .title(trip().getTitle())
-                .startDateISOString(trip().getStartDateISOString())
-                .endDateISOString(trip().getEndDateISOString())
+                .startDateIsoString(trip().getStartDateIsoString())
+                .endDateIsoString(trip().getEndDateIsoString())
                 .destination(List.of(destination_tokushima().getTitle(), destination_kyoto().getTitle()))
                 .build();
     }

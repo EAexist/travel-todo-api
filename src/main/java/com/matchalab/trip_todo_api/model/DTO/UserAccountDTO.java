@@ -8,5 +8,5 @@ import lombok.Singular;
 
 @Builder
 public record UserAccountDTO(String id, @Nullable String nickname,
-        @Singular("tripSummary") List<TripSummaryDTO> tripSummary) {
+        @Singular("tripSummary") List<TripSummaryDTO> tripSummary, String activeTripId) {
 }

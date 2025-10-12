@@ -30,7 +30,7 @@ public class Todo {
     private String id;
 
     private String note;
-    private String completeDateISOString;
+    private String completeDateIsoString;
     private int orderKey;
 
     // @ManyToOne(fetch = FetchType.LAZY)
@@ -48,7 +48,7 @@ public class Todo {
 
     public Todo(Todo todo) {
         this.note = todo.getNote();
-        this.completeDateISOString = todo.getCompleteDateISOString();
+        this.completeDateIsoString = todo.getCompleteDateIsoString();
         this.orderKey = todo.getOrderKey();
         this.customTodoContent = todo.getCustomTodoContent() != null
                 ? new CustomTodoContent(todo.getCustomTodoContent())

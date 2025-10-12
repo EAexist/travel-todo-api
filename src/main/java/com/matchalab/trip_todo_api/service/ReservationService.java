@@ -12,8 +12,8 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amadeus.exceptions.NotFoundException;
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
+import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
@@ -24,6 +24,7 @@ import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.service.ChatModelService.ChatModelService;
 import com.matchalab.trip_todo_api.utils.Utils;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -96,18 +97,21 @@ public class ReservationService {
     // // return createEntitiesFromImageAnalysisResult(tripId, reservationText);
     // }
 
+    @Transactional
     public List<Reservation> saveReservation(String tripId, List<Reservation> reservation) throws Exception {
 
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new NotFoundException(null));
 
-        Boolean isAdded = trip.getReservation().addAll(reservation);
+        List<Reservation> savedReservations = reservationRepository.saveAll(reservation);
+
+        Boolean isAdded = trip.getReservation().addAll(savedReservations);
 
         log.info("[ReservationService.saveReservation] " + Utils.asJsonString(trip.getReservation()));
 
         trip = tripRepository.save(trip);
 
         if (isAdded) {
-            return trip.getReservation();
+            return savedReservations;
         } else {
             throw new Exception();
         }
@@ -187,7 +191,7 @@ public class ReservationService {
     // chatModelService.extractReservationfromText(text,
     // // "항공권 모바일 티켓");
     // List<Reservation> reservation = Arrays.asList(new Reservation[] {
-    // new Reservation(dateTimeISOString = "2025-06-29", "flightTicket", "항공권 모바일
+    // new Reservation(dateTimeIsoString = "2025-06-29", "flightTicket", "항공권 모바일
     // 티켓", "") });
 
     // /* Save Data */

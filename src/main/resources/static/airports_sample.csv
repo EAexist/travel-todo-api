@@ -1,4 +1,4 @@
-airportName,cityName,countryISO,IATACode
+airportName,cityName,iso2DigitNationCode,IataCode
 아구니 공항,아구니,JP,AGJ
 아키타 공항,아키타,JP,AXT
 아마쿠사 비행장,아마쿠사,JP,AXJ

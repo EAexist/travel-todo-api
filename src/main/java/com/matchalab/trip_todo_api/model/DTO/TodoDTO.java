@@ -7,6 +7,6 @@ public record TodoDTO(
         String id,
         int orderKey,
         String note,
-        String completeDateISOString,
+        String completeDateIsoString,
         TodoContentDTO content) {
 }

@@ -8,8 +8,8 @@ public record ExtractFlightTicketChatResultDTO(
         @Nullable String reservationDetailHrefLink,
         @Nullable String reservationNumberOrCode,
         String flightNumber,
-        @Nullable String departureAirportIATACode,
-        @Nullable String arrivalAirportIATACode,
+        @Nullable String departureAirportIataCode,
+        @Nullable String arrivalAirportIataCode,
         @Nullable String passengerName,
-        @Nullable String departureDateTimeISOString) {
+        @Nullable String departureDateTimeIsoString) {
 }

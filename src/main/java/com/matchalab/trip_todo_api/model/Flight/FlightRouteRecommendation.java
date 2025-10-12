@@ -17,5 +17,5 @@ package com.matchalab.trip_todo_api.model.Flight;
 // // @ManyToOne @JoinColumn(name = "departure_airport_id") Airport departure,
 // // @ManyToOne @JoinColumn(name = "departure_airport_id") Airport departure,
 // // @ManyToOne @JoinColumn(name = "arrival_airport_id") Airport arrival,
-// String airlineIATACode) {
+// String airlineIataCode) {
 // }

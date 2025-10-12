@@ -9,29 +9,26 @@ import lombok.Builder;
 @Builder
 public record TripDTO(
         @Nullable String id,
-        boolean isInitialized,
+        Boolean isInitialized,
         @Nullable String title,
-        @Nullable String startDateISOString,
-        @Nullable String endDateISOString,
+        @Nullable String startDateIsoString,
+        @Nullable String endDateIsoString,
         @Nullable List<DestinationDTO> destination,
-        @Nullable List<TodoDTO> todolist,
-        @Nullable List<AccomodationDTO> accomodation) {
+        @Nullable List<TodoDTO> todolist) {
 
     public TripDTO(String id,
-            boolean isInitialized,
+            Boolean isInitialized,
             String title,
-            String startDateISOString,
-            String endDateISOString,
+            String startDateIsoString,
+            String endDateIsoString,
             List<DestinationDTO> destination,
-            List<TodoDTO> todolist,
-            List<AccomodationDTO> accomodation) {
+            List<TodoDTO> todolist) {
         this.id = id;
         this.isInitialized = isInitialized;
         this.title = title;
-        this.startDateISOString = startDateISOString;
-        this.endDateISOString = endDateISOString;
+        this.startDateIsoString = startDateIsoString;
+        this.endDateIsoString = endDateIsoString;
         this.destination = destination;
         this.todolist = todolist;
-        this.accomodation = accomodation;
     }
 }

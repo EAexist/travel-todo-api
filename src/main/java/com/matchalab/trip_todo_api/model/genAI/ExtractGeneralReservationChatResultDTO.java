@@ -1,5 +1,7 @@
 package com.matchalab.trip_todo_api.model.genAI;
 
+import java.util.List;
+
 import jakarta.annotation.Nullable;
 import lombok.Builder;
 
@@ -10,6 +12,6 @@ public record ExtractGeneralReservationChatResultDTO(
         String title,
         String note,
         @Nullable int numberOfClient,
-        @Nullable String clientName,
-        @Nullable String reservationDateTimeISOString) {
+        @Nullable List<String> clientNames,
+        @Nullable String reservationDateTimeIsoString) {
 }

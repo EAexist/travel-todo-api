@@ -2,7 +2,6 @@ package com.matchalab.trip_todo_api.service.ChatModelService;
 
 import java.util.List;
 
-import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -15,9 +14,9 @@ import com.matchalab.trip_todo_api.model.genAI.ExtractFlightTicketChatResultDTO;
 import com.matchalab.trip_todo_api.model.genAI.ExtractGeneralReservationChatResultDTO;
 import com.matchalab.trip_todo_api.model.genAI.ExtractReservationChatResultDTO;
 import com.matchalab.trip_todo_api.model.genAI.ExtractReservationChatResultDTO.ExtractReservationChatResultDTOBuilder;
-import com.matchalab.trip_todo_api.service.HtmlParserService;
 import com.matchalab.trip_todo_api.model.genAI.FlightRouteWithoutAirline;
 import com.matchalab.trip_todo_api.model.genAI.RecommendedFlightChatResult;
+import com.matchalab.trip_todo_api.service.HtmlParserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +47,9 @@ public class MockChatModelService implements ChatModelService {
                                     .reservationDetailHrefLink(null)
                                     .reservationNumberOrCode("K9N96A")
                                     .flightNumber("ZE671")
-                                    .departureAirportIATACode("ICN")
-                                    .arrivalAirportIATACode("TKS")
-                                    .departureDateTimeISOString("2025-02-20")
+                                    .departureAirportIataCode("ICN")
+                                    .arrivalAirportIataCode("TKS")
+                                    .departureDateTimeIsoString("2025-02-20")
                                     .passengerName("PYO HYEON")
                                     .build()))
                     .build();
@@ -63,10 +62,10 @@ public class MockChatModelService implements ChatModelService {
                                             "https://www.eastarjet.com/newstar/PGWRA00003?in_pnrNo=K9N96A")
                                     .reservationNumberOrCode("K9N96A")
                                     .flightNumber("ZE671")
-                                    .departureAirportIATACode("ICN")
-                                    .arrivalAirportIATACode("TKS")
+                                    .departureAirportIataCode("ICN")
+                                    .arrivalAirportIataCode("TKS")
                                     .numberOfPassenger(1)
-                                    .departureDateTimeISOString("2025-02-20")
+                                    .departureDateTimeIsoString("2025-02-20")
                                     .passengerNames(new String[] { "PYO HYEON" })
                                     .build()))
                     .build();
@@ -82,10 +81,10 @@ public class MockChatModelService implements ChatModelService {
                                     .roomTitle("도미토리 내 1인 예약 (혼성)")
                                     .numberOfGuest(1)
                                     .clientName("PYO HYEON")
-                                    .checkinDateISOString("2025-02-24")
-                                    .checkoutDateISOString("2025-02-25")
-                                    .checkinAvailableSinceThisTimeISOString("15:00")
-                                    .checkoutDeadlineTimeISOString("10:00")
+                                    .checkinDateIsoString("2025-02-24")
+                                    .checkoutDateIsoString("2025-02-25")
+                                    .checkinAvailableSinceThisTimeIsoString("15:00")
+                                    .checkoutDeadlineTimeIsoString("10:00")
                                     .location("Tokushima city nakatouriimachi 2-5, 도쿠시마, 일본, 770-0844")
                                     .accomodationType(AccomodationType.DORMITORY)
                                     .build()))
@@ -100,7 +99,7 @@ public class MockChatModelService implements ChatModelService {
                                     .title("Teshima Art Museum")
                                     .note("note")
                                     .numberOfClient(1)
-                                    .reservationDateTimeISOString("2025-02-22")
+                                    .reservationDateTimeIsoString("2025-02-22")
                                     .build(),
                             ExtractGeneralReservationChatResultDTO.builder()
                                     .reservationDetailHrefLink(
@@ -109,7 +108,7 @@ public class MockChatModelService implements ChatModelService {
                                     .title("Teshima Art Museum")
                                     .note("note")
                                     .numberOfClient(1)
-                                    .reservationDateTimeISOString("2025-02-22")
+                                    .reservationDateTimeIsoString("2025-02-22")
                                     .build()))
                     .build();
     }
@@ -118,9 +117,9 @@ public class MockChatModelService implements ChatModelService {
     public RecommendedFlightChatResult getRecommendedFlight(String destinationTitle) {
         return RecommendedFlightChatResult.builder()
                 .recommendedOutboundFlight(List.of(FlightRouteWithoutAirline.builder()
-                        .departureAirportIATACode("ICN").arrivalAirportIATACode("TKS").build()))
+                        .departureAirportIataCode("ICN").arrivalAirportIataCode("TKS").build()))
                 .recommendedReturnFlight(List.of(FlightRouteWithoutAirline.builder()
-                        .departureAirportIATACode("TKS").arrivalAirportIATACode("ICN").build()))
+                        .departureAirportIataCode("TKS").arrivalAirportIataCode("ICN").build()))
                 .build();
     }
 

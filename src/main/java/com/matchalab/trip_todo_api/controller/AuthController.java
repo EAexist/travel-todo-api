@@ -20,12 +20,14 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.model.UserAccount.GoogleProfile;
 import com.matchalab.trip_todo_api.model.UserAccount.KakaoProfile;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.model.mapper.UserAccountMapper;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;
+import com.matchalab.trip_todo_api.service.UserAccountService;
 import com.matchalab.trip_todo_api.utils.Utils;
 
 import lombok.RequiredArgsConstructor;
@@ -43,6 +45,9 @@ public class AuthController {
     @Autowired
     private UserAccountMapper userAccountMapper;
 
+    @Autowired
+    private UserAccountService userAccountService;
+
     @Value("${google.client-id}")
     private String GOOGLE_CLIENT_ID;
 
@@ -53,8 +58,10 @@ public class AuthController {
     public ResponseEntity<UserAccountDTO> guestLogin() {
         UserAccount userAccount = userAccountRepository.save(new UserAccount());
 
-        return ResponseEntity.created(Utils.getLocation((userAccount.getId())))
-                .body(userAccountMapper.mapToUserAccountDTO(userAccount));
+        UserAccountDTO userAccountDTO = userAccountService.createInitialTripIfEmpty(userAccount);
+
+        return ResponseEntity.created(Utils.getLocation((userAccountDTO.id())))
+                .body(userAccountDTO);
     }
 
     /**
@@ -72,10 +79,14 @@ public class AuthController {
                 isCreated = false;
             }
 
-            UserAccount user = userOptional.orElse(userAccountRepository.save(new UserAccount(idToken, kakaoProfile)));
+            UserAccount userAccount = userOptional
+                    .orElse(userAccountRepository.save(new UserAccount(idToken, kakaoProfile)));
+
+            UserAccountDTO userAccountDTO = userAccountService.createInitialTripIfEmpty(userAccount);
 
             return ResponseEntity.status(isCreated ? HttpStatus.CREATED : HttpStatus.SEE_OTHER)
-                    .location(Utils.getLocation((user.getId()))).body(userAccountMapper.mapToUserAccountDTO(user));
+                    .location(Utils.getLocation((userAccountDTO.id())))
+                    .body(userAccountDTO);
         } catch (HttpClientErrorException e) {
             throw e;
         }
@@ -103,16 +114,14 @@ public class AuthController {
             // UserAccount user = userOptional.orElse(userAccountRepository.save(new
             // UserAccount(googleUserDTO)));
 
+            userAccountService.createInitialTripIfEmpty(userAccount);
+
             return ResponseEntity.status(isCreated ? HttpStatus.CREATED : HttpStatus.OK)
                     .location(Utils.getLocation((userAccount.getId())))
                     .body(userAccountMapper.mapToUserAccountDTO(userAccount));
         } catch (HttpClientErrorException e) {
             throw e;
         }
-    }
-
-    private record DTO() {
-
     }
 
     /**
