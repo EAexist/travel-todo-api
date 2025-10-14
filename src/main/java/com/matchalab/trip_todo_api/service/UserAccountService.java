@@ -1,18 +1,19 @@
 package com.matchalab.trip_todo_api.service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.matchalab.trip_todo_api.exception.NotFoundException;
+import com.matchalab.trip_todo_api.mapper.TripMapper;
+import com.matchalab.trip_todo_api.mapper.UserAccountMapper;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
 import com.matchalab.trip_todo_api.model.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
-import com.matchalab.trip_todo_api.model.mapper.TripMapper;
-import com.matchalab.trip_todo_api.model.mapper.UserAccountMapper;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;
 
@@ -51,9 +52,9 @@ public class UserAccountService {
     }
 
     public UserAccountDTO createTrip(UserAccount userAccount) {
-        if (userAccount.getTrip().size() >= maxNumberOfTrip) {
-            while (userAccount.getTrip().size() >= maxNumberOfTrip) {
-                userAccount.getTrip().removeFirst();
+        if (userAccount.getTrips().size() >= maxNumberOfTrip) {
+            while (userAccount.getTrips().size() >= maxNumberOfTrip) {
+                userAccount.getTrips().removeFirst();
 
             }
         }
@@ -65,15 +66,15 @@ public class UserAccountService {
 
     public UserAccountDTO createInitialTripIfEmpty(UserAccount userAccount) {
 
-        if (userAccount.getTrip().isEmpty()) {
+        if (userAccount.getTrips().isEmpty()) {
             return createTrip(userAccount);
         } else
             return userAccountMapper.mapToUserAccountDTO(userAccount);
     }
 
-    public TripDTO getActiveTrip(String userAccountId) {
+    public TripDTO getActiveTrip(UUID userAccountId) {
 
-        String activeTripId = userAccountRepository.findById(userAccountId)
+        UUID activeTripId = userAccountRepository.findById(userAccountId)
                 .orElseThrow(() -> new NotFoundException(userAccountId)).getActiveTripId();
 
         Trip trip = tripRepository.findById(activeTripId).orElseThrow(() -> new NotFoundException(activeTripId));
@@ -81,15 +82,15 @@ public class UserAccountService {
 
     }
 
-    public TripDTO setActiveTrip(String userAccountId, String tripId) {
+    public TripDTO setActiveTrip(UUID userAccountId, UUID tripId) {
         UserAccount userAccount = userAccountRepository.findById(userAccountId)
                 .orElseThrow(() -> new NotFoundException(userAccountId));
 
         log.info(String.format("[UserAccountService.setActiveTrp]\n" + //
                 "tripId=%s\nids=%s", tripId,
-                userAccount.getTrip().stream().map(t -> t.getId()).toList().toString()));
+                userAccount.getTrips().stream().map(t -> t.getId()).toList().toString()));
 
-        if (userAccount.getTrip().stream().anyMatch(t -> t.getId().equals(tripId))) {
+        if (userAccount.getTrips().stream().anyMatch(t -> t.getId().equals(tripId))) {
             userAccount.setActiveTripId(tripId);
             return tripMapper
                     .mapToTripDTO(tripRepository.findById(tripId).orElseThrow(() -> new NotFoundException(tripId)));

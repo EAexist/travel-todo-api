@@ -1,14 +1,16 @@
 package com.matchalab.trip_todo_api.event;
 
+import java.util.UUID;
+
 import org.springframework.context.ApplicationEvent;
 
 import lombok.Getter;
 
 @Getter
 public class NewDestinationCreatedEvent extends ApplicationEvent {
-    private final String destinationId;
+    private final UUID destinationId;
 
-    public NewDestinationCreatedEvent(Object source, String destinationId) {
+    public NewDestinationCreatedEvent(Object source, UUID destinationId) {
         super(source);
         this.destinationId = destinationId;
     }

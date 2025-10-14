@@ -1,4 +1,4 @@
-package com.matchalab.trip_todo_api.model.mapper;
+package com.matchalab.trip_todo_api.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -15,8 +15,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.matchalab.trip_todo_api.config.TestConfig;
+import com.matchalab.trip_todo_api.mapper.TodoMapper;
+import com.matchalab.trip_todo_api.mapper.UserAccountMapper;
 import com.matchalab.trip_todo_api.model.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
+import com.matchalab.trip_todo_api.mapper.TripMapperImpl;
+import com.matchalab.trip_todo_api.mapper.UserAccountMapperImpl;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +69,7 @@ public class UserAccountMapperTest {
     void mapToUserAccountDTO_Given_userAccountWithEmptyTrip_When_mapped_Then_correctUserAccountDTO() {
         UserAccountDTO mappedUserAccountDTO = userAccountMapper.mapToUserAccountDTO(userAccount);
         assertNotNull(mappedUserAccountDTO);
-        assertThat(mappedUserAccountDTO).usingRecursiveComparison().isEqualTo(userAccountDTO);
+        assertNotNull(mappedUserAccountDTO.id());
+        assertThat(mappedUserAccountDTO).usingRecursiveComparison().ignoringFields("id").isEqualTo(userAccountDTO);
     }
 }

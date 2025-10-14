@@ -2,6 +2,7 @@ package com.matchalab.trip_todo_api.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
@@ -32,7 +33,7 @@ public class Destination {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @ManyToMany(mappedBy = "destination")
     @JsonIgnore

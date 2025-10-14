@@ -2,6 +2,7 @@ package com.matchalab.trip_todo_api.model.Todo;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
@@ -16,12 +17,12 @@ import lombok.Setter;
 public class TodoPresetStockTodoContentId implements Serializable {
 
     @JoinColumn(name = "todo-preset_id")
-    private String todoPresetId;
+    private UUID todoPresetId;
 
     @JoinColumn(name = "stock-todo-content_id")
-    private String stockTodoContentId;
+    private UUID stockTodoContentId;
 
-    public TodoPresetStockTodoContentId(String todoPresetId, String stockTodoContentId) {
+    public TodoPresetStockTodoContentId(UUID todoPresetId, UUID stockTodoContentId) {
         this.todoPresetId = todoPresetId;
         this.stockTodoContentId = stockTodoContentId;
     }

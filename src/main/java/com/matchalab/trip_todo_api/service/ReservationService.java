@@ -3,6 +3,7 @@ package com.matchalab.trip_todo_api.service;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -15,10 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
+import com.matchalab.trip_todo_api.mapper.ReservationMapper;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.genAI.ExtractReservationChatResultDTO;
-import com.matchalab.trip_todo_api.model.mapper.ReservationMapper;
 import com.matchalab.trip_todo_api.repository.ReservationRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.service.ChatModelService.ChatModelService;
@@ -98,15 +99,15 @@ public class ReservationService {
     // }
 
     @Transactional
-    public List<Reservation> saveReservation(String tripId, List<Reservation> reservation) throws Exception {
+    public List<Reservation> saveReservation(UUID tripId, List<Reservation> reservation) throws Exception {
 
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new NotFoundException(null));
 
         List<Reservation> savedReservations = reservationRepository.saveAll(reservation);
 
-        Boolean isAdded = trip.getReservation().addAll(savedReservations);
+        Boolean isAdded = trip.getReservations().addAll(savedReservations);
 
-        log.info("[ReservationService.saveReservation] " + Utils.asJsonString(trip.getReservation()));
+        log.info("[ReservationService.saveReservation] " + Utils.asJsonString(trip.getReservations()));
 
         trip = tripRepository.save(trip);
 
@@ -162,16 +163,16 @@ public class ReservationService {
     /**
      * Provide the details of a Trip with the given id.
      */
-    public List<Reservation> getReservation(String tripId) {
+    public List<Reservation> getReservation(UUID tripId) {
         List<Reservation> reservation = tripRepository.findById(tripId)
-                .orElseThrow(() -> new TripNotFoundException(tripId)).getReservation();
+                .orElseThrow(() -> new TripNotFoundException(tripId)).getReservations();
         return reservation;
     }
 
     /**
      * Provide the details of a Trip with the given id.
      */
-    public Reservation setLocalAppStorageFileUri(String tripId, String reservationId,
+    public Reservation setLocalAppStorageFileUri(UUID tripId, UUID reservationId,
             String localAppStorageFileUri) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new TripNotFoundException(tripId));
@@ -202,9 +203,9 @@ public class ReservationService {
     // reservation.stream().forEach(res -> {
     // res.setTrip(trip);
     // });
-    // trip.getReservation().addAll(reservation);
+    // trip.getReservations().addAll(reservation);
 
-    // return tripRepository.save(trip).getReservation().subList(-1 *
+    // return tripRepository.save(trip).getReservations().subList(-1 *
     // (reservation.size()), -1);
     // }
 
@@ -249,9 +250,9 @@ public class ReservationService {
     // reservation.stream().forEach(res -> {
     // res.setTrip(trip);
     // });
-    // trip.getReservation().addAll(reservation);
+    // trip.getReservations().addAll(reservation);
 
-    // return tripRepository.save(trip).getReservation().subList(-1 *
+    // return tripRepository.save(trip).getReservations().subList(-1 *
     // (reservation.size()), -1);
     // }
 

@@ -1,7 +1,11 @@
 package com.matchalab.trip_todo_api.model.Todo;
 
+import java.util.UUID;
+
+import org.springframework.data.domain.Persistable;
+
+import com.matchalab.trip_todo_api.generator.GeneratedOrCustomUUID;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.Flight.Flight;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
@@ -13,7 +17,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,20 +30,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@AllArgsConstructor
-public class Todo {
+// @AllArgsConstructor
+@Builder
+public class Todo implements Persistable<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    // @GeneratedOrCustomUUID)
+    private UUID id;
 
     private String note;
     private String completeDateIsoString;
     private int orderKey;
-
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "trip_id")
-    // private Trip trip;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @Nullable
@@ -46,7 +51,52 @@ public class Todo {
     @Nullable
     private StockTodoContent stockTodoContent;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_id")
+    private Trip trip;
+
+    @Transient
+    @Builder.Default
+    private boolean isNew = true;
+
+    @Override
+    public UUID getId() {
+        return id;
+    }
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
+    }
+
+    @PostPersist
+    @PostLoad
+    private void setIsNotNew() {
+        this.isNew = false;
+    }
+
+    public Todo(UUID id,
+            String note,
+            String completeDateIsoString,
+            int orderKey,
+            CustomTodoContent customTodoContent,
+            StockTodoContent stockTodoContent,
+            Trip trip,
+            boolean isNew) {
+        this.id = id;
+        this.note = note;
+        this.completeDateIsoString = completeDateIsoString;
+        this.orderKey = orderKey;
+        this.customTodoContent = customTodoContent != null
+                ? customTodoContent
+                : null;
+        this.stockTodoContent = stockTodoContent != null ? stockTodoContent
+                : null;
+        this.isNew = true;
+    }
+
     public Todo(Todo todo) {
+        this.id = todo.getId();
         this.note = todo.getNote();
         this.completeDateIsoString = todo.getCompleteDateIsoString();
         this.orderKey = todo.getOrderKey();
@@ -55,5 +105,6 @@ public class Todo {
                 : null;
         this.stockTodoContent = todo.getStockTodoContent() != null ? new StockTodoContent(todo.getStockTodoContent())
                 : null;
+        this.isNew = todo.isNew();
     }
 }

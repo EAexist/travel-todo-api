@@ -1,10 +1,16 @@
 package com.matchalab.trip_todo_api.model.Flight;
 
+import java.util.UUID;
+
+import com.matchalab.trip_todo_api.generator.GeneratedOrCustomUUID;
+
+import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,8 +25,9 @@ import lombok.experimental.SuperBuilder;
 public class Flight {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    String id;
+    @NonNull
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     String flightNumber;
 

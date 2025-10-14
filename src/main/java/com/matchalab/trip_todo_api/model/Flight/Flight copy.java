@@ -26,7 +26,7 @@
 
 // @Id
 // @GeneratedValue(strategy = GenerationType.UUID)
-// String id;
+// UUID id;
 
 // @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 // @Nullable

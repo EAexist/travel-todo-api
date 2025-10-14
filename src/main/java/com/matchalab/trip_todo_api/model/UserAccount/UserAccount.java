@@ -2,6 +2,7 @@ package com.matchalab.trip_todo_api.model.UserAccount;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -30,7 +31,7 @@ public class UserAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Nullable
     private String nickname;
@@ -44,18 +45,16 @@ public class UserAccount {
     @JdbcTypeCode(SqlTypes.JSON)
     private GoogleProfile googleProfile;
 
-    // @OneToMany(mappedBy = "userAccount", cascade = CascadeType.ALL, orphanRemoval
-    // = true)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Trip> trip = new ArrayList<Trip>();
-
     @Nullable
-    private String activeTripId;
+    private UUID activeTripId;
+
+    @OneToMany(mappedBy = "userAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Trip> trips = new ArrayList<Trip>();
 
     public UserAccount() {
         this.nickname = "guest";
-        this.trip = new ArrayList<Trip>();
+        this.trips = new ArrayList<Trip>();
     }
 
     public UserAccount(String kakaoId, KakaoProfile kakaoProfile) {
@@ -76,13 +75,14 @@ public class UserAccount {
         this.googleProfile = googleUserDTO.user();
     }
 
-    public void removeTrip(Trip trip) {
-        this.trip.remove(trip);
-        trip.setUserAccount(null);
+    public Trip addTrip(Trip trip) {
+        this.trips.add(trip);
+        trip.setUserAccount(this);
+        return trip;
     }
 
-    public Trip addTrip(Trip trip) {
-        this.trip.add(trip);
-        return trip;
+    public void removeTrip(Trip trip) {
+        this.trips.remove(trip);
+        trip.setUserAccount(null);
     }
 }

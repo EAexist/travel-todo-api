@@ -72,14 +72,14 @@ public class DataLoader implements CommandLineRunner {
     private final ResourceLoader resourceLoader;
 
     @Override
-    @Transactional
-    public void run(String... args) throws Exception {
+    // @Transactional
+    public void run(String... args) {
 
         try {
-            stockTodoContentRepository.deleteAll();
-            todoPresetRepository.deleteAll();
-            todoPresetStockTodoContentRepository.deleteAll();
-            log.info("Deleted All");
+            // todoPresetRepository.deleteAll();
+            // stockTodoContentRepository.deleteAll();
+            // todoPresetStockTodoContentRepository.deleteAll();
+            // log.info("Deleted All");
 
             initializeTodoPreset();
 
@@ -98,14 +98,14 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
-    private void initializeTodoPreset() throws Exception {
+    private void initializeTodoPreset() {
         List<StockTodoContent> stockTodoContent = stockTodoContentRepository.saveAll(readStockTodoContentJson());
         log.info("Saved: stockTodoContent");
 
         TodoPreset defaultTodoPreset = todoPresetRepository.save(TodoPreset.builder().title("기본").build());
         log.info("Saved: defaultTodoPreset");
 
-        defaultTodoPreset.getTodoPresetStockTodoContent().addAll(stockTodoContent.stream().map(content -> {
+        defaultTodoPreset.getTodoPresetStockTodoContents().addAll(stockTodoContent.stream().map(content -> {
             return TodoPresetStockTodoContent.builder().todoPreset(defaultTodoPreset).stockTodoContent(content)
                     .isFlaggedToAdd(true).build();
         }).toList());
@@ -115,7 +115,7 @@ public class DataLoader implements CommandLineRunner {
         log.info("Saved: TodoPresetStockTodoContent");
     }
 
-    private List<Airport> readCsv() throws IOException {
+    private List<Airport> readCsv() {
         String filePath = "classpath:/static/airports_sample.csv";
         Resource resource = resourceLoader.getResource(filePath);
         try (CSVReader reader = new CSVReader(new InputStreamReader(resource.getInputStream()))) {
@@ -129,10 +129,13 @@ public class DataLoader implements CommandLineRunner {
                     .build();
 
             return csvToBean.parse();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<Airport>();
         }
     }
 
-    public List<Airline> readCsv_airline() throws IOException {
+    public List<Airline> readCsv_airline() {
         String filePath = "classpath:/static/airlines_sample.csv";
         Resource resource = resourceLoader.getResource(filePath);
         try (CSVReader reader = new CSVReader(new InputStreamReader(resource.getInputStream()))) {
@@ -146,10 +149,13 @@ public class DataLoader implements CommandLineRunner {
                     .build();
 
             return csvToBean.parse();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<Airline>();
         }
     }
 
-    public static List<StockTodoContent> readStockTodoContentJson() throws Exception {
+    public static List<StockTodoContent> readStockTodoContentJson() {
         List<StockTodoContent> presets = new ArrayList<StockTodoContent>();
         try {
             ObjectMapper mapper = new ObjectMapper();

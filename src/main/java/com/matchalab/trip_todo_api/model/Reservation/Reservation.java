@@ -1,10 +1,15 @@
 package com.matchalab.trip_todo_api.model.Reservation;
 
+import java.util.UUID;
+
 import javax.validation.constraints.Size;
 
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
+import com.matchalab.trip_todo_api.generator.GeneratedOrCustomUUID;
 import com.matchalab.trip_todo_api.model.Accomodation;
+import com.matchalab.trip_todo_api.model.Trip;
 
+import io.micrometer.common.lang.NonNull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
@@ -14,7 +19,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,8 +38,9 @@ import lombok.Setter;
 public class Reservation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @NonNull
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     ReservationCategory category;
     // String dateTimeIsoString;
@@ -41,27 +49,27 @@ public class Reservation {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    String rawText;
+    private String rawText;
 
     @Nullable
-    String code;
+    private String code;
 
-    String note;
+    private String note;
 
     @Nullable
     @Column(length = 2048)
     @Size(max = 2048, message = "primaryHrefLink cannot exceed 2048 characters.")
-    String primaryHrefLink;
+    private String primaryHrefLink;
 
     @Nullable
-    String serverFileUri;
+    private String serverFileUri;
 
     @Nullable
-    String localAppStorageFileUri;
+    private String localAppStorageFileUri;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @Nullable
-    Accomodation accomodation;
+    private Accomodation accomodation;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @Nullable
@@ -74,6 +82,10 @@ public class Reservation {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @Nullable
     private GeneralReservation generalReservation;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_id")
+    private Trip trip;
 
     public Reservation(
             Reservation reservation) {

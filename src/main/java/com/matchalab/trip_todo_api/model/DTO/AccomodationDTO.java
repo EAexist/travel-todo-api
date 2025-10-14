@@ -1,12 +1,13 @@
 package com.matchalab.trip_todo_api.model.DTO;
 
 import java.util.Map;
+import java.util.UUID;
 
 import lombok.Builder;
 
 @Builder
 public record AccomodationDTO(
-        String id,
+        UUID id,
         String title,
         String roomTitle,
         int numberOfGuest,

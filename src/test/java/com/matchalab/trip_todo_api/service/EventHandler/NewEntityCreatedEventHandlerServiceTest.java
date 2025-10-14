@@ -7,6 +7,7 @@ import static org.mockito.Mockito.lenient;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -32,7 +33,7 @@ import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Flight.Airline;
 import com.matchalab.trip_todo_api.model.Flight.Airport;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
-import com.matchalab.trip_todo_api.model.mapper.FlightRouteMapperImpl;
+import com.matchalab.trip_todo_api.mapper.FlightRouteMapperImpl;
 import com.matchalab.trip_todo_api.repository.AirlineRepository;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.FlightRouteRepository;
@@ -115,7 +116,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
         // newEntityCreatedEventHandler.setGeminiChatModelService(new
         // GeminiChatModelService());
 
-        lenient().when(destinationRepository.findById(anyString()))
+        lenient().when(destinationRepository.findById(any()))
                 .thenReturn(Optional.of(DestinationFactory.createValidDestination("오사카")));
 
         lenient().when(destinationRepository.save(any(Destination.class))).thenAnswer(invocation -> {
@@ -126,17 +127,17 @@ public class NewEntityCreatedEventHandlerServiceTest {
             return invocation.getArgument(0);
         });
 
-        lenient().when(flightRouteRepository.findById(anyString()))
+        lenient().when(flightRouteRepository.findById(any()))
                 .thenReturn(Optional.of(new FlightRoute(AirportFactory.createValidAirport("ICN"),
                         AirportFactory.createValidAirport("KIX"))));
 
-        lenient().when(flightRouteRepository.findByDepartureIataCodeAndArrivalIataCode(anyString(), anyString()))
+        lenient().when(flightRouteRepository.findByDepartureIataCodeAndArrivalIataCode(any(), any()))
                 .thenAnswer(invocation -> {
                     return Optional.of(new FlightRoute(AirportFactory.createValidAirport(invocation.getArgument(0)),
                             AirportFactory.createValidAirport(invocation.getArgument(1))));
                 });
 
-        lenient().when(airlineRepository.findById(anyString())).thenAnswer(invocation -> {
+        lenient().when(airlineRepository.findById(any())).thenAnswer(invocation -> {
             return airlines.stream().filter(al -> al.getIataCode().equals(invocation.getArgument(0))).findAny();
         });
         // when(flightRouteMapper.mapToFlightRoute(any(FlightRouteWithoutAirline.class))).thenAnswer(invocation
@@ -147,7 +148,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
         // new Airport(frWithoutAirline.arrivalAirportIataCode()), null);
         // });
 
-        // when(geminiChatModelService.getRecommendedFlight(anyString())).thenReturn(
+        // when(geminiChatModelService.getRecommendedFlight(any())).thenReturn(
         // RecommendedFlightChatResult.builder()
         // .recommendedOutboundFlight(
         // List.of(FlightRouteWithoutAirline.builder().departureAirportIataCode("ICN")
@@ -165,7 +166,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
             throws Exception {
 
         CompletableFuture<Destination> future = newEntityCreatedEventHandler
-                .processNewDestinationAsync(new NewDestinationCreatedEvent(this, "ID"));
+                .processNewDestinationAsync(new NewDestinationCreatedEvent(this, UUID.randomUUID()));
         Destination destination = future.get();
 
         log.info(String.format("destination: %s", Utils.asJsonString(destination)));
@@ -195,7 +196,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
             throws Exception {
 
         CompletableFuture<FlightRoute> future = newEntityCreatedEventHandler
-                .processNewFlightRouteAsync(new NewFlightRouteCreatedEvent(this, "ID"));
+                .processNewFlightRouteAsync(new NewFlightRouteCreatedEvent(this, UUID.randomUUID()));
         FlightRoute flightRoute = future.get();
 
         log.info(String.format("FlightRoute: %s", Utils.asJsonString(flightRoute)));

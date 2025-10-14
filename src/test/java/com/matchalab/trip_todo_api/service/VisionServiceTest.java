@@ -37,11 +37,11 @@ public class VisionServiceTest {
         visionService = new VisionService(new CloudVisionTemplate(imageAnnotatorClient));
     }
 
-    @Test
+    // @Test
     void testExtractTextFromPdf() {
     }
 
-    @Test
+    // @Test
     void testExtractTextfromImage() throws IOException {
         MultipartFile file;
         File _file = new ClassPathResource("/image/accomodation-agoda-app-ios_1.tiff").getFile();

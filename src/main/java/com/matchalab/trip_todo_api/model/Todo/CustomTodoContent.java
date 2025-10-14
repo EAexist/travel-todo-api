@@ -1,5 +1,7 @@
 package com.matchalab.trip_todo_api.model.Todo;
 
+import java.util.UUID;
+
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -38,7 +40,7 @@ public class CustomTodoContent extends TodoContent {
 
     @Builder
     public CustomTodoContent(
-            String id,
+            UUID id,
             Boolean isStock,
             String category,
             String type,

@@ -3,6 +3,7 @@ package com.matchalab.trip_todo_api.model;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
@@ -37,13 +38,10 @@ public class Trip {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Builder.Default
     private String createDateIsoString = Instant.now().toString();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private UserAccount userAccount;
 
     private String title;
     private String startDateIsoString;
@@ -52,26 +50,26 @@ public class Trip {
     @Builder.Default
     private Boolean isInitialized = false;
 
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "userAccount_id")
-    // private UserAccount userAccount;
-
-    @Builder.Default
     @ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(name = "trip_to_destination", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "destination_id"))
+    @Builder.Default
     private List<Destination> destination = new ArrayList<Destination>();
 
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Todo> todolist = new ArrayList<Todo>();
 
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Reservation> reservation = new ArrayList<Reservation>();
+    private List<Reservation> reservations = new ArrayList<Reservation>();
 
-    @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
+    @Nullable
     private TodoPreset todoPreset;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userAccount_id")
+    private UserAccount userAccount;
 
     public Trip(Trip trip) {
         this();
@@ -80,11 +78,31 @@ public class Trip {
         this.endDateIsoString = trip.getEndDateIsoString();
         this.destination = trip.getDestination();
         this.todolist = trip.getTodolist();
-        this.reservation = trip.getReservation();
+        this.reservations = trip.getReservations();
     }
 
+    /* Todo */
     public void addTodo(Todo todo) {
-        todolist.add(todo);
-        // todo.setTrip(this); // This is the key step
+        this.todolist.add(todo);
+        todo.setTrip(this);
+        // return todo;
+    }
+
+    public void removeTodo(Todo todo) {
+        this.todolist.remove(todo);
+        todo.setTrip(null);
+    }
+
+    /* Reservation */
+
+    public Reservation addReservation(Reservation reservation) {
+        this.reservations.add(reservation);
+        reservation.setTrip(this);
+        return reservation;
+    }
+
+    public void removeReservation(Reservation reservation) {
+        this.reservations.remove(reservation);
+        reservation.setTrip(null);
     }
 }

@@ -1,8 +1,8 @@
-package com.matchalab.trip_todo_api.model.mapper;
+package com.matchalab.trip_todo_api.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -19,16 +18,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.matchalab.trip_todo_api.config.TestConfig;
-import com.matchalab.trip_todo_api.model.Icon;
+import com.matchalab.trip_todo_api.mapper.TodoMapper;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
-import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
+import com.matchalab.trip_todo_api.mapper.TodoMapperImpl;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @SpringBootTest
-// @ExtendWith(MockitoExtension.class)
 @Import({ TestConfig.class })
 @ContextConfiguration(classes = {
         TodoMapperImpl.class
@@ -36,6 +34,12 @@ import lombok.extern.slf4j.Slf4j;
 @TestInstance(Lifecycle.PER_CLASS)
 @Slf4j
 public class TodoMapperTest {
+
+    @Autowired
+    private TodoDTO stockTodoDTO;
+
+    @Autowired
+    private Todo stockTodo;
 
     @Autowired
     private TodoDTO customTodoDTO;
@@ -46,8 +50,8 @@ public class TodoMapperTest {
     @MockitoBean
     private StockTodoContentRepository stockTodoContentRepository;
 
-    @InjectMocks
-    private TodoMapperImpl todoMapper;
+    @Autowired
+    private TodoMapper todoMapper;
 
     /*
      * https://velog.io/@gwichanlee/MapStruct-Test-Code-%EC%9E%91%EC%84%B1
@@ -57,9 +61,26 @@ public class TodoMapperTest {
 
     @BeforeAll
     public void setUp() throws Exception {
-        when(stockTodoContentRepository.findById(anyString()))
-                .thenReturn(Optional.of(new StockTodoContent("0", true, "foreign",
-                        "currency", "환전", new Icon("💱"))));
+        when(stockTodoContentRepository.findById(any()))
+                .thenReturn(Optional.of(stockTodo.getStockTodoContent()));
+    }
+
+    @Test
+    void mapToTodo_Given_stockTodoDTO_When_mapped_Then_correctTodo() {
+
+        Todo mappedTodo = todoMapper.mapToTodo(stockTodoDTO);
+        assertNotNull(stockTodoDTO);
+        assertNotNull(mappedTodo);
+        assertThat(mappedTodo).usingRecursiveComparison()
+                .ignoringFieldsOfTypes().ignoringFields().isEqualTo(stockTodo);
+    }
+
+    @Test
+    void mapToTodoDTO_Given_stockTodo_When_mapped_Then_correctTodoDTO() {
+        TodoDTO mappedTodoDTO = todoMapper.mapToTodoDTO(stockTodo);
+        assertNotNull(stockTodo);
+        assertNotNull(mappedTodoDTO);
+        assertThat(mappedTodoDTO).usingRecursiveComparison().isEqualTo(stockTodoDTO);
     }
 
     @Test

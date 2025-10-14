@@ -1,6 +1,9 @@
 package com.matchalab.trip_todo_api.model.Reservation;
 
 import java.util.List;
+import java.util.UUID;
+
+import com.matchalab.trip_todo_api.generator.GeneratedOrCustomUUID;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
@@ -10,6 +13,7 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -21,8 +25,10 @@ import lombok.Setter;
 @Builder
 public class GeneralReservation {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @NonNull
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
+
     private String title;
     @Nullable
     private int numberOfClient;

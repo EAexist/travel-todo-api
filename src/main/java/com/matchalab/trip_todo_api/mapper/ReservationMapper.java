@@ -1,4 +1,4 @@
-package com.matchalab.trip_todo_api.model.mapper;
+package com.matchalab.trip_todo_api.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

@@ -18,7 +18,7 @@
 // import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 // import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 // import com.matchalab.trip_todo_api.model.DTO.TripDTO;
-// import com.matchalab.trip_todo_api.model.Todo.TodoPresetItem;
+// import com.matchalab.trip_todo_api.model.Todo.TodoPresetItemDTO;
 // import com.matchalab.trip_todo_api.service.TripService;
 // import com.matchalab.trip_todo_api.utils.Utils;
 
@@ -38,7 +38,7 @@
 // * Provide the details of a Trip with the given id.
 // */
 // @GetMapping("/{tripId}")
-// public ResponseEntity<TripDTO> trip(@PathVariable String tripId) {
+// public ResponseEntity<TripDTO> trip(@PathVariable UUID tripId) {
 // try {
 // return ResponseEntity.ok().body(tripService.getTrip(tripId));
 // } catch (HttpClientErrorException e) {
@@ -51,7 +51,7 @@
 // * Update the metadata(title, destination, schedule) of a Trip.
 // */
 // @PatchMapping("/{tripId}")
-// public ResponseEntity<TripDTO> patchTrip(@PathVariable String tripId,
+// public ResponseEntity<TripDTO> patchTrip(@PathVariable UUID tripId,
 // @RequestBody TripDTO newTripDTO) {
 // try {
 // return ResponseEntity.ok().body(tripService.patchTrip(tripId, newTripDTO));
@@ -64,10 +64,10 @@
 // * Provide the todo preset of a Trip.
 // */
 // @GetMapping("/{tripId}/todoPreset")
-// public ResponseEntity<List<TodoPresetItem>> getTodoPreset(@PathVariable
+// public ResponseEntity<List<TodoPresetItemDTO>> getTodoPreset(@PathVariable
 // String tripId) {
 // try {
-// List<TodoPresetItem> StockTodoContentDTOs =
+// List<TodoPresetItemDTO> StockTodoContentDTOs =
 // tripService.getTodoPreset(tripId);
 // return ResponseEntity.ok().body(StockTodoContentDTOs);
 // } catch (HttpClientErrorException e) {
@@ -80,7 +80,7 @@
 // * If the destination doesn't exist in databse, create new one.
 // */
 // @PostMapping("/{tripId}/destination")
-// public ResponseEntity<DestinationDTO> createDestination(@PathVariable String
+// public ResponseEntity<DestinationDTO> createDestination(@PathVariable UUID
 // tripId,
 // @RequestBody DestinationDTO requestedDestinationDTO) {
 // try {
@@ -99,7 +99,7 @@
 // */
 
 // @DeleteMapping("/{tripId}/destination/{destinationId}")
-// public ResponseEntity<Void> deleteDestination(@PathVariable String
+// public ResponseEntity<Void> deleteDestination(@PathVariable UUID
 // destinationId) {
 // try {
 // tripService.deleteDestination(destinationId);
@@ -144,7 +144,7 @@
 // * Provide the details of an Trip with the given id.
 // */
 // @PatchMapping("/{tripId}/accomodation/{accomodationId}")
-// public ResponseEntity<AccomodationDTO> patchAccomodation(@PathVariable String
+// public ResponseEntity<AccomodationDTO> patchAccomodation(@PathVariable UUID
 // accomodationId,
 // @RequestBody AccomodationDTO newAccomodationDTO) {
 // try {
@@ -157,7 +157,7 @@
 // }
 
 // @DeleteMapping("/{tripId}/accomodation/{accomodationId}")
-// public ResponseEntity<Void> deleteAccomodation(@PathVariable String
+// public ResponseEntity<Void> deleteAccomodation(@PathVariable UUID
 // accomodationId) {
 // try {
 // tripService.deleteAccomodation(accomodationId);
@@ -171,7 +171,7 @@
 // * Provide the details of an Trip with the given id.
 // */
 // // @PostMapping("/{tripId}/customTodo")
-// // public ResponseEntity<TodoDTO> createCustomTodo(@PathVariable String
+// // public ResponseEntity<TodoDTO> createCustomTodo(@PathVariable UUID
 // tripId,
 // // @RequestBody String category) {
 // // try {
@@ -187,7 +187,7 @@
 // * Provide the details of an Trip with the given id.
 // */
 // // @PostMapping("/{tripId}/stockTodo")
-// // public ResponseEntity<List<TodoDTO>> createPresetTodo(@PathVariable String
+// // public ResponseEntity<List<TodoDTO>> createPresetTodo(@PathVariable UUID
 // // tripId,
 // // @RequestBody List<String> stockIds) {
 // // try {

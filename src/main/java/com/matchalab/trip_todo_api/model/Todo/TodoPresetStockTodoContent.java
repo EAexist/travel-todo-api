@@ -28,23 +28,19 @@ public class TodoPresetStockTodoContent {
     @Builder.Default
     private TodoPresetStockTodoContentId id = new TodoPresetStockTodoContentId();
 
-    // The two sides of the many-to-many relationship
-    @OneToOne(cascade = CascadeType.ALL)
-    @MapsId("todoPresetId") // Maps the todoPresetId field of the composite key
-    @JoinColumn(name = "todo-preset_id")
-    private TodoPreset todoPreset;
-
     @OneToOne(cascade = CascadeType.ALL)
     @MapsId("stockTodoContentId") // Maps the stockTodoContentId field of the composite key
     @JoinColumn(name = "stock-todo-content_id")
     private StockTodoContent stockTodoContent;
 
-    // The relationship properties!
     @Builder.Default
     private Boolean isFlaggedToAdd = false;
 
-    // Getters, setters, and constructors
-    // A constructor to easily create the association
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("todoPresetId")
+    @JoinColumn(name = "todo-preset_id")
+    private TodoPreset todoPreset;
+
     public TodoPresetStockTodoContent(TodoPreset todoPreset, StockTodoContent stockTodoContent,
             Boolean isFlaggedToAdd) {
         this.todoPreset = todoPreset;

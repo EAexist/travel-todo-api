@@ -32,10 +32,12 @@ public class HtmlParserServiceTest {
     @BeforeAll
     public void setup() throws IOException {
         agoda_gmail_html_html = StreamUtils.copyToString(
-                (new ClassPathResource("text/accomodation/agoda/gmail_html_ko.txt")).getInputStream(),
+                (new ClassPathResource("text/accomodation/agoda/gmail_html_ko_hostelPAQTokushima.txt"))
+                        .getInputStream(),
                 StandardCharsets.UTF_8);
         agoda_gmail_text = StreamUtils.copyToString(
-                (new ClassPathResource("text/accomodation/agoda/gmail_text_ko.txt")).getInputStream(),
+                (new ClassPathResource("text/accomodation/agoda/gmail_text_ko_hostelPAQTokushima.txt"))
+                        .getInputStream(),
                 StandardCharsets.UTF_8);
     }
 

@@ -1,4 +1,5 @@
-// package com.matchalab.trip_todo_api.model.mapper;
+package com.matchalab.trip_todo_api.mapper;
+// package com.matchalab.trip_todo_api.mapper;
 
 // @Mapper(unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE,
 // componentModel = "spring")

@@ -2,6 +2,7 @@ package com.matchalab.trip_todo_api.event.handler;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,13 @@ import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.event.NewFlightRouteCreatedEvent;
 import com.matchalab.trip_todo_api.event.NewTripCreatedEvent;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
+import com.matchalab.trip_todo_api.mapper.FlightRouteMapper;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.Flight.Airline;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.genAI.FlightRouteWithoutAirline;
 import com.matchalab.trip_todo_api.model.genAI.RecommendedFlightChatResult;
-import com.matchalab.trip_todo_api.model.mapper.FlightRouteMapper;
 import com.matchalab.trip_todo_api.repository.AirlineRepository;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.FlightRouteRepository;
@@ -70,7 +71,7 @@ public class NewEntityCreatedEventHandler {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void processNewTripCreated(NewTripCreatedEvent event) {
         log.info(String.format("[processNewTripCreated] tripId: %s", event.getTripId()));
-        String id = event.getTripId();
+        UUID id = event.getTripId();
         Trip trip = tripRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
 
         trip.setTodoPreset(todoPresetRepository.findByTitle("기본").orElseThrow(() -> new NotFoundException(null)));
@@ -96,7 +97,7 @@ public class NewEntityCreatedEventHandler {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CompletableFuture<Destination> processNewDestinationAsync(NewDestinationCreatedEvent event) {
         log.info(String.format("[processNewDestinationAsync] destinationId: %s", event.getDestinationId()));
-        String id = event.getDestinationId();
+        UUID id = event.getDestinationId();
         Destination destination = destinationRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
         RecommendedFlightChatResult recommendedFlightChatResult = chatModelService
                 .getRecommendedFlight(destination.getTitle());
@@ -115,7 +116,7 @@ public class NewEntityCreatedEventHandler {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CompletableFuture<FlightRoute> processNewFlightRouteAsync(NewFlightRouteCreatedEvent event) {
         log.info(String.format("[processNewFlightRouteAsync] flightRouteId: %s", event.getFlightRouteId()));
-        String id = event.getFlightRouteId();
+        UUID id = event.getFlightRouteId();
         FlightRoute flightRoute = flightRouteRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
         List<String> airlineIATAcodes = chatModelService.getRecommendedAirline(flightRoute);
 

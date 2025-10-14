@@ -2,6 +2,7 @@ package com.matchalab.trip_todo_api.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class ReservationController {
      * Provide the details of a Trip with the given id.
      */
     @GetMapping(value = "/")
-    public ResponseEntity<List<Reservation>> getReservation(@PathVariable String tripId) {
+    public ResponseEntity<List<Reservation>> getReservation(@PathVariable UUID tripId) {
         try {
             return ResponseEntity.ok().body(reservationService.getReservation(tripId));
         } catch (HttpClientErrorException e) {
@@ -50,7 +51,7 @@ public class ReservationController {
 
     @PostMapping(value = "")
     public ResponseEntity<List<Reservation>> createReservationFromText(
-            @PathVariable String tripId,
+            @PathVariable UUID tripId,
             @RequestBody CreateReservationDTO createReservationDTO) {
         try {
             String parsedConfirmationText = htmlParserService
@@ -91,23 +92,26 @@ public class ReservationController {
     /**
      * Provide the details of a Trip with the given id.
      */
-    @PatchMapping(value = "/{reservationId}")
-    public ResponseEntity<Reservation> setLocalAppStorageFileUri(@PathVariable String tripId,
-            @PathVariable String reservationId, @RequestBody Map<String, String> body) {
-        try {
-            return ResponseEntity.ok().body(reservationService.setLocalAppStorageFileUri(tripId, reservationId,
-                    body.get("localAppStorageFileUri")));
-        } catch (HttpClientErrorException e) {
-            throw e;
-        }
-    }
+    // @PatchMapping(value = "/{reservationId}")
+    // public ResponseEntity<Reservation> setLocalAppStorageFileUri(@PathVariable
+    // UUID tripId,
+    // @PathVariable UUID reservationId, @RequestBody Map<String, String> body) {
+    // try {
+    // return
+    // ResponseEntity.ok().body(reservationService.setLocalAppStorageFileUri(tripId,
+    // reservationId,
+    // body.get("localAppStorageFileUri")));
+    // } catch (HttpClientErrorException e) {
+    // throw e;
+    // }
+    // }
 
     /**
      * Provide the details of a Trip with the given id.
      */
     // @PostMapping(value = "/", params = "images")
     // public ResponseEntity<ReservationImageAnalysisResult>
-    // createReservationFromImage(@PathVariable String tripId,
+    // createReservationFromImage(@PathVariable UUID tripId,
     // @RequestParam("image") List<MultipartFile> files, @RequestParam
     // ReservationCategory reservationType) {
     // try {
@@ -125,7 +129,7 @@ public class ReservationController {
      */
     // @PostMapping(value = "/flight")
     // public ResponseEntity<List<Reservation>>
-    // createFlightTicketReservationFromImage(@PathVariable String tripId,
+    // createFlightTicketReservationFromImage(@PathVariable UUID tripId,
     // @RequestParam("image") List<MultipartFile> files) {
     // try {
     // return

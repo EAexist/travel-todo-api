@@ -1,12 +1,14 @@
 package com.matchalab.trip_todo_api.model.Todo;
 
+import java.util.UUID;
+
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.matchalab.trip_todo_api.generator.GeneratedOrCustomUUID;
 import com.matchalab.trip_todo_api.model.Icon;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
@@ -23,8 +25,9 @@ import lombok.Setter;
 @Builder(builderMethodName = "todoContentBuilder")
 public class TodoContent {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @NonNull
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Builder.Default
     private Boolean isStock = false;

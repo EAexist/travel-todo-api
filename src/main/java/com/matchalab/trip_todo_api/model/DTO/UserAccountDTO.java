@@ -1,12 +1,13 @@
 package com.matchalab.trip_todo_api.model.DTO;
 
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Singular;
 
 @Builder
-public record UserAccountDTO(String id, @Nullable String nickname,
-        @Singular("tripSummary") List<TripSummaryDTO> tripSummary, String activeTripId) {
+public record UserAccountDTO(UUID id, @Nullable String nickname,
+        @Singular("tripSummary") List<TripSummaryDTO> tripSummary, UUID activeTripId) {
 }

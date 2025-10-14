@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -84,9 +85,9 @@ public class ReservationControllerIntegrationTest {
     @Autowired
     private Reservation reservation_accomodation_HostelPAQTokushima;
 
-    private String userAccountId;
+    private UUID userAccountId;
 
-    private String tripId;
+    private UUID tripId;
 
     @BeforeAll
     void setUp() {

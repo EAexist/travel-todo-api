@@ -14,7 +14,7 @@ public class Location {
 
     // @Id
     // @GeneratedValue(strategy = GenerationType.UUID)
-    // String id;
+    // UUID id;
 
     String name;
     String title;

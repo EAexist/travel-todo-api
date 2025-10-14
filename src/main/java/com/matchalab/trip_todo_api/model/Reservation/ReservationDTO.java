@@ -1,5 +1,7 @@
 package com.matchalab.trip_todo_api.model.Reservation;
 
+import java.util.UUID;
+
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.model.Accomodation;
 
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Builder
 public class ReservationDTO {
 
-    private String id;
+    private UUID id;
 
     ReservationCategory category;
     // String rawText;

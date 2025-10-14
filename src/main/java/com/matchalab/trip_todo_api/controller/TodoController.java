@@ -1,5 +1,7 @@
 package com.matchalab.trip_todo_api.controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
-import com.matchalab.trip_todo_api.service.TripService;
+import com.matchalab.trip_todo_api.service.TodoService;
 import com.matchalab.trip_todo_api.utils.Utils;
 
 import lombok.RequiredArgsConstructor;
@@ -26,16 +28,16 @@ import lombok.extern.slf4j.Slf4j;
 public class TodoController {
 
     @Autowired
-    private final TripService tripService;
+    private final TodoService todoService;
 
     /**
      * Provide the details of an Trip with the given id.
      */
     @PostMapping("")
-    public ResponseEntity<TodoDTO> createTodo(@PathVariable String tripId, @RequestBody TodoDTO requestbody) {
+    public ResponseEntity<TodoDTO> createTodo(@PathVariable UUID tripId, @RequestBody TodoDTO requestbody) {
         try {
             log.info(String.format("[TodoController.createTodo] %s %s", tripId, Utils.asJsonString(requestbody)));
-            TodoDTO todoDTO = tripService.createTodo(tripId, requestbody);
+            TodoDTO todoDTO = todoService.createTodo(tripId, requestbody);
             return ResponseEntity.created(Utils.getLocation(todoDTO.id())).body(todoDTO);
         } catch (HttpClientErrorException e) {
             throw e;
@@ -46,9 +48,9 @@ public class TodoController {
      * Provide the details of an Trip with the given id.
      */
     @PatchMapping("/{todoId}")
-    public ResponseEntity<TodoDTO> patchTodo(@PathVariable String todoId, @RequestBody TodoDTO newTodoDTO) {
+    public ResponseEntity<TodoDTO> patchTodo(@PathVariable UUID todoId, @RequestBody TodoDTO newTodoDTO) {
         try {
-            TodoDTO todoDTO = tripService.patchTodo(todoId, newTodoDTO);
+            TodoDTO todoDTO = todoService.patchTodo(todoId, newTodoDTO);
             return ResponseEntity.ok().body(todoDTO);
         } catch (HttpClientErrorException e) {
             throw e;
@@ -59,9 +61,9 @@ public class TodoController {
      * Provide the details of an Trip with the given id.
      */
     @DeleteMapping("/{todoId}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable String todoId) {
+    public ResponseEntity<Void> deleteTodo(@PathVariable UUID todoId) {
         try {
-            tripService.deleteTodo(todoId);
+            todoService.deleteTodo(todoId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (HttpClientErrorException e) {
             throw e;

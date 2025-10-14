@@ -2,6 +2,7 @@ package com.matchalab.trip_todo_api.model.Todo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 
@@ -29,7 +30,7 @@ public class FlightTodoContent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "flight-todo-content_flight-route", joinColumns = @JoinColumn(name = "flight-todo-content_id"), inverseJoinColumns = @JoinColumn(name = "flight-route_id"))

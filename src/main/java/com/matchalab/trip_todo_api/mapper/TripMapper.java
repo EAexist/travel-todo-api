@@ -1,4 +1,4 @@
-package com.matchalab.trip_todo_api.model.mapper;
+package com.matchalab.trip_todo_api.mapper;
 
 import java.util.List;
 
@@ -36,6 +36,79 @@ public abstract class TripMapper {
 
     @Autowired
     protected StockTodoContentRepository stockTodoContentRepository;
+
+    @Named("mapDestination")
+    public List<DestinationDTO> mapDestination(Trip trip) {
+        return (trip.getDestination() != null) ? trip.getDestination().stream().map(this::mapToDestinationDTO).toList()
+                : null;
+    }
+
+    @Named("mapDestination")
+    public List<Destination> mapDestination(TripDTO tripDTO) {
+        return (tripDTO.destination() != null) ? tripDTO.destination().stream().map(this::mapToDestination).toList()
+                : null;
+    }
+
+    @Named("mapDestination")
+    public List<Destination> mapDestination(TripDTO tripDTO, Trip trip) {
+        // log.info(String.format("[mapDestination] trip=%s", asJsonString(trip)));
+        return (tripDTO.destination() != null) ? tripDTO.destination().stream().map(this::mapToDestination).toList()
+                : trip.getDestination();
+    }
+
+    @Mapping(target = "destination", expression = "java(mapDestination(trip))")
+    public abstract TripDTO mapToTripDTO(Trip trip);
+
+    @Named("mapDestinationTitle")
+    public List<String> mapDestinationTitle(Trip trip) {
+        return trip.getDestination().stream().map(dest -> dest.getTitle()).toList();
+    }
+
+    @Mapping(target = "destination", expression = "java(mapDestinationTitle(trip))")
+    public abstract TripSummaryDTO mapToTripSummaryDTO(Trip trip);
+
+    /*
+     * mapToTrip
+     */
+    @Mapping(target = "destination", expression = "java(mapDestination(tripDTO))")
+    // @Mapping(target = "accomodation", expression =
+    // "java(mapAccomodation(tripDTO))")
+    // @Mapping(target = "todolist", expression = "java(mapTodolist(tripDTO))")
+    public abstract Trip mapToTrip(TripDTO tripDTO);
+
+    // @AfterMapping
+    // private void afterMapping(TodoDTO tripDTO, @MappingTarget Trip trip) {
+    // List<Accomodation> accomodations =
+    // trip.getAccomodation().stream().map(accomodation -> {
+    // // accomodation.setTrip(trip);
+    // accomodation.setTitle("HelloWorld");
+    // return accomodation;
+    // }).toList();
+    // // log.info("accomodations", accomodations);
+    // trip.setAccomodation(accomodations);
+
+    public abstract DestinationDTO mapToDestinationDTO(Destination destination);
+
+    @Mapping(target = "recommendedOutboundFlight", ignore = true)
+    @Mapping(target = "recommendedReturnFlight", ignore = true)
+    public abstract Destination mapToDestination(DestinationDTO destinationDTO);
+
+    // @Mapping(target = "destination", expression = "java(mapDestination(tripDTO,
+    // trip))")
+    // @Mapping(target = "accomodation", expression = "java(mapAccomodation(tripDTO,
+    // trip))")
+    // @Mapping(target = "todolist", expression = "java(mapTodolist(tripDTO,
+    // trip))")
+    @Mapping(target = "destination", ignore = true)
+    @Mapping(target = "todolist", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    public abstract Trip updateTripFromDto(TripDTO tripDTO, @MappingTarget Trip trip);
+
+    // @BeanMapping(nullValuePropertyMappingStrategy =
+    // NullValuePropertyMappingStrategy.IGNORE)
+    // public abstract Accomodation updateAccomodationFromDto(AccomodationDTO
+    // accomodationDTO,
+    // @MappingTarget Accomodation accomodation);
 
     /*
      * mapToTripDTO
@@ -82,58 +155,6 @@ public abstract class TripMapper {
     // tripDTO.accomodation().stream().map(this::mapToAccomodation).toList()
     // : trip.getAccomodation();
     // }
-
-    @Named("mapDestination")
-    public List<DestinationDTO> mapDestination(Trip trip) {
-        return (trip.getDestination() != null) ? trip.getDestination().stream().map(this::mapToDestinationDTO).toList()
-                : null;
-    }
-
-    @Named("mapDestination")
-    public List<Destination> mapDestination(TripDTO tripDTO) {
-        return (tripDTO.destination() != null) ? tripDTO.destination().stream().map(this::mapToDestination).toList()
-                : null;
-    }
-
-    @Named("mapDestination")
-    public List<Destination> mapDestination(TripDTO tripDTO, Trip trip) {
-        // log.info(String.format("[mapDestination] trip=%s", asJsonString(trip)));
-        return (tripDTO.destination() != null) ? tripDTO.destination().stream().map(this::mapToDestination).toList()
-                : trip.getDestination();
-    }
-
-    @Mapping(target = "destination", expression = "java(mapDestination(trip))")
-    // @Mapping(target = "accomodation", expression = "java(mapAccomodation(trip))")
-    // @Mapping(target = "todolist", expression = "java(mapTodolist(trip))")
-    public abstract TripDTO mapToTripDTO(Trip trip);
-
-    @Named("mapDestinationTitle")
-    public List<String> mapDestinationTitle(Trip trip) {
-        return trip.getDestination().stream().map(dest -> dest.getTitle()).toList();
-    }
-
-    @Mapping(target = "destination", expression = "java(mapDestinationTitle(trip))")
-    public abstract TripSummaryDTO mapToTripSummaryDTO(Trip trip);
-
-    /*
-     * mapToTrip
-     */
-    @Mapping(target = "destination", expression = "java(mapDestination(tripDTO))")
-    // @Mapping(target = "accomodation", expression =
-    // "java(mapAccomodation(tripDTO))")
-    // @Mapping(target = "todolist", expression = "java(mapTodolist(tripDTO))")
-    public abstract Trip mapToTrip(TripDTO tripDTO);
-
-    // @AfterMapping
-    // private void afterMapping(TodoDTO tripDTO, @MappingTarget Trip trip) {
-    // List<Accomodation> accomodations =
-    // trip.getAccomodation().stream().map(accomodation -> {
-    // // accomodation.setTrip(trip);
-    // accomodation.setTitle("HelloWorld");
-    // return accomodation;
-    // }).toList();
-    // // log.info("accomodations", accomodations);
-    // trip.setAccomodation(accomodations);
     // }
 
     // public abstract AccomodationDTO mapToAccomodationDTO(Accomodation
@@ -141,27 +162,4 @@ public abstract class TripMapper {
 
     // public abstract Accomodation mapToAccomodation(AccomodationDTO
     // accomodationDTO);
-
-    public abstract DestinationDTO mapToDestinationDTO(Destination destination);
-
-    @Mapping(target = "recommendedOutboundFlight", ignore = true)
-    @Mapping(target = "recommendedReturnFlight", ignore = true)
-    public abstract Destination mapToDestination(DestinationDTO destinationDTO);
-
-    // @Mapping(target = "destination", expression = "java(mapDestination(tripDTO,
-    // trip))")
-    // @Mapping(target = "accomodation", expression = "java(mapAccomodation(tripDTO,
-    // trip))")
-    // @Mapping(target = "todolist", expression = "java(mapTodolist(tripDTO,
-    // trip))")
-    @Mapping(target = "destination", ignore = true)
-    @Mapping(target = "todolist", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    public abstract Trip updateTripFromDto(TripDTO tripDTO, @MappingTarget Trip trip);
-
-    // @BeanMapping(nullValuePropertyMappingStrategy =
-    // NullValuePropertyMappingStrategy.IGNORE)
-    // public abstract Accomodation updateAccomodationFromDto(AccomodationDTO
-    // accomodationDTO,
-    // @MappingTarget Accomodation accomodation);
 }

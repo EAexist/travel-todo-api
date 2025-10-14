@@ -1,28 +1,21 @@
 package com.matchalab.trip_todo_api.model.Todo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import java.util.UUID;
 
 import com.matchalab.trip_todo_api.model.Icon;
 
-import io.micrometer.common.lang.Nullable;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-// @AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
 public class StockTodoContent extends TodoContent {
     // @Nullable
@@ -33,6 +26,10 @@ public class StockTodoContent extends TodoContent {
     // private List<TodoPresetStockTodoContent> todoPresetStockTodoContent = new
     // ArrayList<TodoPresetStockTodoContent>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "todo_id")
+    private Todo todo;
+
     public StockTodoContent(TodoContent todoContent) {
         super(todoContent);
         // this.flightTodoContent = todoContent.getFlightTodoContent();
@@ -40,7 +37,7 @@ public class StockTodoContent extends TodoContent {
 
     @Builder
     public StockTodoContent(
-            String id,
+            UUID id,
             Boolean isStock,
             String category,
             String type,

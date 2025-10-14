@@ -2,6 +2,7 @@ package com.matchalab.trip_todo_api.model.Todo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -25,11 +26,11 @@ public class TodoPreset {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     private String title;
 
     @OneToMany(mappedBy = "todoPreset", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<TodoPresetStockTodoContent> todoPresetStockTodoContent = new ArrayList<TodoPresetStockTodoContent>();
+    private List<TodoPresetStockTodoContent> todoPresetStockTodoContents = new ArrayList<TodoPresetStockTodoContent>();
 }

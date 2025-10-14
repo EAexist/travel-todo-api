@@ -1,10 +1,12 @@
-package com.matchalab.trip_todo_api.model.mapper;
+package com.matchalab.trip_todo_api.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,17 +21,19 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matchalab.trip_todo_api.config.TestConfig;
+import com.matchalab.trip_todo_api.mapper.TripMapper;
 import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
 import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
+import com.matchalab.trip_todo_api.mapper.TodoMapperImpl;
+import com.matchalab.trip_todo_api.mapper.TripMapperImpl;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @SpringBootTest
-// @ExtendWith(MockitoExtension.class)
 @Import({ TestConfig.class })
 @ContextConfiguration(classes = {
         TripMapperImpl.class,
@@ -51,8 +55,8 @@ public class TripMapperTest {
     @MockitoBean
     private StockTodoContentRepository stockTodoContentRepository;
 
-    @InjectMocks
-    private TripMapperImpl tripMapper;
+    @Autowired
+    private TripMapper tripMapper;
 
     /*
      * https://velog.io/@gwichanlee/MapStruct-Test-Code-%EC%9E%91%EC%84%B1
@@ -62,8 +66,8 @@ public class TripMapperTest {
 
     @BeforeAll
     public void setUp() throws Exception {
-        when(stockTodoContentRepository.findById(anyString()))
-                .thenReturn(Optional.of(new StockTodoContent("0", true, "foreign",
+        when(stockTodoContentRepository.findById(any()))
+                .thenReturn(Optional.of(new StockTodoContent(UUID.randomUUID(), true, "foreign",
                         "currency", "환전", new Icon("💱"))));
     }
 
@@ -85,6 +89,15 @@ public class TripMapperTest {
     }
 
     @Test
+    void mapToTrip_Given_tripDTO_When_mapped_Then_correctTrip() {
+        Trip mappedTrip = tripMapper.mapToTrip(tripDTO);
+        assertThat(mappedTrip).usingRecursiveComparison()
+                .ignoringFieldsOfTypes(Trip.class).ignoringFields("id")
+                .isEqualTo(tripHydrated);
+
+    }
+
+    @Test
     void mapToTripSummaryDTO_Given_trip_When_mapped_Then_correctTripSummaryDTO() {
         TripSummaryDTO mappedTripSummaryDTO = tripMapper.mapToTripSummaryDTO(tripHydrated);
         try {
@@ -96,17 +109,12 @@ public class TripMapperTest {
                     mapper.writeValueAsString(mappedTripSummaryDTO)));
         } catch (Exception e) {
         }
-        assertThat(mappedTripSummaryDTO).usingRecursiveComparison()
-                .ignoringFieldsOfTypes().ignoringFields()
-                .isEqualTo(tripSummaryDTO);
-    }
 
-    @Test
-    void mapToTrip_Given_tripDTO_When_mapped_Then_correctTrip() {
-        Trip mappedTrip = tripMapper.mapToTrip(tripDTO);
-        assertThat(tripHydrated).usingRecursiveComparison()
-                .ignoringFieldsOfTypes(Trip.class).ignoringFields("id")
-                .isEqualTo(mappedTrip);
+        assertThat(mappedTripSummaryDTO.createDateIsoString()).isNotNull();
+
+        assertThat(mappedTripSummaryDTO).usingRecursiveComparison()
+                .ignoringFieldsOfTypes().ignoringFields("createDateIsoString")
+                .isEqualTo(tripSummaryDTO);
     }
 
 }

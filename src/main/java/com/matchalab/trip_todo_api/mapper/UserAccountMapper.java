@@ -1,4 +1,4 @@
-package com.matchalab.trip_todo_api.model.mapper;
+package com.matchalab.trip_todo_api.mapper;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public abstract class UserAccountMapper {
         return trip.stream().map(tripMapper::mapToTripSummaryDTO).toList();
     }
 
-    @Mapping(target = "tripSummary", expression = "java(mapToTripSummary(userAccount.getTrip()))")
+    @Mapping(target = "tripSummary", expression = "java(mapToTripSummary(userAccount.getTrips()))")
     public abstract UserAccountDTO mapToUserAccountDTO(UserAccount userAccount);
 
 }

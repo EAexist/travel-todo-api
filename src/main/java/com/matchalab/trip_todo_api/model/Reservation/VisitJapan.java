@@ -1,5 +1,10 @@
 package com.matchalab.trip_todo_api.model.Reservation;
 
+import java.util.UUID;
+
+import com.matchalab.trip_todo_api.generator.GeneratedOrCustomUUID;
+
+import io.micrometer.common.lang.NonNull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,8 +25,9 @@ import lombok.Setter;
 public class VisitJapan {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @NonNull
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Nullable
     String dateTimeIsoString;

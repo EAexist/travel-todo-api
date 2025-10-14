@@ -6,13 +6,16 @@ public class AirportFactory {
     public static Airport createValidAirport(String IATA) {
         switch (IATA) {
             case "TKS":
-                return (new Airport("TKS", "도쿠시마 공항", "도쿠시마", "JP"));
+                return (Airport.builder().iataCode("TKS").airportName("도쿠시마 공항").cityName("도쿠시마")
+                        .iso2DigitNationCode("JP").build());
             case "KIX":
-                return (new Airport("KIX", "간사이 국제공항", "오사카", "JP"));
+                return (Airport.builder().iataCode("KIX").airportName("간사이 국제공항").cityName("오사카")
+                        .iso2DigitNationCode("JP").build());
             case "ICN":
-                return (new Airport("ICN", "인천국제공항", "서울", "KR"));
+                return (Airport.builder().iataCode("ICN").airportName("인천국제공항").cityName("서울").iso2DigitNationCode("KR")
+                        .build());
             default:
-                return (new Airport(IATA));
+                return (Airport.builder().iataCode(IATA).build());
         }
     }
 }

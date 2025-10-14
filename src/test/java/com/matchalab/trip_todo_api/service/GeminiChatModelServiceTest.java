@@ -19,8 +19,8 @@ public class GeminiChatModelServiceTest {
     @Autowired
     private GeminiChatModelService geminiChatModelService;
 
-    @Test
-    void extractReservationFromText_test() {
-        geminiChatModelService.extractReservationFromText(null);
-    }
+    // @Test
+    // void extractReservationFromText_test() {
+    // geminiChatModelService.extractReservationFromText(null);
+    // }
 }

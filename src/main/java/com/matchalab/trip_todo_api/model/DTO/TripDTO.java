@@ -1,6 +1,7 @@
 package com.matchalab.trip_todo_api.model.DTO;
 
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.annotation.Nullable;
 import lombok.Builder;
@@ -8,7 +9,7 @@ import lombok.Builder;
 /* https://github.com/projectlombok/lombok/issues/3883 */
 @Builder
 public record TripDTO(
-        @Nullable String id,
+        @Nullable UUID id,
         Boolean isInitialized,
         @Nullable String title,
         @Nullable String startDateIsoString,
@@ -16,7 +17,7 @@ public record TripDTO(
         @Nullable List<DestinationDTO> destination,
         @Nullable List<TodoDTO> todolist) {
 
-    public TripDTO(String id,
+    public TripDTO(UUID id,
             Boolean isInitialized,
             String title,
             String startDateIsoString,
