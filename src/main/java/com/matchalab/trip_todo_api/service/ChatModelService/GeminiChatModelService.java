@@ -45,7 +45,7 @@ public class GeminiChatModelService implements ChatModelService {
     }
 
     @Override
-    public ExtractReservationChatResultDTO classifyAccomodationType(String confirmationText) {
+    public ExtractReservationChatResultDTO classifyAccomodationCategory(String confirmationText) {
 
         String instructionUserMessage = "텍스트에서 예약 내역에 관한 내용과 링크를 포함한 부분들을 수정없이 추출하고 합쳐. 그리고 모든 예약 내역을 추출해.";
         return (callWithBeanOutput(

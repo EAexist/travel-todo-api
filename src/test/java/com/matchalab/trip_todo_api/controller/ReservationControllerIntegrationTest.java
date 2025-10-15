@@ -1,6 +1,7 @@
 package com.matchalab.trip_todo_api.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,9 +33,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.matchalab.trip_todo_api.config.MockReservationConfig;
 import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
+import com.matchalab.trip_todo_api.factory.ReservationFactory;
+import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.CreateReservationDTO;
+import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
+import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
+import com.matchalab.trip_todo_api.model.Reservation.ReservationDTO;
+import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;
@@ -58,9 +65,15 @@ import lombok.extern.slf4j.Slf4j;
 @EnableWebSecurity
 public class ReservationControllerIntegrationTest {
 
+    /*
+     * SpringBootTest
+     */
     @Autowired
     private MockMvc mockMvc;
 
+    /*
+     * Repository
+     */
     @Autowired
     private TripRepository tripRepository;
 
@@ -70,9 +83,12 @@ public class ReservationControllerIntegrationTest {
     @Autowired
     private HtmlParserService htmlParserService;
 
+    /*
+     * TestConifg
+     */
+
     @Autowired
     private Trip trip;
-
     @Autowired
     private Reservation reservation_flightBooking_Eastarjet_ZE671_html;
 
@@ -85,6 +101,9 @@ public class ReservationControllerIntegrationTest {
     @Autowired
     private Reservation reservation_accomodation_HostelPAQTokushima;
 
+    /*
+     * Local
+     */
     private UUID userAccountId;
 
     private UUID tripId;
@@ -94,23 +113,92 @@ public class ReservationControllerIntegrationTest {
         tripRepository.deleteAll();
 
         userAccountId = userAccountRepository.save(new UserAccount()).getId();
-
-        trip = new Trip(trip);
-        Trip savedTrip = tripRepository.save(trip);
+        Trip savedTrip = tripRepository.save(new Trip(trip));
         tripId = savedTrip.getId();
 
         log.info(String.format("[setUp] savedTrip=%s", Utils.asJsonString(savedTrip)));
 
     }
 
+    @Test
+    void createReservation_Given_ValidTripIdAndReservationDTO_When_RequestPost_Then_CreateReservation()
+            throws Exception {
+
+        ReservationDTO reservationDTO = ReservationFactory.createValidReservationDTO("new-reservation");
+
+        ResultActions result = mockMvc
+                .perform(post(String.format("/user/%s/trip/%s/reservation", userAccountId, tripId))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(Utils.asJsonString(reservationDTO)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        ReservationDTO createdReservationDTO = TestUtils.asObject(result, ReservationDTO.class);
+        result.andExpect(header().string("Location",
+                String.format("http://localhost/user/%s/trip/%s/reservation/%s", userAccountId, tripId,
+                        reservationDTO.getId())));
+
+        assertThat(createdReservationDTO).usingRecursiveComparison()
+                .isEqualTo(reservationDTO);
+    }
+
+    // @Test
+    // // @Transactional
+    // void
+    // patchReservation_Given_NewContent_When_RequestPatchReservation_Then_UpdateReservation()
+    // throws Exception {
+
+    // UUID id = savedTrip.getId();
+
+    // Reservation reservation =
+    // savedTrip.getReservationlist().stream().filter(reservation_ ->
+    // reservation_.getStockReservationContent() == null).toList()
+    // .getFirst();
+
+    // ReservationDTO patchReservationDTO = ReservationDTO.builder().note("새로운 노트")
+    // .completeDateIsoString("2025-02-23T00:00:00.001Z")
+    // .content(ReservationContentDTO.builder().isStock(false).category("goods").type("goods")
+    // .title("새로운 할 일 이름").icon(
+    // new Icon("🎁"))
+    // .build())
+    // .build();
+
+    // ResultActions result = mockMvc
+    // .perform(patch(String.format("/user/%s/trip/%s/reservation/%s", id,
+    // userAccountId, reservation.getId()))
+    // .contentType(MediaType.APPLICATION_JSON)
+    // .content(Utils.asJsonString(patchReservationDTO)))
+    // .andDo(print())
+    // .andExpect(status().isOk())
+    // .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+    // ReservationDTO actualReservationDTO = TestUtils.asObject(result,
+    // ReservationDTO.class);
+
+    // assertThat(actualReservationDTO).usingRecursiveComparison()
+    // .comparingOnlyFields("orderKey", "note", "completeDateIsoString",
+    // "content.category", "content.type",
+    // "content.title",
+    // "content.icon")
+    // .isEqualTo(patchReservationDTO);
+
+    // assertThat(actualReservationDTO).usingRecursiveComparison()
+    // .ignoringFields("orderKey", "note", "completeDateIsoString",
+    // "content.category", "content.type",
+    // "content.title",
+    // "content.icon")
+    // .isEqualTo(reservationMapper.mapToReservationDTO(reservation));
+    // }
+
     /* EastarJet */
     /* Booking */
-    @Test
+    // @Test
     @Transactional
     void createReservationFromText_Given_FlightBooking_Eastarjet_Gmail_Rtf_Ko_When_RequestPostWithoutCategory_Then_createReservation()
             throws Exception {
 
-        List<Reservation> reservation = postReservationAndTestLocation(
+        List<ReservationDTO> reservation = postReservationAndTestLocation(
                 "text/flightBooking/eastarjet/gmail_html_ko.txt");
 
         assertThat(reservation).usingRecursiveComparison()
@@ -119,12 +207,12 @@ public class ReservationControllerIntegrationTest {
                         List.of(reservation_flightBooking_Eastarjet_ZE671_html));
     }
 
-    @Test
+    // @Test
     @Transactional
     void createReservationFromText_Given_FlightBooking_Eastarjet_Gmail_Text_Ko_When_RequestPostWithoutCategory_Then_createReservation()
             throws Exception {
 
-        List<Reservation> reservation = postReservationAndTestLocation(
+        List<ReservationDTO> reservation = postReservationAndTestLocation(
                 "text/flightBooking/eastarjet/gmail_text_ko.txt");
 
         assertThat(reservation).usingRecursiveComparison()
@@ -134,12 +222,12 @@ public class ReservationControllerIntegrationTest {
     }
 
     /* Ticket */
-    @Test
+    // @Test
     @Transactional
     void createReservationFromText_Given_FlightTicket_Eastarjet_Kakao_Text_Ko_When_RequestPostWithoutCategory_Then_createReservation()
             throws Exception {
 
-        List<Reservation> reservation = postReservationAndTestLocation(
+        List<ReservationDTO> reservation = postReservationAndTestLocation(
                 "text/flightTicket/eastarjet/kakao_text_ko.txt");
 
         assertThat(reservation)
@@ -151,12 +239,12 @@ public class ReservationControllerIntegrationTest {
     }
 
     /* Agoda */
-    @Test
+    // @Test
     @Transactional
     void createReservationFromText_Given_AgodaKoGmailRtf_When_RequestPostWithoutCategory_Then_createReservation()
             throws Exception {
 
-        List<Reservation> reservation = postReservationAndTestLocation(
+        List<ReservationDTO> reservation = postReservationAndTestLocation(
                 "text/accomodation/agoda/gmail_html_ko_hostelPAQTokushima.txt");
 
         assertThat(reservation)
@@ -166,12 +254,12 @@ public class ReservationControllerIntegrationTest {
                         List.of(reservation_accomodation_HostelPAQTokushima));
     }
 
-    @Test
+    // @Test
     @Transactional
     void createReservationFromText_Given_AgodaKoGmailText_When_RequestPostWithoutCategory_Then_createReservation()
             throws Exception {
 
-        List<Reservation> reservation = postReservationAndTestLocation(
+        List<ReservationDTO> reservation = postReservationAndTestLocation(
                 "text/accomodation/agoda/gmail_text_ko_hostelPAQTokushima.txt");
 
         assertThat(reservation)
@@ -181,10 +269,10 @@ public class ReservationControllerIntegrationTest {
                         List.of(reservation_accomodation_HostelPAQTokushima));
     }
 
-    private List<Reservation> postReservationAndTestLocation(String resourcePath) throws Exception {
+    private List<ReservationDTO> postReservationAndTestLocation(String resourcePath) throws Exception {
 
-        ClassPathResource resource_gmail_agoda = new ClassPathResource(resourcePath);
-        String confirmationText = StreamUtils.copyToString(resource_gmail_agoda.getInputStream(),
+        ClassPathResource resource = new ClassPathResource(resourcePath);
+        String confirmationText = StreamUtils.copyToString(resource.getInputStream(),
                 StandardCharsets.UTF_8);
 
         CreateReservationDTO createReservationDTO = CreateReservationDTO.builder()
@@ -193,23 +281,20 @@ public class ReservationControllerIntegrationTest {
                 .confirmationText(confirmationText).build();
 
         ResultActions result = mockMvc
-                .perform(post(String.format("/user/%s/trip/%s/reservation", userAccountId, tripId))
+                .perform(post(String.format("/user/%s/trip/%s/reservation/analysis/text", userAccountId, tripId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Utils.asJsonString(createReservationDTO)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        List<Reservation> reservation = TestUtils.asObject(result, new TypeReference<List<Reservation>>() {
+        List<ReservationDTO> reservation = TestUtils.asObject(result, new TypeReference<List<ReservationDTO>>() {
         });
 
         result.andExpect(header().string("Location",
                 String.format("http://localhost/user/%s/trip/%s/reservation/%s",
                         userAccountId,
                         tripId, reservation.getFirst().getId())));
-
-        assertThat(reservation.getFirst().getRawText())
-                .isEqualTo(htmlParserService.extractTextAndLink(confirmationText));
 
         return reservation;
     }

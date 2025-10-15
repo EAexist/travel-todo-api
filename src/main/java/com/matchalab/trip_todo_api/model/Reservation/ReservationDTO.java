@@ -12,31 +12,24 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@RequiredArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ReservationDTO {
 
     private UUID id;
 
     ReservationCategory category;
-    // String rawText;
-
-    @Nullable
-    String code;
-
-    String note;
 
     @Nullable
     String primaryHrefLink;
 
     @Nullable
-    String serverFileUri;
+    String code;
 
-    @Nullable
-    String localAppStorageFileUri;
+    String note;
 
     @Nullable
     VisitJapan visitJapan;
@@ -52,4 +45,10 @@ public class ReservationDTO {
 
     @Nullable
     GeneralReservation generalReservation;
+
+    @Nullable
+    String serverFileUri;
+
+    @Nullable
+    String localAppStorageFileUri;
 }

@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("user/{userId}/trip/{tripId}/todo")
+@RequestMapping()
 @Slf4j
 public class TodoController {
 
@@ -33,7 +33,7 @@ public class TodoController {
     /**
      * Provide the details of an Trip with the given id.
      */
-    @PostMapping("")
+    @PostMapping("trip/{tripId}/todo")
     public ResponseEntity<TodoDTO> createTodo(@PathVariable UUID tripId, @RequestBody TodoDTO requestbody) {
         try {
             log.info(String.format("[TodoController.createTodo] %s %s", tripId, Utils.asJsonString(requestbody)));
@@ -47,7 +47,7 @@ public class TodoController {
     /**
      * Provide the details of an Trip with the given id.
      */
-    @PatchMapping("/{todoId}")
+    @PatchMapping("todo/{todoId}")
     public ResponseEntity<TodoDTO> patchTodo(@PathVariable UUID todoId, @RequestBody TodoDTO newTodoDTO) {
         try {
             TodoDTO todoDTO = todoService.patchTodo(todoId, newTodoDTO);
@@ -60,7 +60,7 @@ public class TodoController {
     /**
      * Provide the details of an Trip with the given id.
      */
-    @DeleteMapping("/{todoId}")
+    @DeleteMapping("todo/{todoId}")
     public ResponseEntity<Void> deleteTodo(@PathVariable UUID todoId) {
         try {
             todoService.deleteTodo(todoId);

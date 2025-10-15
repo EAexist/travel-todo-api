@@ -101,6 +101,12 @@ public class Trip {
         return reservation;
     }
 
+    public Boolean addReservation(List<Reservation> reservation) {
+        Boolean isAdded = this.reservations.addAll(reservation);
+        reservation.forEach(r -> r.setTrip(this));
+        return isAdded;
+    }
+
     public void removeReservation(Reservation reservation) {
         this.reservations.remove(reservation);
         reservation.setTrip(null);

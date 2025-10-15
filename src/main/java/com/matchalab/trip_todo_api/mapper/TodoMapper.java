@@ -66,8 +66,8 @@ public abstract class TodoMapper {
      * mapToEntity
      */
 
-    @Mapping(target = "customTodoContent", expression = "java(mapToCustomTodoContent(todoDTO.content()))")
-    @Mapping(target = "stockTodoContent", expression = "java(mapToStockTodoContent(todoDTO.content()))")
+    @Mapping(target = "customTodoContent", expression = "java(mapToCustomTodoContent(todoDTO))")
+    @Mapping(target = "stockTodoContent", expression = "java(mapToStockTodoContent(todoDTO))")
     public abstract Todo mapToTodo(TodoDTO todoDTO);
 
     /*
@@ -83,13 +83,13 @@ public abstract class TodoMapper {
     public abstract Todo updateTodoFromDto(TodoDTO todoDTO, @MappingTarget Todo todo);
 
     @Named("mapToCustomTodoContent")
-    public CustomTodoContent mapToCustomTodoContent(TodoContentDTO content) {
-        return content.getIsStock() ? null : mapToCustomTodoContentHelper(content);
+    public CustomTodoContent mapToCustomTodoContent(TodoDTO todoDTO) {
+        return todoDTO.content().getIsStock() ? null : mapToCustomTodoContentHelper(todoDTO.content());
     };
 
     @Named("mapToStockTodoContent")
-    public StockTodoContent mapToStockTodoContent(TodoContentDTO content) {
-        return content.getIsStock() ? mapToStockTodoContentHelper(content) : null;
+    public StockTodoContent mapToStockTodoContent(TodoDTO todoDTO) {
+        return todoDTO.content().getIsStock() ? mapToStockTodoContentHelper(todoDTO.content()) : null;
     };
 
     public abstract CustomTodoContent mapToCustomTodoContentHelper(TodoContentDTO content);
@@ -109,8 +109,9 @@ public abstract class TodoMapper {
 
     public CustomTodoContent updateCustomTodoContentFromDto(TodoDTO todoDTO,
             CustomTodoContent customTodoContent) {
-        return todoDTO.content().getIsStock() ? null
-                : updateCustomTodoContentFromDtoHelper(todoDTO.content(), customTodoContent);
+        return (customTodoContent == null) ? null
+                : todoDTO.content() == null ? customTodoContent
+                        : updateCustomTodoContentFromDtoHelper(todoDTO.content(), customTodoContent);
     }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

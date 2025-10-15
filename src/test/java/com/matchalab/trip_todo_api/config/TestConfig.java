@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
-import com.matchalab.trip_todo_api.enums.AccomodationType;
+import com.matchalab.trip_todo_api.enums.AccomodationCategory;
 import com.matchalab.trip_todo_api.model.Accomodation;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Icon;
@@ -85,7 +85,7 @@ public class TestConfig {
     Accomodation[] accomodations() {
         return new Accomodation[] {
                 Accomodation.builder()
-                        .type(AccomodationType.DORMITORY)
+                        .type(AccomodationCategory.DORMITORY)
                         .title("Hostel PAQ Tokushima")
                         .roomTitle("혼성 도미토리 내 베드")
                         .location("도쿠시마")
@@ -104,7 +104,7 @@ public class TestConfig {
                                         .build()))
                         .build(),
                 Accomodation.builder()
-                        .type(AccomodationType.AIRBNB)
+                        .type(AccomodationCategory.AIRBNB)
                         .title("Yoshiko 님의 숙소")
                         .roomTitle("혼성 도미토리 내 베드")
                         .location("나루토")

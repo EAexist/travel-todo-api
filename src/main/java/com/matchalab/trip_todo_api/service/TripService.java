@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -22,20 +23,21 @@ import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
-import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.FlightTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
+import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
+import com.matchalab.trip_todo_api.repository.UserAccountRepository;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class TripService {
+    @Autowired
+    private final UserAccountRepository userAccountRepository;
     @Autowired
     private final TripRepository tripRepository;
     @Autowired
@@ -51,6 +53,43 @@ public class TripService {
 
     @Autowired
     private final ApplicationEventPublisher eventPublisher;
+
+    private final int maxNumberOfTrip;
+
+    public TripService(UserAccountRepository userAccountRepository,
+            TripRepository tripRepository,
+            DestinationRepository destinationRepository,
+            TodoPresetRepository todoPresetRepository,
+            TripMapper tripMapper,
+            TodoMapper todoMapper,
+            ApplicationEventPublisher eventPublisher,
+            @Value("${app.max-number-of-trip}") int maxNumberOfTrip) {
+        this.userAccountRepository = userAccountRepository;
+        this.tripRepository = tripRepository;
+        this.destinationRepository = destinationRepository;
+        this.todoPresetRepository = todoPresetRepository;
+        this.tripMapper = tripMapper;
+        this.todoMapper = todoMapper;
+        this.eventPublisher = eventPublisher;
+        this.maxNumberOfTrip = maxNumberOfTrip;
+    }
+
+    public TripDTO createTrip(UUID userId) {
+
+        UserAccount userAccount = userAccountRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(userId));
+
+        if (userAccount.getTrips().size() >= maxNumberOfTrip) {
+            while (userAccount.getTrips().size() >= maxNumberOfTrip) {
+                userAccount.getTrips().removeFirst();
+            }
+        }
+        Trip trip = tripRepository.save(new Trip());
+        userAccount.addTrip(trip);
+        userAccount.setActiveTripId(trip.getId());
+        userAccountRepository.save(userAccount);
+        return tripMapper.mapToTripDTO(trip);
+    }
 
     /**
      * Provide the details of a Trip with the given id.
@@ -74,6 +113,19 @@ public class TripService {
         // trip.getIsInitialized()));
 
         return tripMapper.mapToTripDTO(tripRepository.save(trip));
+    }
+
+    /**
+     * Update the content of a Trip.
+     */
+    public void deleteTrip(UUID tripId) {
+
+        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
+        UserAccount userAccount = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
+                .getUserAccount();
+
+        userAccount.removeTrip(trip);
+        userAccountRepository.save(userAccount);
     }
 
     /**
@@ -126,6 +178,7 @@ public class TripService {
     }
 
     /**
+     *
      * Create new empty trip.
      */
     public DestinationDTO createDestination(UUID tripId, DestinationDTO destinationDTO) {

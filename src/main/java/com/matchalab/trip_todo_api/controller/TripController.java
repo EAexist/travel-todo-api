@@ -19,6 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.service.TripService;
 import com.matchalab.trip_todo_api.utils.Utils;
 
@@ -27,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("user/{userId}/trip")
+@RequestMapping()
 @Slf4j
 public class TripController {
 
@@ -35,9 +36,25 @@ public class TripController {
     private final TripService tripService;
 
     /**
+     * Create New Empty Trip that is owned by UserAccount@userId.
+     */
+    @PostMapping("user/{userId}/trip")
+    public ResponseEntity<TripDTO> createTrip(@PathVariable UUID userId) {
+        try {
+
+            TripDTO tripDTO = tripService.createTrip(userId);
+
+            return ResponseEntity.created(Utils.getLocation(tripDTO.id()))
+                    .body(tripDTO);
+        } catch (HttpClientErrorException e) {
+            throw e;
+        }
+    }
+
+    /**
      * Provide the details of a Trip with the given id.
      */
-    @GetMapping("/{tripId}")
+    @GetMapping("trip/{tripId}")
     public ResponseEntity<TripDTO> trip(@PathVariable UUID tripId) {
         try {
             return ResponseEntity.ok().body(tripService.getTrip(tripId));
@@ -50,7 +67,7 @@ public class TripController {
     /**
      * Update the metadata(title, destination, schedule) of a Trip.
      */
-    @PatchMapping("/{tripId}")
+    @PatchMapping("trip/{tripId}")
     public ResponseEntity<TripDTO> patchTrip(@PathVariable UUID tripId, @RequestBody TripDTO newTripDTO) {
         try {
             return ResponseEntity.ok().body(tripService.patchTrip(tripId, newTripDTO));
@@ -62,7 +79,7 @@ public class TripController {
     /**
      * Provide the todo preset of a Trip.
      */
-    @GetMapping("/{tripId}/todoPreset")
+    @GetMapping("trip/{tripId}/todoPreset")
     public ResponseEntity<List<TodoPresetItemDTO>> getTodoPreset(@PathVariable UUID tripId) {
         try {
             List<TodoPresetItemDTO> todoPresetItems = tripService.getTodoPreset(tripId);
@@ -76,7 +93,7 @@ public class TripController {
      * Add a destination to the Trip's destination list.
      * If the destination doesn't exist in databse, create new one.
      */
-    @PostMapping("/{tripId}/destination")
+    @PostMapping("trip/{tripId}/destination")
     public ResponseEntity<DestinationDTO> createDestination(@PathVariable UUID tripId,
             @RequestBody DestinationDTO requestedDestinationDTO) {
         try {
@@ -92,13 +109,27 @@ public class TripController {
      * This does not remove the destination from the database.
      */
 
-    @DeleteMapping("/{tripId}/destination/{destinationId}")
+    @DeleteMapping("trip/{tripId}/destination/{destinationId}")
     public ResponseEntity<Void> deleteDestination(@PathVariable UUID destinationId) {
         try {
             tripService.deleteDestination(destinationId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (HttpClientErrorException e) {
             throw e;
+        }
+    }
+
+    /**
+     * Provide the details of a Trip with the given id.
+     */
+    @DeleteMapping("trip/{tripId}")
+    public ResponseEntity<UserAccountDTO> deleteTrip(@PathVariable UUID tripId) {
+        try {
+            tripService.deleteTrip(tripId);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (HttpClientErrorException e) {
+            throw e;
+            // return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

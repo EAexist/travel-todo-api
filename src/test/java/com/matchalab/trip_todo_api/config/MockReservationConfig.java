@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StreamUtils;
 
-import com.matchalab.trip_todo_api.enums.AccomodationType;
+import com.matchalab.trip_todo_api.enums.AccomodationCategory;
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.factory.AirportFactory;
 import com.matchalab.trip_todo_api.model.Accomodation;
@@ -31,10 +31,10 @@ public class MockReservationConfig {
 
     private String parseReservationText(String resourcePath) {
 
-        ClassPathResource resource_gmail_agoda = new ClassPathResource(resourcePath);
+        ClassPathResource resource = new ClassPathResource(resourcePath);
 
         try {
-            String confirmationText = StreamUtils.copyToString(resource_gmail_agoda.getInputStream(),
+            String confirmationText = StreamUtils.copyToString(resource.getInputStream(),
                     StandardCharsets.UTF_8);
             return htmlParserService.extractTextAndLink(confirmationText);
         } catch (IOException e) {
@@ -113,7 +113,7 @@ public class MockReservationConfig {
                 .code("1546592100")
                 .accomodation(
                         Accomodation.builder()
-                                .type(AccomodationType.DORMITORY)
+                                .category(AccomodationCategory.DORMITORY)
                                 .title("HOSTEL PAQ tokushima")
                                 .roomTitle("도미토리 내 1인 예약 (혼성)")
                                 .location("Tokushima city nakatouriimachi 2-5, 도쿠시마, 일본, 770-0844")
@@ -121,9 +121,9 @@ public class MockReservationConfig {
                                 .clientName("PYO HYEON")
                                 .checkinDateIsoString("2025-02-24")
                                 .checkoutDateIsoString("2025-02-25")
-                                .checkinStartTimeIsoString("15:00")
+                                .checkinStartTimeIsoString("2025-02-24T15:00")
                                 .checkinEndTimeIsoString(null)
-                                .checkoutTimeIsoString("10:00")
+                                .checkoutTimeIsoString("2025-02-25T10:00")
                                 .build())
                 .build();
     }
@@ -131,7 +131,7 @@ public class MockReservationConfig {
     @Bean
     Reservation reservation_general_TeshimaArtMuseum_0() {
         return Reservation.builder().category(ReservationCategory.ACCOMODATION)
-                .rawText(parseReservationText("text/general/teshima-art-museum/gmail_html_ko.txt"))
+                .rawText(parseReservationText("text/general/teshima-art-museum/gmail_text_ko.txt"))
                 .primaryHrefLink(
                         "https://www.etix.com/kketix/online/onlinereprint.jsp?userID=25504976&password=66755185")
                 .code("4428332754")
@@ -147,7 +147,7 @@ public class MockReservationConfig {
     @Bean
     Reservation reservation_general_TeshimaArtMuseum_1() {
         return Reservation.builder().category(ReservationCategory.ACCOMODATION)
-                .rawText(parseReservationText("text/general/teshima-art-museum/gmail_html_ko.txt"))
+                .rawText(parseReservationText("text/general/teshima-art-museum/gmail_text_ko.txt"))
                 .primaryHrefLink(
                         "https://www.etix.com/kketix/online/onlinereprint.jsp?userID=25504976&password=66755185")
                 .code("4428332898")

@@ -1,15 +1,13 @@
 package com.matchalab.trip_todo_api.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import com.matchalab.trip_todo_api.enums.AccomodationType;
+import com.matchalab.trip_todo_api.enums.AccomodationCategory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,13 +29,12 @@ import lombok.Setter;
 public class Accomodation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "trip_id")
     // private Trip trip;
-    private AccomodationType type;
+    private AccomodationCategory category;
     private String title;
     private String roomTitle;
     private String location;
@@ -66,7 +63,7 @@ public class Accomodation {
         this.checkinEndTimeIsoString = accomodation.getCheckinEndTimeIsoString();
         this.checkoutTimeIsoString = accomodation.getCheckoutTimeIsoString();
         this.location = accomodation.getLocation();
-        this.type = accomodation.getType();
+        this.category = accomodation.getCategory();
         this.links = accomodation.getLinks();
     }
 }

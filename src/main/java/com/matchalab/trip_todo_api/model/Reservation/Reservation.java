@@ -43,18 +43,10 @@ public class Reservation {
     private UUID id = UUID.randomUUID();
 
     ReservationCategory category;
-    // String dateTimeIsoString;
-    // String title;
-    // String subtitle;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private String rawText;
-
-    @Nullable
-    private String code;
-
-    private String note;
 
     @Nullable
     @Column(length = 2048)
@@ -62,10 +54,13 @@ public class Reservation {
     private String primaryHrefLink;
 
     @Nullable
-    private String serverFileUri;
+    private String code;
 
+    private String note;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @Nullable
-    private String localAppStorageFileUri;
+    private VisitJapan visitJapan;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @Nullable
@@ -82,6 +77,12 @@ public class Reservation {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @Nullable
     private GeneralReservation generalReservation;
+
+    @Nullable
+    private String serverFileUri;
+
+    @Nullable
+    private String localAppStorageFileUri;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")

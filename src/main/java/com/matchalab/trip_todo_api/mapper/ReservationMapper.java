@@ -1,6 +1,10 @@
 package com.matchalab.trip_todo_api.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,6 +15,7 @@ import com.matchalab.trip_todo_api.model.Reservation.FlightBooking;
 import com.matchalab.trip_todo_api.model.Reservation.FlightTicket;
 import com.matchalab.trip_todo_api.model.Reservation.GeneralReservation;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
+import com.matchalab.trip_todo_api.model.Reservation.ReservationDTO;
 import com.matchalab.trip_todo_api.model.genAI.ExtractAccomodationChatResultDTO;
 import com.matchalab.trip_todo_api.model.genAI.ExtractFlightBookingChatResultDTO;
 import com.matchalab.trip_todo_api.model.genAI.ExtractFlightTicketChatResultDTO;
@@ -27,12 +32,16 @@ public abstract class ReservationMapper {
     @Autowired
     protected AirportRepository airportRepository;
 
-    private Airport getAirport(String airportIataCode) {
-        return airportRepository.findById(airportIataCode).orElse(new Airport(airportIataCode));
-    }
+    public abstract ReservationDTO mapToDTO(Reservation reservation);
+
+    public abstract Reservation mapToReservation(ReservationDTO reservationDTO);
+
+    @Mapping(target = "id", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    public abstract Reservation updateFromDto(ReservationDTO reservationDTO, @MappingTarget Reservation reservation);
 
     public Accomodation mapToAccomodation(ExtractAccomodationChatResultDTO dto) {
-        return Accomodation.builder().type(dto.accomodationType())
+        return Accomodation.builder().category(dto.accomodationCategory())
                 .title(dto.accomodationTitle())
                 .roomTitle(dto.roomTitle())
                 .location(dto.location())
@@ -113,6 +122,10 @@ public abstract class ReservationMapper {
                 .code(dto.reservationNumberOrCode())
                 .generalReservation(mapToGeneralReservation(dto))
                 .build();
+    }
+
+    private Airport getAirport(String airportIataCode) {
+        return airportRepository.findById(airportIataCode).orElse(new Airport(airportIataCode));
     }
 
 }

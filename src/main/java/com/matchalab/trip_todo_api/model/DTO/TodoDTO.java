@@ -11,5 +11,5 @@ public record TodoDTO(
         int orderKey,
         String note,
         String completeDateIsoString,
-        @NonNull TodoContentDTO content) {
+        TodoContentDTO content) {
 }

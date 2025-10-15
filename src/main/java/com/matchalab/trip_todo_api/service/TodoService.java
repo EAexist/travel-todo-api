@@ -11,7 +11,6 @@ import com.matchalab.trip_todo_api.exception.TripNotFoundException;
 import com.matchalab.trip_todo_api.mapper.TodoMapper;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
-import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.repository.CustomTodoContentRepository;
 import com.matchalab.trip_todo_api.repository.TodoRepository;
@@ -25,12 +24,18 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class TodoService {
+
+    /*
+     * Repository
+     */
     @Autowired
     private final TripRepository tripRepository;
     @Autowired
     private final TodoRepository todoRepository;
-    @Autowired
-    private final CustomTodoContentRepository customTodoContentRepository;
+
+    /*
+     * Mapper
+     */
     @Autowired
     private final TodoMapper todoMapper;
 
@@ -51,7 +56,7 @@ public class TodoService {
     }
 
     /**
-     * Change contents or orderKey of todo.
+     * Change contents/orderKey of todo.
      */
     public TodoDTO patchTodo(UUID todoId, TodoDTO newTodoDTO) {
         Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new NotFoundException(todoId));
@@ -64,7 +69,7 @@ public class TodoService {
     }
 
     /**
-     * Create new todo.
+     * Delete todo.
      */
     public void deleteTodo(UUID todoId) {
         todoRepository.findById(todoId).ifPresentOrElse(entity -> todoRepository.delete(entity),

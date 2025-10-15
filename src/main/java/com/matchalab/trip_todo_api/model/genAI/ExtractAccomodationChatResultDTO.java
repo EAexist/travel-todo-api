@@ -1,6 +1,6 @@
 package com.matchalab.trip_todo_api.model.genAI;
 
-import com.matchalab.trip_todo_api.enums.AccomodationType;
+import com.matchalab.trip_todo_api.enums.AccomodationCategory;
 
 import jakarta.annotation.Nullable;
 import lombok.Builder;
@@ -19,5 +19,5 @@ public record ExtractAccomodationChatResultDTO(
         @Nullable String checkinAvailableUntilThisTimeIsoString,
         @Nullable String checkoutDeadlineTimeIsoString,
         @Nullable String location,
-        AccomodationType accomodationType) {
+        AccomodationCategory accomodationCategory) {
 }

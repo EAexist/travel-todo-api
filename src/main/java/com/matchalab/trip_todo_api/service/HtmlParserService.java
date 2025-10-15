@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,7 +14,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import com.google.api.client.http.MultipartContent.Part;
+
 import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeUtility;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,5 +106,64 @@ public class HtmlParserService {
                 .trim();
 
         return result;
+    }
+
+    // public String extractDecodedHtmlBody(String rawEmailSource) {
+
+    // Properties props = new Properties();
+    // Session session = Session.getDefaultInstance(props, null);
+
+    // try (InputStream is = new ByteArrayInputStream(rawEmailSource.getBytes())) {
+    // MimeMessage message = new MimeMessage(session, is);
+
+    // Object content = message.getContent();
+
+    // if (content instanceof jakarta.mail.Multipart) {
+    // jakarta.mail.Multipart multipart = (jakarta.mail.Multipart) content;
+
+    // for (int i = 0; i < multipart.getCount(); i++) {
+    // Part part = multipart.getBodyPart(i);
+    // String contentType = part.getContentType();
+
+    // // text/html 파트를 찾았고, Content-Transfer-Encoding 헤더를 직접 처리합니다.
+    // if (contentType.toLowerCase().contains("text/html")) {
+
+    // // 1. **Content-Transfer-Encoding** 헤더를 확인합니다.
+    // String[] transferEncodings = part.getHeader("Content-Transfer-Encoding");
+    // String encoding = (transferEncodings != null && transferEncodings.length > 0)
+    // ? transferEncodings[0] : null;
+
+    // // 2. **Part.getContent()**를 사용하면, MimeMessage가 내부적으로
+    // // Content-Transfer-Encoding 헤더에 따라 디코딩을 시도합니다.
+    // // (예: Base64로 인코딩된 스트림을 자동으로 디코딩합니다.)
+
+    // // BUT: MimeMessage.getContent()는 때때로 Charset 이슈를 일으키므로,
+    // // 안전하게 InputStream을 사용하고 MimeUtility로 처리합니다.
+
+    // return decodePartStream(part, encoding);
+    // }
+    // }
+    // }
+
+    // // 단일 파트 메시지(multipart가 아닌 경우) 처리 로직 추가 가능
+    // // ...
+
+    // return "HTML content not found.";
+
+    // } catch (MessagingException e) {
+    // throw new RuntimeException("Error processing MIME message structure.", e);
+    // } catch (IOException e) {
+    // throw new RuntimeException("Error reading email input stream.", e);
+    // }
+    // }
+
+    private String getCharsetFromContentType(String contentType) {
+        try {
+            jakarta.mail.internet.ContentType ct = new jakarta.mail.internet.ContentType(contentType);
+            String charset = ct.getParameter("charset");
+            return charset != null ? charset : "UTF-8";
+        } catch (MessagingException e) {
+            return "UTF-8";
+        }
     }
 }

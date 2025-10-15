@@ -1,9 +1,9 @@
 package com.matchalab.trip_todo_api.enums;
 
-public enum AccomodationType {
+public enum AccomodationCategory {
+    GENERAL,
     HOTEL,
     DORMITORY,
     GUESTHOUSE,
     AIRBNB,
-    GENERAL
 }

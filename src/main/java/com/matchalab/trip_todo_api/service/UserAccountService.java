@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-// @AllArgsConstructor
+@AllArgsConstructor
 public class UserAccountService {
 
     @Autowired
@@ -32,44 +32,20 @@ public class UserAccountService {
     private final TripRepository tripRepository;
 
     @Autowired
+    private final TripService tripService;
+
+    @Autowired
     private final TripMapper tripMapper;
 
     @Autowired
     private final UserAccountMapper userAccountMapper;
 
-    private final int maxNumberOfTrip;
-
-    public UserAccountService(UserAccountRepository userAccountRepository,
-            TripRepository tripRepository,
-            TripMapper tripMapper,
-            UserAccountMapper userAccountMapper,
-            @Value("${app.max-number-of-trip}") int maxNumberOfTrip) {
-        this.userAccountRepository = userAccountRepository;
-        this.tripRepository = tripRepository;
-        this.tripMapper = tripMapper;
-        this.userAccountMapper = userAccountMapper;
-        this.maxNumberOfTrip = maxNumberOfTrip;
-    }
-
-    public UserAccountDTO createTrip(UserAccount userAccount) {
-        if (userAccount.getTrips().size() >= maxNumberOfTrip) {
-            while (userAccount.getTrips().size() >= maxNumberOfTrip) {
-                userAccount.getTrips().removeFirst();
-
-            }
-        }
-        Trip trip = tripRepository.save(new Trip());
-        userAccount.addTrip(trip);
-        userAccount.setActiveTripId(trip.getId());
-        return userAccountMapper.mapToUserAccountDTO(userAccountRepository.save(userAccount));
-    }
-
     public UserAccountDTO createInitialTripIfEmpty(UserAccount userAccount) {
 
         if (userAccount.getTrips().isEmpty()) {
-            return createTrip(userAccount);
-        } else
-            return userAccountMapper.mapToUserAccountDTO(userAccount);
+            tripService.createTrip(userAccount.getId());
+        }
+        return userAccountMapper.mapToUserAccountDTO(userAccount);
     }
 
     public TripDTO getActiveTrip(UUID userAccountId) {

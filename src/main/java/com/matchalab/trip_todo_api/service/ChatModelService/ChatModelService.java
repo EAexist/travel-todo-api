@@ -12,7 +12,7 @@ public interface ChatModelService {
 
     public RecommendedFlightChatResult getRecommendedFlight(String destinationTitle);
 
-    public ExtractReservationChatResultDTO classifyAccomodationType(String confirmationText);
+    public ExtractReservationChatResultDTO classifyAccomodationCategory(String confirmationText);
 
     public List<String> getRecommendedAirline(FlightRoute flightRoute);
 }

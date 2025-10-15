@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import com.matchalab.trip_todo_api.enums.AccomodationType;
+import com.matchalab.trip_todo_api.enums.AccomodationCategory;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.genAI.ExtractAccomodationChatResultDTO;
 import com.matchalab.trip_todo_api.model.genAI.ExtractFlightBookingChatResultDTO;
@@ -86,7 +86,7 @@ public class MockChatModelService implements ChatModelService {
                                     .checkinAvailableSinceThisTimeIsoString("15:00")
                                     .checkoutDeadlineTimeIsoString("10:00")
                                     .location("Tokushima city nakatouriimachi 2-5, 도쿠시마, 일본, 770-0844")
-                                    .accomodationType(AccomodationType.DORMITORY)
+                                    .accomodationCategory(AccomodationCategory.DORMITORY)
                                     .build()))
                     .build();
         else
@@ -124,7 +124,7 @@ public class MockChatModelService implements ChatModelService {
     }
 
     @Override
-    public ExtractReservationChatResultDTO classifyAccomodationType(String confirmationText) {
+    public ExtractReservationChatResultDTO classifyAccomodationCategory(String confirmationText) {
 
         return ExtractReservationChatResultDTO.builder().build();
     }

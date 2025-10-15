@@ -1,24 +1,21 @@
 package com.matchalab.trip_todo_api.service;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
 import com.matchalab.trip_todo_api.mapper.ReservationMapper;
 import com.matchalab.trip_todo_api.model.Trip;
+import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
+import com.matchalab.trip_todo_api.model.Reservation.ReservationDTO;
+import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.genAI.ExtractReservationChatResultDTO;
 import com.matchalab.trip_todo_api.repository.ReservationRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
@@ -35,19 +32,27 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 @RequiredArgsConstructor
 public class ReservationService {
-
+    /*
+     * Repository
+     */
     @Autowired
     private final TripRepository tripRepository;
 
     @Autowired
     private ReservationRepository reservationRepository;
 
-    @Autowired
-    private VisionService visionService;
+    /*
+     * Service
+     */
 
     @Autowired
     private ChatModelService chatModelService;
+    @Autowired
+    private VisionService visionService;
 
+    /*
+     * Mapper
+     */
     @Autowired
     private ReservationMapper reservationMapper;
 
@@ -59,60 +64,67 @@ public class ReservationService {
     // }
 
     /**
-     * Create new empty trip.
+     * Provide the details of a Trip with the given id.
      */
-    // public ReservationImageAnalysisResult analyzeReservationScreenImage(
-    // List<MultipartFile> files) {
-    // return analyzeReservationScreenImage(files, ReservationCategory.General);
-    // }
+    public List<ReservationDTO> getReservation(UUID tripId) {
+        List<ReservationDTO> reservation = tripRepository.findById(tripId)
+                .orElseThrow(() -> new TripNotFoundException(tripId)).getReservations().stream()
+                .map(reservationMapper::mapToDTO).toList();
+        return reservation;
+    }
 
-    // public List<Reservation> analyzeReservationScreenImage(
-    // List<MultipartFile> files, ReservationCategory category) {
+    /**
+     * Create new todo.
+     */
+    @Transactional
+    public ReservationDTO createReservation(UUID tripId, ReservationDTO reservationDTO) {
+        Reservation reservation = reservationMapper.mapToReservation(reservationDTO);
+        log.info(Utils.asJsonString(reservationMapper.mapToDTO(reservation)));
 
-    // /* Extract Text from Image */
-    // List<String> text = files.stream().map(multipartFile -> {
-    // try {
-    // byte[] fileBytes = multipartFile.getBytes();
-    // File tempFile = File.createTempFile("temp_tiff", ".tiff");
-    // try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-    // fos.write(fileBytes);
-    // }
-    // tempFile.deleteOnExit(); // 프로그램 종료 시 삭제
-    // return new FileUrlResource(tempFile.toURI().toURL());
-    // // BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
-    // // return new InputStreamResource(multipartFile.getInputStream());
-    // } catch (Exception e) {
-    // return null;
-    // }
-    // })
-    // // .map(Utils::multipartFileToBufferedImage)
-    // // .map(Utils::bufferedImageToTiffResource)
-    // .map(visionService::extractTextfromImage)
-    // .flatMap(List::stream)
-    // .collect(Collectors.toList());
+        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
+        trip.addReservation(reservation);
+        tripRepository.save(trip);
 
-    // log.info(String.format("[extractTextfromImage] reservationText=%s",
-    // reservationText.toString()));
+        return reservationMapper.mapToDTO(reservation);
+    }
 
-    // return extractReservationFromText(text, category);
-    // // return createEntitiesFromImageAnalysisResult(tripId, reservationText);
-    // }
+    /**
+     * Change contents/orderKey of reservation.
+     */
+    public ReservationDTO patchReservation(UUID reservationId, ReservationDTO newReservationDTO) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NotFoundException(reservationId));
+        Reservation updatedReservation = reservationMapper.updateFromDto(newReservationDTO, reservation);
+        log.info(Utils.asJsonString(reservationMapper.mapToDTO(updatedReservation)));
+
+        ReservationDTO reservationDTO = reservationMapper
+                .mapToDTO(reservationRepository.save(updatedReservation));
+        log.info(Utils.asJsonString(reservationDTO));
+        return reservationDTO;
+    }
+
+    /**
+     * Delete reservation.
+     */
+    public void deleteReservation(UUID reservationId) {
+        reservationRepository.findById(reservationId).ifPresentOrElse(entity -> reservationRepository.delete(entity),
+                () -> new NotFoundException(reservationId));
+    }
 
     @Transactional
-    public List<Reservation> saveReservation(UUID tripId, List<Reservation> reservation) throws Exception {
+    public List<ReservationDTO> saveReservation(UUID tripId, List<Reservation> reservation) throws Exception {
 
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new NotFoundException(null));
 
-        List<Reservation> savedReservations = reservationRepository.saveAll(reservation);
-
-        Boolean isAdded = trip.getReservations().addAll(savedReservations);
-
-        log.info("[ReservationService.saveReservation] " + Utils.asJsonString(trip.getReservations()));
+        Boolean isAdded = trip.addReservation(reservation);
 
         trip = tripRepository.save(trip);
 
+        log.info("[ReservationService.saveReservation] reservationDTOs="
+                + Utils.asJsonString(reservation.stream().map(reservationMapper::mapToDTO).toList()));
+
         if (isAdded) {
-            return savedReservations;
+            return reservation.stream().map(reservationMapper::mapToDTO).toList();
         } else {
             throw new Exception();
         }
@@ -134,52 +146,23 @@ public class ReservationService {
 
         reservation.addAll(chatResult.otherReservations().stream().map(reservationMapper::mapToReservation).toList());
 
-        // if (chatResult.flightBookings() != null) {
-        // if (!reservation
-        // .addAll(chatResult.flightBookings().stream().map(reservationMapper::mapToReservation).toList()))
-        // throw new Exception();
-        // }
-        // if (chatResult.flightTickets() != null) {
-        // if (!reservation
-        // .addAll(chatResult.flightTickets().stream().map(reservationMapper::mapToReservation).toList()))
-        // throw new Exception();
-        // }
-        // if (chatResult.accomodations() != null) {
-        // if (!reservation
-        // .addAll(chatResult.accomodations().stream().map(reservationMapper::mapToReservation).toList()))
-        // throw new Exception();
-        // }
-        // if (chatResult.otherReservations() != null) {
-        // if (!reservation
-        // .addAll(chatResult.otherReservations().stream().map(reservationMapper::mapToReservation).toList()))
-        // throw new Exception();
-        // }
-
         reservation.stream()
                 .forEach(r -> r.setRawText(chatResult.partOfTextAndLinksThatContainsReservationInformation()));
+
         return reservation;
     }
 
     /**
      * Provide the details of a Trip with the given id.
      */
-    public List<Reservation> getReservation(UUID tripId) {
-        List<Reservation> reservation = tripRepository.findById(tripId)
-                .orElseThrow(() -> new TripNotFoundException(tripId)).getReservations();
-        return reservation;
-    }
+    // public Reservation setLocalAppStorageFileUri(UUID tripId, UUID reservationId,
+    // String localAppStorageFileUri) {
+    // Reservation reservation = reservationRepository.findById(reservationId)
+    // .orElseThrow(() -> new TripNotFoundException(tripId));
+    // reservation.setLocalAppStorageFileUri(localAppStorageFileUri);
 
-    /**
-     * Provide the details of a Trip with the given id.
-     */
-    public Reservation setLocalAppStorageFileUri(UUID tripId, UUID reservationId,
-            String localAppStorageFileUri) {
-        Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new TripNotFoundException(tripId));
-        reservation.setLocalAppStorageFileUri(localAppStorageFileUri);
-
-        return reservationRepository.save(reservation);
-    }
+    // return reservationRepository.save(reservation);
+    // }
 
     /**
      * Create new empty trip.
@@ -209,24 +192,25 @@ public class ReservationService {
     // (reservation.size()), -1);
     // }
 
-    private List<String> extractTextfromImage(List<MultipartFile> files) {
-        List<String> reservationText = files.stream().map(multipartFile -> {
-            try {
-                BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
-                return new InputStreamResource(multipartFile.getInputStream());
-            } catch (Exception e) {
-                return null;
-            }
-        })
-                // .map(Utils::multipartFileToBufferedImage)
-                // .map(Utils::bufferedImageToTiffResource)
-                .map(visionService::extractTextfromImage)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
+    // private List<String> extractTextfromImage(List<MultipartFile> files) {
+    // List<String> reservationText = files.stream().map(multipartFile -> {
+    // try {
+    // BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
+    // return new InputStreamResource(multipartFile.getInputStream());
+    // } catch (Exception e) {
+    // return null;
+    // }
+    // })
+    // // .map(Utils::multipartFileToBufferedImage)
+    // // .map(Utils::bufferedImageToTiffResource)
+    // .map(visionService::extractTextfromImage)
+    // .flatMap(List::stream)
+    // .collect(Collectors.toList());
 
-        log.info(String.format("[extractTextfromImage] {}", reservationText.toString()));
-        return reservationText;
-    }
+    // log.info(String.format("[extractTextfromImage] {}",
+    // reservationText.toString()));
+    // return reservationText;
+    // }
 
     /**
      * Create new empty trip.
@@ -311,5 +295,44 @@ public class ReservationService {
     // -1));
 
     // return savedResultBuilder.build();
+    // }
+    /**
+     * Create new empty trip.
+     */
+    // public ReservationImageAnalysisResult analyzeReservationScreenImage(
+    // List<MultipartFile> files) {
+    // return analyzeReservationScreenImage(files, ReservationCategory.General);
+    // }
+
+    // public List<Reservation> analyzeReservationScreenImage(
+    // List<MultipartFile> files, ReservationCategory category) {
+
+    // /* Extract Text from Image */
+    // List<String> text = files.stream().map(multipartFile -> {
+    // try {
+    // byte[] fileBytes = multipartFile.getBytes();
+    // File tempFile = File.createTempFile("temp_tiff", ".tiff");
+    // try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+    // fos.write(fileBytes);
+    // }
+    // tempFile.deleteOnExit(); // 프로그램 종료 시 삭제
+    // return new FileUrlResource(tempFile.toURI().toURL());
+    // // BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
+    // // return new InputStreamResource(multipartFile.getInputStream());
+    // } catch (Exception e) {
+    // return null;
+    // }
+    // })
+    // // .map(Utils::multipartFileToBufferedImage)
+    // // .map(Utils::bufferedImageToTiffResource)
+    // .map(visionService::extractTextfromImage)
+    // .flatMap(List::stream)
+    // .collect(Collectors.toList());
+
+    // log.info(String.format("[extractTextfromImage] reservationText=%s",
+    // reservationText.toString()));
+
+    // return extractReservationFromText(text, category);
+    // // return createEntitiesFromImageAnalysisResult(tripId, reservationText);
     // }
 }

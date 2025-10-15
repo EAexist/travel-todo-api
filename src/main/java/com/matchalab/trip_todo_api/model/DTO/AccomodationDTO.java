@@ -3,6 +3,8 @@ package com.matchalab.trip_todo_api.model.DTO;
 import java.util.Map;
 import java.util.UUID;
 
+import com.matchalab.trip_todo_api.enums.AccomodationCategory;
+
 import lombok.Builder;
 
 @Builder
@@ -18,6 +20,6 @@ public record AccomodationDTO(
         String checkinEndTimeIsoString,
         String checkoutTimeIsoString,
         String region,
-        String type,
+        AccomodationCategory category,
         Map<String, String> links) {
 }
