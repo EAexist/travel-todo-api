@@ -3,7 +3,7 @@
         "isStock": true,
         "type": "accomodation",
         "category": "reservation",
-        "title": "숙소 예약",
+        "title": "숙박 예약",
         "icon": {
             "name": "🛌",
             "type": "tossface"

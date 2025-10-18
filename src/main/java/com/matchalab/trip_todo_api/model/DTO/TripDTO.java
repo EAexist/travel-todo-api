@@ -1,5 +1,6 @@
 package com.matchalab.trip_todo_api.model.DTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ public record TripDTO(
         @Nullable String startDateIsoString,
         @Nullable String endDateIsoString,
         @Nullable List<DestinationDTO> destination,
-        @Nullable List<TodoDTO> todolist, @Nullable List<ReservationDTO> reservations) {
+        @Nullable List<TodoDTO> todolist, List<ReservationDTO> reservations) {
 
     public TripDTO(UUID id,
             Boolean isInitialized,
@@ -35,5 +36,23 @@ public record TripDTO(
         this.destination = destination;
         this.todolist = todolist;
         this.reservations = reservations;
+    }
+
+    public static class Builder {
+        UUID id;
+        Boolean isInitialized;
+        String title;
+        String startDateIsoString;
+        String endDateIsoString;
+        List<DestinationDTO> destination;
+        List<TodoDTO> todolist;
+        List<ReservationDTO> reservations;
+
+        // Custom constructor for the builder
+        private Builder() {
+            this.destination = new ArrayList<DestinationDTO>();
+            this.todolist = new ArrayList<TodoDTO>();
+            this.reservations = new ArrayList<ReservationDTO>();
+        }
     }
 }

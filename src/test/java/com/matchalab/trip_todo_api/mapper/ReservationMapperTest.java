@@ -1,4 +1,4 @@
-package com.matchalab.trip_reservation_api.mapper;
+package com.matchalab.trip_todo_api.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

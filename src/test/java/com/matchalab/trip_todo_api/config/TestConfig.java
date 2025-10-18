@@ -85,7 +85,7 @@ public class TestConfig {
     Accomodation[] accomodations() {
         return new Accomodation[] {
                 Accomodation.builder()
-                        .type(AccomodationCategory.DORMITORY)
+                        .category(AccomodationCategory.DORMITORY)
                         .title("Hostel PAQ Tokushima")
                         .roomTitle("혼성 도미토리 내 베드")
                         .location("도쿠시마")
@@ -104,7 +104,7 @@ public class TestConfig {
                                         .build()))
                         .build(),
                 Accomodation.builder()
-                        .type(AccomodationCategory.AIRBNB)
+                        .category(AccomodationCategory.AIRBNB)
                         .title("Yoshiko 님의 숙소")
                         .roomTitle("혼성 도미토리 내 베드")
                         .location("나루토")
@@ -125,41 +125,42 @@ public class TestConfig {
         };
     }
 
-    private List<AccomodationDTO> accomodationDTOs = new ArrayList<AccomodationDTO>(
-            Arrays.asList(new AccomodationDTO[] {
-                    new AccomodationDTO(
-                            null,
-                            "Hostel PAQ Tokushima",
-                            "혼성 도미토리 내 베드",
-                            2,
-                            "PYO HYEON",
-                            "2025-02-20T00:00:00.001Z",
-                            "2025-02-22T00:00:00.001Z",
-                            "2025-07-01T18:00:00",
-                            "2025-07-01T21:00:00",
-                            "2025-07-01T10:00:00",
-                            "도쿠시마",
-                            "dorm",
-                            Map.of(
-                                    "googleMap", "https://maps.app.goo.gl/81rvb62d2LKrYPNV7", "airbnb",
-                                    "https://www.airbnb.co.kr/hotels/35388028?guests=1&adults=1&s=67&unique_share_id=be1c9ac3-c029-4927-a05e-efe2166f1903")),
-                    new AccomodationDTO(
-                            null,
-                            "Yoshiko 님의 숙소",
-                            "",
-                            2,
-                            "PYO HYEON",
-                            "2025-02-23T00:00:00.001Z",
-                            "2025-02-24T00:00:00.001Z",
-                            "2025-07-01T17:00:00",
-                            "2025-07-01T21:00:00",
-                            "2025-07-01T10:00:00",
-                            "나루토",
-                            "airbnb",
-                            Map.of(
-                                    "googleMap", "https://maps.app.goo.gl/yGivrbvsiyPBDVyR8", "airbnb",
-                                    "https://www.airbnb.co.kr/rooms/12317142?viralityEntryPoint=1&s=76"))
-            }));
+    // private List<AccomodationDTO> accomodationDTOs = new
+    // ArrayList<AccomodationDTO>(
+    // Arrays.asList(new AccomodationDTO[] {
+    // new AccomodationDTO(
+    // null,
+    // "Hostel PAQ Tokushima",
+    // "혼성 도미토리 내 베드",
+    // 2,
+    // "PYO HYEON",
+    // "2025-02-20T00:00:00.001Z",
+    // "2025-02-22T00:00:00.001Z",
+    // "2025-07-01T18:00:00",
+    // "2025-07-01T21:00:00",
+    // "2025-07-01T10:00:00",
+    // "도쿠시마",
+    // "dorm",
+    // Map.of(
+    // "googleMap", "https://maps.app.goo.gl/81rvb62d2LKrYPNV7", "airbnb",
+    // "https://www.airbnb.co.kr/hotels/35388028?guests=1&adults=1&s=67&unique_share_id=be1c9ac3-c029-4927-a05e-efe2166f1903")),
+    // new AccomodationDTO(
+    // null,
+    // "Yoshiko 님의 숙소",
+    // "",
+    // 2,
+    // "PYO HYEON",
+    // "2025-02-23T00:00:00.001Z",
+    // "2025-02-24T00:00:00.001Z",
+    // "2025-07-01T17:00:00",
+    // "2025-07-01T21:00:00",
+    // "2025-07-01T10:00:00",
+    // "나루토",
+    // "airbnb",
+    // Map.of(
+    // "googleMap", "https://maps.app.goo.gl/yGivrbvsiyPBDVyR8", "airbnb",
+    // "https://www.airbnb.co.kr/rooms/12317142?viralityEntryPoint=1&s=76"))
+    // }));
 
     @Bean
     Todo stockTodo() {

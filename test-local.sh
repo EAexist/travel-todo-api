@@ -1,6 +1,6 @@
 docker compose up -d && 
 ./gradlew clean test -Dspring.profiles.active=local \
---tests "ReservationControllerIntegrationTest*"
+# --tests "ReservationControllerIntegrationTest*"
 # --tests "com.matchalab.trip_todo_api.controller.*"
 # --tests "com.matchalab.trip_todo_api.mapper.*"
 # --tests "com.matchalab.trip_todo_api.service.*"
