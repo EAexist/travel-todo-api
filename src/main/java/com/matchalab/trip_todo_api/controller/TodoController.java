@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.service.TodoService;
@@ -38,7 +39,10 @@ public class TodoController {
         try {
             log.info(String.format("[TodoController.createTodo] %s %s", tripId, Utils.asJsonString(requestbody)));
             TodoDTO todoDTO = todoService.createTodo(tripId, requestbody);
-            return ResponseEntity.created(Utils.getLocation(todoDTO.id())).body(todoDTO);
+            return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequestUri()
+                    .replacePath("trip/{tripId}/todo/{todoId}")
+                    .buildAndExpand(tripId, todoDTO.id())
+                    .toUri()).body(todoDTO);
         } catch (HttpClientErrorException e) {
             throw e;
         }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
@@ -44,7 +45,10 @@ public class TripController {
 
             TripDTO tripDTO = tripService.createTrip(userId);
 
-            return ResponseEntity.created(Utils.getLocation(tripDTO.id()))
+            return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequestUri()
+                    .replacePath("/trip/{tripId}")
+                    .buildAndExpand(tripDTO.id())
+                    .toUri())
                     .body(tripDTO);
         } catch (HttpClientErrorException e) {
             throw e;
@@ -98,7 +102,10 @@ public class TripController {
             @RequestBody DestinationDTO requestedDestinationDTO) {
         try {
             DestinationDTO destinationDTO = tripService.createDestination(tripId, requestedDestinationDTO);
-            return ResponseEntity.created(Utils.getLocation(destinationDTO.id())).body(destinationDTO);
+            return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequestUri()
+                    .replacePath("/destination/{destinationId}")
+                    .buildAndExpand(destinationDTO.id())
+                    .toUri()).body(destinationDTO);
         } catch (HttpClientErrorException e) {
             throw e;
         }

@@ -38,21 +38,9 @@ public record TripDTO(
         this.reservations = reservations;
     }
 
-    public static class Builder {
-        UUID id;
-        Boolean isInitialized;
-        String title;
-        String startDateIsoString;
-        String endDateIsoString;
-        List<DestinationDTO> destination;
-        List<TodoDTO> todolist;
-        List<ReservationDTO> reservations;
-
-        // Custom constructor for the builder
-        private Builder() {
-            this.destination = new ArrayList<DestinationDTO>();
-            this.todolist = new ArrayList<TodoDTO>();
-            this.reservations = new ArrayList<ReservationDTO>();
-        }
+    public static class TripDTOBuilder {
+        private List<DestinationDTO> destination = new ArrayList<DestinationDTO>();
+        private List<TodoDTO> todolist = new ArrayList<TodoDTO>();
+        private List<ReservationDTO> reservations = new ArrayList<ReservationDTO>();
     }
 }

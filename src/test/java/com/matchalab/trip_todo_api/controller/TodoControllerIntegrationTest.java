@@ -25,7 +25,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
@@ -37,13 +36,11 @@ import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
-import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
-import com.matchalab.trip_todo_api.repository.TodoRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;
 import com.matchalab.trip_todo_api.utils.TestUtils;
@@ -133,7 +130,7 @@ public class TodoControllerIntegrationTest {
         UUID tripId = savedTrip.getId();
         TodoDTO todoDTO = TodoFactory.createValidCustomTodoDTO("new-reservation");
 
-        ResultActions result = mockMvc.perform(post(String.format("/user/%s/trip/%s/todo", userAccountId, tripId))
+        ResultActions result = mockMvc.perform(post(String.format("/trip/%s/todo", tripId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Utils.asJsonString(todoDTO)))
                 .andDo(print())
@@ -142,7 +139,7 @@ public class TodoControllerIntegrationTest {
 
         TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
         result.andExpect(header().string("Location",
-                String.format("http://localhost/user/%s/trip/%s/todo/%s", userAccountId, tripId, todoDTO.id())));
+                String.format("http://localhost/trip/%s/todo/%s", tripId, todoDTO.id())));
 
         assertThat(createdTodoDTO).usingRecursiveComparison()
                 .isEqualTo(todoDTO);
@@ -163,7 +160,7 @@ public class TodoControllerIntegrationTest {
                         .isStock(true).build())
                 .build();
 
-        ResultActions result = mockMvc.perform(post(String.format("/user/%s/trip/%s/todo", userAccountId, tripId))
+        ResultActions result = mockMvc.perform(post(String.format("/trip/%s/todo", tripId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Utils.asJsonString(todoDTO)))
                 .andDo(print())
@@ -173,7 +170,7 @@ public class TodoControllerIntegrationTest {
         TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
 
         result.andExpect(header().string("Location",
-                String.format("http://localhost/user/%s/trip/%s/todo/%s", userAccountId, tripId, todoDtoId)));
+                String.format("http://localhost/trip/%s/todo/%s", tripId, todoDtoId)));
 
         assertThat(createdTodoDTO).usingRecursiveComparison()
                 .isEqualTo(expectedTodoDTO);
@@ -189,7 +186,7 @@ public class TodoControllerIntegrationTest {
                 .content(todoMapper.mapToTodoContentDTO(stockTodoContent_passport))
                 .build();
 
-        ResultActions result = mockMvc.perform(post(String.format("/user/%s/trip/%s/todo", userAccountId, tripId))
+        ResultActions result = mockMvc.perform(post(String.format("/trip/%s/todo", tripId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Utils.asJsonString(todoDTO)))
                 .andDo(print())
@@ -199,7 +196,7 @@ public class TodoControllerIntegrationTest {
         TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
 
         result.andExpect(header().string("Location",
-                String.format("http://localhost/user/%s/trip/%s/todo/%s", userAccountId, tripId, todoDtoId)));
+                String.format("http://localhost/trip/%s/todo/%s", tripId, todoDtoId)));
 
         assertThat(createdTodoDTO).usingRecursiveComparison()
                 .isEqualTo(todoDTO);
@@ -214,7 +211,7 @@ public class TodoControllerIntegrationTest {
     // String id = savedTrip.getId();
 
     // ResultActions result =
-    // mockMvc.perform(post(String.format("/user/%s/trip/%s/todo", userAccountId,
+    // mockMvc.perform(post(String.format("/trip/%s/todo", userAccountId,
     // id))
     // .contentType(MediaType.APPLICATION_JSON)
     // .content(
@@ -230,7 +227,7 @@ public class TodoControllerIntegrationTest {
 
     // TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
     // result.andExpect(header().string("Location",
-    // String.format("http://localhost/user/%s/trip/%s/todo/%s", userAccountId, id,
+    // String.format("http://localhost/trip/%s/todo/%s", userAccountId, id,
     // createdTodoDTO.id())));
     // }
 
@@ -252,7 +249,7 @@ public class TodoControllerIntegrationTest {
                 .build();
 
         ResultActions result = mockMvc
-                .perform(patch(String.format("/user/%s/trip/%s/todo/%s", id, userAccountId, todo.getId()))
+                .perform(patch(String.format("/todo/%s", todo.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Utils.asJsonString(patchTodoDTO)))
                 .andDo(print())
@@ -288,7 +285,7 @@ public class TodoControllerIntegrationTest {
                 .build();
 
         ResultActions result = mockMvc
-                .perform(patch(String.format("/user/%s/trip/%s/todo/%s", userAccountId, id, todo.getId()))
+                .perform(patch(String.format("/todo/%s", todo.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Utils.asJsonString(patchTodoDTO)))
                 .andDo(print())

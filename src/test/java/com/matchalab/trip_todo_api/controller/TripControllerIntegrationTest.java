@@ -172,11 +172,7 @@ public class TripControllerIntegrationTest {
 
     @BeforeAll
     void setUp() {
-        // try {
-        // dataloader.run();
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // }
+
         tripRepository.deleteAll();
         destinationRepository.deleteAll();
 
@@ -216,7 +212,7 @@ public class TripControllerIntegrationTest {
 
         UUID id = savedTrip.getId();
 
-        ResultActions result = mockMvc.perform(get(String.format("/user/%s/trip/%s", userAccountId, id)))
+        ResultActions result = mockMvc.perform(get(String.format("/trip/%s", id)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -237,13 +233,10 @@ public class TripControllerIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").isNotEmpty());
 
-        UserAccountDTO userAccountDTO = TestUtils.asObject(result, UserAccountDTO.class);
+        TripDTO tripDTO = TestUtils.asObject(result, TripDTO.class);
 
         result.andExpect(header().string("Location",
-                String.format("http://localhost/user/%s/trip/%s", userAccountId, userAccountDTO.activeTripId())));
-
-        assertThat(userAccountDTO.tripSummary().size()).isGreaterThan(0);
-        assertThat(userAccountDTO.tripSummary().getLast().id()).isEqualTo(userAccountDTO.activeTripId());
+                String.format("http://localhost/trip/%s", tripDTO.id())));
     }
 
     @Test
@@ -254,7 +247,7 @@ public class TripControllerIntegrationTest {
                 .startDateIsoString("2025-02-10T00:00:00.001Z").build();
 
         ResultActions result = mockMvc
-                .perform(patch(String.format("/user/%s/trip/%s", userAccountId, savedTrip.getId()))
+                .perform(patch(String.format("/trip/%s", savedTrip.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Utils.asJsonString(tripDTOToPatch)))
                 .andDo(print())
@@ -285,7 +278,7 @@ public class TripControllerIntegrationTest {
                 Utils.asJsonString(stockTodoContentRepository.findAll())));
 
         ResultActions result = mockMvc
-                .perform(get(String.format("/user/%s/trip/%s/todoPreset", userAccountId, savedTrip.getId())))
+                .perform(get(String.format("/trip/%s/todoPreset", savedTrip.getId())))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -333,7 +326,7 @@ public class TripControllerIntegrationTest {
         UUID tripId = savedTrip.getId();
 
         ResultActions result = mockMvc
-                .perform(post(String.format("/user/%s/trip/%s/destination", userAccountId, tripId))
+                .perform(post(String.format("/trip/%s/destination", tripId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Utils.asJsonString(destinationDTO_tokushima)))
                 .andDo(print())
@@ -349,7 +342,7 @@ public class TripControllerIntegrationTest {
         DestinationDTO actualDestinationDTO = TestUtils.asObject(result, DestinationDTO.class);
 
         result.andExpect(header().string("Location",
-                String.format("http://localhost/user/%s/trip/%s/destination/%s", userAccountId, tripId,
+                String.format("http://localhost/destination/%s", actualDestinationDTO.id(),
                         actualDestinationDTO.id())));
     }
 
@@ -361,7 +354,7 @@ public class TripControllerIntegrationTest {
                 .orElseThrow(() -> new NotFoundException(null)).getId();
 
         ResultActions result = mockMvc
-                .perform(post(String.format("/user/%s/trip/%s/destination", userAccountId, savedTrip.getId()))
+                .perform(post(String.format("/trip/%s/destination", savedTrip.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Utils.asJsonString(destinationDTO_osaka)))
                 .andDo(print());
@@ -389,7 +382,7 @@ public class TripControllerIntegrationTest {
             throws Exception {
 
         // ResultActions result = mockMvc
-        // .perform(post(String.format("/user/%s/trip/%s/destination", userAccountId,
+        // .perform(post(String.format("/trip/%s/destination",
         // savedTrip.getId()))
         // .contentType(MediaType.APPLICATION_JSON)
         // .content(Utils.asJsonString(destinationDTO_tokushima)))
@@ -425,7 +418,7 @@ public class TripControllerIntegrationTest {
     // throws Exception {
 
     // ResultActions result = mockMvc
-    // .perform(post(String.format("/user/%s/trip/%s/destination", userAccountId,
+    // .perform(post(String.format("/trip/%s/destination",
     // savedTrip.getId()))
     // .contentType(MediaType.APPLICATION_JSON)
     // .content(Utils.asJsonString(destinationDTO_tokushima)))
@@ -451,7 +444,7 @@ public class TripControllerIntegrationTest {
     // String id = savedTrip.getId();
 
     // ResultActions result =
-    // mockMvc.perform(get(String.format("/user/%s/trip/%s/accomodation",
+    // mockMvc.perform(get(String.format("/trip/%s/accomodation",
     // userAccountId,id)))
     // .andDo(print())
     // .andExpect(status().isOk())
@@ -480,7 +473,7 @@ public class TripControllerIntegrationTest {
     // String id = savedTrip.getId();
 
     // ResultActions result =
-    // mockMvc.perform(post(String.format("/user/%s/trip/%s/accomodation",
+    // mockMvc.perform(post(String.format("/trip/%s/accomodation",
     // userAccountId, id))
     // .contentType(MediaType.APPLICATION_JSON))
     // .andDo(print())
@@ -491,7 +484,7 @@ public class TripControllerIntegrationTest {
     // Accomodation createdAccomodation = TestUtils.asObject(result,
     // Accomodation.class);
     // result.andExpect(header().string("Location",
-    // String.format("http://localhost/user/%s/trip/%s/accomodation/%s",
+    // String.format("http://localhost/trip/%s/accomodation/%s",
     // userAccountId, id,
     // createdAccomodation.getId())));
     // }

@@ -127,7 +127,7 @@ public class ReservationControllerIntegrationTest {
         ReservationDTO reservationDTO = ReservationFactory.createValidReservationDTO("new-reservation");
 
         ResultActions result = mockMvc
-                .perform(post(String.format("/user/%s/trip/%s/reservation", userAccountId, tripId))
+                .perform(post(String.format("/trip/%s/reservation", tripId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Utils.asJsonString(reservationDTO)))
                 .andDo(print())
@@ -136,7 +136,7 @@ public class ReservationControllerIntegrationTest {
 
         ReservationDTO createdReservationDTO = TestUtils.asObject(result, ReservationDTO.class);
         result.andExpect(header().string("Location",
-                String.format("http://localhost/user/%s/trip/%s/reservation/%s", userAccountId, tripId,
+                String.format("http://localhost/trip/%s/reservation/%s", tripId,
                         reservationDTO.getId())));
 
         assertThat(createdReservationDTO).usingRecursiveComparison()
@@ -281,7 +281,7 @@ public class ReservationControllerIntegrationTest {
                 .confirmationText(confirmationText).build();
 
         ResultActions result = mockMvc
-                .perform(post(String.format("/user/%s/trip/%s/reservation/analysis/text", userAccountId, tripId))
+                .perform(post(String.format("/trip/%s/reservation/analysis/text", userAccountId, tripId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Utils.asJsonString(createReservationDTO)))
                 .andDo(print())
@@ -292,7 +292,7 @@ public class ReservationControllerIntegrationTest {
         });
 
         result.andExpect(header().string("Location",
-                String.format("http://localhost/user/%s/trip/%s/reservation/%s",
+                String.format("http://trip/%s/reservation/%s",
                         userAccountId,
                         tripId, reservation.getFirst().getId())));
 
