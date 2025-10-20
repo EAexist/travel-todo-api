@@ -2,7 +2,7 @@
     {
         "isStock": true,
         "type": "accomodation",
-        "category": "reservation",
+        "category": "RESERVATION",
         "title": "숙박 예약",
         "icon": {
             "name": "🛌",
@@ -12,7 +12,7 @@
     {
         "isStock": true,
         "type": "passport",
-        "category": "foreign",
+        "category": "FOREIGN",
         "title": "여권",
         "icon": {
             "name": "passport",
@@ -22,7 +22,7 @@
     {
         "isStock": true,
         "type": "currency",
-        "category": "foreign",
+        "category": "FOREIGN",
         "title": "환전",
         "icon": {
             "name": "💱",
@@ -32,7 +32,7 @@
     {
         "isStock": true,
         "type": "roaming",
-        "category": "foreign",
+        "category": "FOREIGN",
         "title": "로밍",
         "icon": {
             "name": "📶",
@@ -42,7 +42,7 @@
     {
         "isStock": true,
         "type": "visit-japan",
-        "category": "foreign",
+        "category": "FOREIGN",
         "title": "Visit Japan",
         "icon": {
             "name": "📝",
@@ -52,7 +52,7 @@
     {
         "isStock": true,
         "type": "military-approvement",
-        "category": "foreign",
+        "category": "FOREIGN",
         "title": "국외여행허가",
         "icon": {
             "name": "🛌",
@@ -62,7 +62,7 @@
     {
         "isStock": true,
         "type": "goods",
-        "category": "goods",
+        "category": "GOODS",
         "title": "세면도구",
         "icon": {
             "name": "🧴",
@@ -72,7 +72,7 @@
     {
         "isStock": true,
         "type": "goods",
-        "category": "goods",
+        "category": "GOODS",
         "title": "어댑터",
         "icon": {
             "name": "🔌",
@@ -82,7 +82,7 @@
     {
         "isStock": true,
         "type": "goods",
-        "category": "goods",
+        "category": "GOODS",
         "title": "캐리어",
         "icon": {
             "name": "🧳",
@@ -92,7 +92,7 @@
     {
         "isStock": true,
         "type": "goods",
-        "category": "goods",
+        "category": "GOODS",
         "title": "우산",
         "icon": {
             "name": "☂️",
@@ -102,7 +102,7 @@
     {
         "isStock": true,
         "type": "goods",
-        "category": "goods",
+        "category": "GOODS",
         "title": "선글라스",
         "icon": {
             "name": "🕶",
