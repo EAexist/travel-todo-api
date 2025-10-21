@@ -37,5 +37,5 @@ public class FlightBooking extends Flight {
     @Nullable
     int numberOfPassenger;
 
-    String[] passengerNames;
+    String passengerName;
 }

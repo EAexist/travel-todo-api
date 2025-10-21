@@ -2,7 +2,6 @@ package com.matchalab.trip_todo_api.mapper;
 
 import java.util.List;
 
-import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -10,15 +9,15 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+import org.mapstruct.TargetType;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.matchalab.trip_todo_api.model.Accomodation;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.DTO.AccomodationDTO;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.DTO.TripPatchDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 
@@ -36,6 +35,13 @@ public abstract class TripMapper {
 
     @Autowired
     protected StockTodoContentRepository stockTodoContentRepository;
+
+    protected <T> T unwrapJsonNullable(JsonNullable<T> nullable, @TargetType Class<T> targetType) {
+        if (nullable == null || !nullable.isPresent()) {
+            return null;
+        }
+        return nullable.get();
+    }
 
     @Named("mapDestination")
     public List<DestinationDTO> mapDestination(Trip trip) {
@@ -102,7 +108,7 @@ public abstract class TripMapper {
     @Mapping(target = "destination", ignore = true)
     @Mapping(target = "todolist", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    public abstract Trip updateTripFromDto(TripDTO tripDTO, @MappingTarget Trip trip);
+    public abstract Trip updateTripFromDto(TripPatchDTO tripDTO, @MappingTarget Trip trip);
 
     // @BeanMapping(nullValuePropertyMappingStrategy =
     // NullValuePropertyMappingStrategy.IGNORE)

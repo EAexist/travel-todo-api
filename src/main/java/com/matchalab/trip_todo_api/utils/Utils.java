@@ -9,6 +9,7 @@ import java.net.URI;
 
 import javax.imageio.ImageIO;
 
+import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +48,7 @@ public class Utils {
     public static String asJsonString(final Object obj) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JsonNullableModule());
             final String jsonContent = mapper.writeValueAsString(obj);
             return jsonContent;
         } catch (Exception e) {

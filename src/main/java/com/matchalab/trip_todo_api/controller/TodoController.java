@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
+import com.matchalab.trip_todo_api.model.DTO.TodoPatchDTO;
 import com.matchalab.trip_todo_api.service.TodoService;
 import com.matchalab.trip_todo_api.utils.Utils;
 
@@ -35,7 +36,7 @@ public class TodoController {
      * Provide the details of an Trip with the given id.
      */
     @PostMapping("trip/{tripId}/todo")
-    public ResponseEntity<TodoDTO> createTodo(@PathVariable UUID tripId, @RequestBody TodoDTO requestbody) {
+    public ResponseEntity<TodoDTO> createTodo(@PathVariable UUID tripId, @RequestBody TodoPatchDTO requestbody) {
         try {
             log.info(String.format("[TodoController.createTodo] %s %s", tripId, Utils.asJsonString(requestbody)));
             TodoDTO todoDTO = todoService.createTodo(tripId, requestbody);
@@ -52,7 +53,7 @@ public class TodoController {
      * Provide the details of an Trip with the given id.
      */
     @PatchMapping("todo/{todoId}")
-    public ResponseEntity<TodoDTO> patchTodo(@PathVariable UUID todoId, @RequestBody TodoDTO newTodoDTO) {
+    public ResponseEntity<TodoDTO> patchTodo(@PathVariable UUID todoId, @RequestBody TodoPatchDTO newTodoDTO) {
         try {
             TodoDTO todoDTO = todoService.patchTodo(todoId, newTodoDTO);
             return ResponseEntity.ok().body(todoDTO);

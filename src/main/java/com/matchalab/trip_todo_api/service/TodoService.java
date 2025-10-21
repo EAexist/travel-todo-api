@@ -11,6 +11,7 @@ import com.matchalab.trip_todo_api.exception.TripNotFoundException;
 import com.matchalab.trip_todo_api.mapper.TodoMapper;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
+import com.matchalab.trip_todo_api.model.DTO.TodoPatchDTO;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.repository.CustomTodoContentRepository;
 import com.matchalab.trip_todo_api.repository.TodoRepository;
@@ -43,7 +44,7 @@ public class TodoService {
      * Create new todo.
      */
     @Transactional
-    public TodoDTO createTodo(UUID tripId, TodoDTO todoDTO) {
+    public TodoDTO createTodo(UUID tripId, TodoPatchDTO todoDTO) {
         Todo newTodo = todoMapper.mapToTodo(todoDTO);
         log.info(Utils.asJsonString(todoMapper.mapToTodoDTO(newTodo)));
 
@@ -58,7 +59,7 @@ public class TodoService {
     /**
      * Change contents/orderKey of todo.
      */
-    public TodoDTO patchTodo(UUID todoId, TodoDTO newTodoDTO) {
+    public TodoDTO patchTodo(UUID todoId, TodoPatchDTO newTodoDTO) {
         Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new NotFoundException(todoId));
         Todo updatedTodo = todoMapper.updateTodoFromDto(newTodoDTO, todo);
         log.info(Utils.asJsonString(todoMapper.mapToTodoDTO(updatedTodo)));

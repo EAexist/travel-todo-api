@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.matchalab.trip_todo_api.model.TripSettings;
 import com.matchalab.trip_todo_api.model.Reservation.ReservationDTO;
 
 import jakarta.annotation.Nullable;
@@ -18,7 +19,8 @@ public record TripDTO(
         @Nullable String startDateIsoString,
         @Nullable String endDateIsoString,
         @Nullable List<DestinationDTO> destination,
-        @Nullable List<TodoDTO> todolist, List<ReservationDTO> reservations) {
+        @Nullable List<TodoDTO> todolist, List<ReservationDTO> reservations,
+        @Nullable TripSettings settings) {
 
     public TripDTO(UUID id,
             Boolean isInitialized,
@@ -27,7 +29,7 @@ public record TripDTO(
             String endDateIsoString,
             List<DestinationDTO> destination,
             List<TodoDTO> todolist,
-            List<ReservationDTO> reservations) {
+            List<ReservationDTO> reservations, TripSettings settings) {
         this.id = id;
         this.isInitialized = isInitialized;
         this.title = title;
@@ -36,6 +38,7 @@ public record TripDTO(
         this.destination = destination;
         this.todolist = todolist;
         this.reservations = reservations;
+        this.settings = settings;
     }
 
     public static class TripDTOBuilder {

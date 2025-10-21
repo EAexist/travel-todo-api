@@ -53,6 +53,9 @@ public class Reservation {
     @Size(max = 2048, message = "primaryHrefLink cannot exceed 2048 characters.")
     private String primaryHrefLink;
 
+    @Builder.Default
+    private Boolean isCompleted = false;
+
     @Nullable
     private String code;
 

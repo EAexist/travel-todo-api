@@ -22,6 +22,7 @@ import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.DTO.TripPatchDTO;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.Todo.FlightTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
@@ -102,7 +103,7 @@ public class TripService {
     /**
      * Update the content of a Trip.
      */
-    public TripDTO patchTrip(UUID tripId, TripDTO newTripDTO) {
+    public TripDTO patchTrip(UUID tripId, TripPatchDTO newTripDTO) {
 
         Trip previousTrip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 

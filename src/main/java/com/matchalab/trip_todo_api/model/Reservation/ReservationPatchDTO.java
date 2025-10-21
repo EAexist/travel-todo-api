@@ -2,6 +2,8 @@ package com.matchalab.trip_todo_api.model.Reservation;
 
 import java.util.UUID;
 
+import org.openapitools.jackson.nullable.JsonNullable;
+
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.model.Accomodation;
 
@@ -17,7 +19,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReservationDTO {
+public class ReservationPatchDTO {
 
     private UUID id;
 
@@ -33,17 +35,17 @@ public class ReservationDTO {
     String note;
 
     @Nullable
-    VisitJapan visitJapan;
+    JsonNullable<VisitJapan> visitJapan;
 
     @Nullable
-    Accomodation accomodation;
+    JsonNullable<Accomodation> accomodation;
 
     @Nullable
-    FlightBooking flightBooking;
+    JsonNullable<FlightBooking> flightBooking;
 
     @Nullable
-    FlightTicket flightTicket;
+    JsonNullable<FlightTicket> flightTicket;
 
     @Nullable
-    GeneralReservation generalReservation;
+    JsonNullable<GeneralReservation> generalReservation;
 }

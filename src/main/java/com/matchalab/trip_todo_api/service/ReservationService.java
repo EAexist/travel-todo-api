@@ -15,6 +15,7 @@ import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Reservation.ReservationDTO;
+import com.matchalab.trip_todo_api.model.Reservation.ReservationPatchDTO;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.genAI.ExtractReservationChatResultDTO;
 import com.matchalab.trip_todo_api.repository.ReservationRepository;
@@ -77,7 +78,7 @@ public class ReservationService {
      * Create new todo.
      */
     @Transactional
-    public ReservationDTO createReservation(UUID tripId, ReservationDTO reservationDTO) {
+    public ReservationDTO createReservation(UUID tripId, ReservationPatchDTO reservationDTO) {
         Reservation reservation = reservationMapper.mapToReservation(reservationDTO);
         log.info(Utils.asJsonString(reservationMapper.mapToDTO(reservation)));
 
@@ -91,15 +92,17 @@ public class ReservationService {
     /**
      * Change contents/orderKey of reservation.
      */
-    public ReservationDTO patchReservation(UUID reservationId, ReservationDTO newReservationDTO) {
+    public ReservationDTO patchReservation(UUID reservationId, ReservationPatchDTO newReservationDTO) {
+
+        log.info("DTO:" + Utils.asJsonString(newReservationDTO));
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new NotFoundException(reservationId));
         Reservation updatedReservation = reservationMapper.updateFromDto(newReservationDTO, reservation);
-        log.info(Utils.asJsonString(reservationMapper.mapToDTO(updatedReservation)));
+        log.info("Updated:" + Utils.asJsonString(reservationMapper.mapToDTO(updatedReservation)));
 
         ReservationDTO reservationDTO = reservationMapper
                 .mapToDTO(reservationRepository.save(updatedReservation));
-        log.info(Utils.asJsonString(reservationDTO));
+        log.info("Saved:" + Utils.asJsonString(reservationDTO));
         return reservationDTO;
     }
 

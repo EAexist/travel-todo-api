@@ -2,14 +2,16 @@ package com.matchalab.trip_todo_api.model.DTO;
 
 import java.util.UUID;
 
+import org.openapitools.jackson.nullable.JsonNullable;
+
 import jakarta.annotation.Nullable;
 import lombok.Builder;
 
 @Builder
-public record TodoDTO(
+public record TodoPatchDTO(
         UUID id,
         int orderKey,
         String note,
-        @Nullable String completeDateIsoString,
+        @Nullable JsonNullable<String> completeDateIsoString,
         TodoContentDTO content) {
 }

@@ -1,5 +1,7 @@
 package com.matchalab.trip_todo_api.mapper;
 
+import java.util.Optional;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -7,11 +9,14 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+import org.mapstruct.TargetType;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
+import com.matchalab.trip_todo_api.model.DTO.TodoPatchDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
 import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
@@ -19,7 +24,6 @@ import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.Todo.TodoPresetStockTodoContent;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,6 +42,13 @@ public abstract class TodoMapper {
 
     public TodoMapper(StockTodoContentRepository stockTodoContentRepository) {
         this.stockTodoContentRepository = stockTodoContentRepository;
+    }
+
+    protected <T> T unwrapJsonNullable(JsonNullable<T> nullable, @TargetType Class<T> targetType) {
+        if (nullable == null || !nullable.isPresent()) {
+            return null;
+        }
+        return nullable.get();
     }
 
     /*
@@ -68,7 +79,7 @@ public abstract class TodoMapper {
 
     @Mapping(target = "customTodoContent", expression = "java(mapToCustomTodoContent(todoDTO))")
     @Mapping(target = "stockTodoContent", expression = "java(mapToStockTodoContent(todoDTO))")
-    public abstract Todo mapToTodo(TodoDTO todoDTO);
+    public abstract Todo mapToTodo(TodoPatchDTO todoDTO);
 
     /*
      * udpateToDto
@@ -80,15 +91,15 @@ public abstract class TodoMapper {
     @Mapping(target = "customTodoContent", expression = "java(updateCustomTodoContentFromDto(todoDTO, todo.getCustomTodoContent()))")
     @Mapping(target = "id", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    public abstract Todo updateTodoFromDto(TodoDTO todoDTO, @MappingTarget Todo todo);
+    public abstract Todo updateTodoFromDto(TodoPatchDTO todoDTO, @MappingTarget Todo todo);
 
     @Named("mapToCustomTodoContent")
-    public CustomTodoContent mapToCustomTodoContent(TodoDTO todoDTO) {
+    public CustomTodoContent mapToCustomTodoContent(TodoPatchDTO todoDTO) {
         return todoDTO.content().getIsStock() ? null : mapToCustomTodoContentHelper(todoDTO.content());
     };
 
     @Named("mapToStockTodoContent")
-    public StockTodoContent mapToStockTodoContent(TodoDTO todoDTO) {
+    public StockTodoContent mapToStockTodoContent(TodoPatchDTO todoDTO) {
         return todoDTO.content().getIsStock() ? mapToStockTodoContentHelper(todoDTO.content()) : null;
     };
 
@@ -107,7 +118,7 @@ public abstract class TodoMapper {
                 : null;
     }
 
-    public CustomTodoContent updateCustomTodoContentFromDto(TodoDTO todoDTO,
+    public CustomTodoContent updateCustomTodoContentFromDto(TodoPatchDTO todoDTO,
             CustomTodoContent customTodoContent) {
         return (customTodoContent == null) ? null
                 : todoDTO.content() == null ? customTodoContent

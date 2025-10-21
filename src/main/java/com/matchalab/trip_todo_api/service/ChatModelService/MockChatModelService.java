@@ -79,7 +79,7 @@ public class MockChatModelService implements ChatModelService {
                                     .reservationNumberOrCode("1546592100")
                                     .accomodationTitle("HOSTEL PAQ tokushima")
                                     .roomTitle("도미토리 내 1인 예약 (혼성)")
-                                    .numberOfGuest(1)
+                                    .numberOfClient(1)
                                     .clientName("PYO HYEON")
                                     .checkinDateIsoString("2025-02-24")
                                     .checkoutDateIsoString("2025-02-25")
@@ -96,8 +96,7 @@ public class MockChatModelService implements ChatModelService {
                                     .reservationDetailHrefLink(
                                             "https://www.etix.com/kketix/online/onlinereprint.jsp?userID=25504976&password=66755185")
                                     .reservationNumberOrCode("4428332754")
-                                    .title("Teshima Art Museum")
-                                    .note("note")
+                                    .reservationTitle("Teshima Art Museum")
                                     .numberOfClient(1)
                                     .reservationDateTimeIsoString("2025-02-22")
                                     .build(),
@@ -105,8 +104,7 @@ public class MockChatModelService implements ChatModelService {
                                     .reservationDetailHrefLink(
                                             "https://www.etix.com/kketix/online/onlinereprint.jsp?userID=25504976&password=66755185")
                                     .reservationNumberOrCode("4428332898")
-                                    .title("Teshima Art Museum")
-                                    .note("note")
+                                    .reservationTitle("Teshima Art Museum")
                                     .numberOfClient(1)
                                     .reservationDateTimeIsoString("2025-02-22")
                                     .build()))

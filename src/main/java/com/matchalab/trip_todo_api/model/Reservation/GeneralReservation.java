@@ -28,7 +28,9 @@ public class GeneralReservation {
     @Nullable
     private int numberOfClient;
     @Nullable
-    private List<String> clientNames;
+    private String clientName;
+    // @Nullable
+    // private List<String> clientNames;
     @Nullable
     private String dateTimeIsoString;
 }

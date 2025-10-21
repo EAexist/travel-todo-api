@@ -23,6 +23,7 @@ import com.matchalab.trip_todo_api.model.DTO.CreateReservationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Reservation.ReservationDTO;
+import com.matchalab.trip_todo_api.model.Reservation.ReservationPatchDTO;
 import com.matchalab.trip_todo_api.service.HtmlParserService;
 import com.matchalab.trip_todo_api.service.ReservationService;
 import com.matchalab.trip_todo_api.utils.Utils;
@@ -56,7 +57,7 @@ public class ReservationController {
 
     @PostMapping("trip/{tripId}/reservation")
     public ResponseEntity<ReservationDTO> createReservation(
-            @PathVariable UUID tripId, @RequestBody ReservationDTO requestbody) {
+            @PathVariable UUID tripId, @RequestBody ReservationPatchDTO requestbody) {
         try {
             ReservationDTO reservationDTO = reservationService.createReservation(tripId, requestbody);
             return ResponseEntity.created(Utils.getLocation(reservationDTO.getId())).body(reservationDTO);
@@ -67,7 +68,6 @@ public class ReservationController {
 
     @PostMapping("trip/{tripId}/reservation/analysis/text")
     public ResponseEntity<List<ReservationDTO>> createReservationFromText(
-            @PathVariable UUID userId,
             @PathVariable UUID tripId,
             @RequestBody CreateReservationDTO createReservationDTO) {
         try {
@@ -91,7 +91,7 @@ public class ReservationController {
             return ResponseEntity
                     .created(ServletUriComponentsBuilder.fromCurrentRequestUri()
                             .replacePath("/trip/{tripId}/reservation/{reservationId}")
-                            .buildAndExpand(userId, tripId, reservationDTOs.getFirst().getId())
+                            .buildAndExpand(tripId, reservationDTOs.getFirst().getId())
                             .toUri())
                     .body(reservationDTOs);
         } catch (HttpClientErrorException e) {
@@ -114,7 +114,7 @@ public class ReservationController {
      */
     @PatchMapping("reservation/{reservationId}")
     public ResponseEntity<ReservationDTO> patchReservation(@PathVariable UUID reservationId,
-            @RequestBody ReservationDTO newReservationDTO) {
+            @RequestBody ReservationPatchDTO newReservationDTO) {
         try {
             ReservationDTO reservationDTO = reservationService.patchReservation(reservationId, newReservationDTO);
             return ResponseEntity.ok().body(reservationDTO);

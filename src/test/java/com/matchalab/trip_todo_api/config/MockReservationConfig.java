@@ -117,7 +117,7 @@ public class MockReservationConfig {
                                 .title("HOSTEL PAQ tokushima")
                                 .roomTitle("도미토리 내 1인 예약 (혼성)")
                                 .location("Tokushima city nakatouriimachi 2-5, 도쿠시마, 일본, 770-0844")
-                                .numberOfGuest(1)
+                                .numberOfClient(1)
                                 .clientName("PYO HYEON")
                                 .checkinDateIsoString("2025-02-24")
                                 .checkoutDateIsoString("2025-02-25")

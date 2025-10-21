@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
+import com.matchalab.trip_todo_api.model.DTO.TripPatchDTO;
 import com.matchalab.trip_todo_api.model.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.service.TripService;
 import com.matchalab.trip_todo_api.utils.Utils;
@@ -72,7 +73,7 @@ public class TripController {
      * Update the metadata(title, destination, schedule) of a Trip.
      */
     @PatchMapping("trip/{tripId}")
-    public ResponseEntity<TripDTO> patchTrip(@PathVariable UUID tripId, @RequestBody TripDTO newTripDTO) {
+    public ResponseEntity<TripDTO> patchTrip(@PathVariable UUID tripId, @RequestBody TripPatchDTO newTripDTO) {
         try {
             return ResponseEntity.ok().body(tripService.patchTrip(tripId, newTripDTO));
         } catch (HttpClientErrorException e) {

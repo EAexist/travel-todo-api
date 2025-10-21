@@ -11,7 +11,7 @@ public record ExtractAccomodationChatResultDTO(
         @Nullable String reservationNumberOrCode,
         String accomodationTitle,
         @Nullable String roomTitle,
-        @Nullable int numberOfGuest,
+        @Nullable int numberOfClient,
         @Nullable String clientName,
         @Nullable String checkinDateIsoString,
         @Nullable String checkoutDateIsoString,

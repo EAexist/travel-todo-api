@@ -12,7 +12,7 @@ public record AccomodationDTO(
         UUID id,
         String title,
         String roomTitle,
-        int numberOfGuest,
+        int numberOfClient,
         String clientName,
         String checkinDateIsoString,
         String checkoutDateIsoString,

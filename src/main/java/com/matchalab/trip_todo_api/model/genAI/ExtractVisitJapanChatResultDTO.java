@@ -6,11 +6,8 @@ import jakarta.annotation.Nullable;
 import lombok.Builder;
 
 @Builder
-public record ExtractGeneralReservationChatResultDTO(
+public record ExtractVisitJapanChatResultDTO(
         @Nullable String reservationDetailHrefLink,
         @Nullable String reservationNumberOrCode,
-        String reservationTitle,
-        @Nullable int numberOfClient,
-        @Nullable List<String> clientNames,
         @Nullable String reservationDateTimeIsoString) {
 }
