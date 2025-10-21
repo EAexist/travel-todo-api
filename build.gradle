@@ -87,6 +87,9 @@ dependencies {
     /* jakarta.mail */
     implementation "com.sun.mail:jakarta.mail:2.0.2"
 
+    /* jackson-databind-nullable */
+    implementation "org.openapitools:jackson-databind-nullable:0.2.7"
+
     /* Test */
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core:3.27.2'
