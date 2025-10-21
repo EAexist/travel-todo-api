@@ -110,8 +110,12 @@ public class ReservationService {
      * Delete reservation.
      */
     public void deleteReservation(UUID reservationId) {
-        reservationRepository.findById(reservationId).ifPresentOrElse(entity -> reservationRepository.delete(entity),
-                () -> new NotFoundException(reservationId));
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NotFoundException(reservationId));
+        Trip trip = reservation.getTrip();
+        trip.removeReservation(reservation);
+        tripRepository.save(trip);
+
     }
 
     @Transactional

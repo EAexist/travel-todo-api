@@ -195,8 +195,8 @@ public class TripControllerIntegrationTest {
         savedTrip = new Trip(trip);
         savedDestinations.stream()
                 .forEach(dest -> {
-                    savedTrip.getDestination().add(dest);
-                    dest.getTrip().add(savedTrip);
+                    savedTrip.getDestinations().add(dest);
+                    dest.getTrips().add(savedTrip);
                     destinationRepository.save(dest);
                 });
 
@@ -287,11 +287,11 @@ public class TripControllerIntegrationTest {
                 new TypeReference<List<TodoPresetItemDTO>>() {
                 });
 
-        List<FlightRoute> recommendedOutboudFlight = savedTrip.getDestination().stream()
+        List<FlightRoute> recommendedOutboudFlight = savedTrip.getDestinations().stream()
                 .map(dest -> dest.getRecommendedOutboundFlight()).flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        List<FlightRoute> recommendedReturnFlight = savedTrip.getDestination().stream()
+        List<FlightRoute> recommendedReturnFlight = savedTrip.getDestinations().stream()
                 .map(dest -> dest.getRecommendedReturnFlight()).flatMap(List::stream)
                 .collect(Collectors.toList());
 

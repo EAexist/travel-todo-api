@@ -17,10 +17,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -35,10 +33,10 @@ public class Destination {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToMany(mappedBy = "destination")
+    @ManyToMany(mappedBy = "destinations")
     @JsonIgnore
     // @Builder.Default
-    private List<Trip> trip = new ArrayList<Trip>();
+    private List<Trip> trips = new ArrayList<Trip>();
 
     private String title;
     private String iso2DigitNationCode;

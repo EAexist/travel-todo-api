@@ -18,7 +18,7 @@ public record TripDTO(
         @Nullable String title,
         @Nullable String startDateIsoString,
         @Nullable String endDateIsoString,
-        @Nullable List<DestinationDTO> destination,
+        @Nullable List<DestinationDTO> destinations,
         @Nullable List<TodoDTO> todolist, List<ReservationDTO> reservations,
         @Nullable TripSettings settings) {
 
@@ -27,7 +27,7 @@ public record TripDTO(
             String title,
             String startDateIsoString,
             String endDateIsoString,
-            List<DestinationDTO> destination,
+            List<DestinationDTO> destinations,
             List<TodoDTO> todolist,
             List<ReservationDTO> reservations, TripSettings settings) {
         this.id = id;
@@ -35,14 +35,14 @@ public record TripDTO(
         this.title = title;
         this.startDateIsoString = startDateIsoString;
         this.endDateIsoString = endDateIsoString;
-        this.destination = destination;
+        this.destinations = destinations;
         this.todolist = todolist;
         this.reservations = reservations;
         this.settings = settings;
     }
 
     public static class TripDTOBuilder {
-        private List<DestinationDTO> destination = new ArrayList<DestinationDTO>();
+        private List<DestinationDTO> destinations = new ArrayList<DestinationDTO>();
         private List<TodoDTO> todolist = new ArrayList<TodoDTO>();
         private List<ReservationDTO> reservations = new ArrayList<ReservationDTO>();
     }

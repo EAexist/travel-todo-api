@@ -15,7 +15,7 @@ public record TripSummaryDTO(
         @Nullable String title,
         @Nullable String startDateIsoString,
         @Nullable String endDateIsoString,
-        @Nullable List<String> destination) {
+        @Nullable List<String> destinationTitles) {
 
     public TripSummaryDTO(UUID id,
             String createDateIsoString,
@@ -23,13 +23,13 @@ public record TripSummaryDTO(
             String title,
             String startDateIsoString,
             String endDateIsoString,
-            List<String> destination) {
+            List<String> destinationTitles) {
         this.id = id;
         this.createDateIsoString = createDateIsoString;
         this.isInitialized = isInitialized;
         this.title = title;
         this.startDateIsoString = startDateIsoString;
         this.endDateIsoString = endDateIsoString;
-        this.destination = destination;
+        this.destinationTitles = destinationTitles;
     }
 }

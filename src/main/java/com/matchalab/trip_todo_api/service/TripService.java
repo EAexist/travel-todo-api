@@ -24,6 +24,7 @@ import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripPatchDTO;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
+import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Todo.FlightTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
@@ -122,8 +123,7 @@ public class TripService {
     public void deleteTrip(UUID tripId) {
 
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
-        UserAccount userAccount = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
-                .getUserAccount();
+        UserAccount userAccount = trip.getUserAccount();
 
         userAccount.removeTrip(trip);
         userAccountRepository.save(userAccount);
@@ -148,18 +148,18 @@ public class TripService {
                 .toList();
 
         Boolean doRecommendFlight = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
-                .getDestination().stream().anyMatch(dest -> dest.getRecommendedOutboundFlight().size() > 0);
+                .getDestinations().stream().anyMatch(dest -> dest.getRecommendedOutboundFlight().size() > 0);
 
         /*
          * Add 2 preset items; ouutbound flight reservation & return flight reservation
          */
         if (doRecommendFlight) {
 
-            List<FlightRoute> recommendedOutboudFlight = trip.getDestination().stream()
+            List<FlightRoute> recommendedOutboudFlight = trip.getDestinations().stream()
                     .map(dest -> dest.getRecommendedOutboundFlight()).flatMap(List::stream)
                     .collect(Collectors.toList());
 
-            List<FlightRoute> recommendedReturnFlight = trip.getDestination().stream()
+            List<FlightRoute> recommendedReturnFlight = trip.getDestinations().stream()
                     .map(dest -> dest.getRecommendedReturnFlight()).flatMap(List::stream)
                     .collect(Collectors.toList());
 
@@ -188,28 +188,32 @@ public class TripService {
         destinationRepository
                 .findByiso2DigitNationCodeAndTitle(destinationDTO.iso2DigitNationCode(), destinationDTO.title())
                 .map(dest -> {
-                    trip.getDestination().add(dest);
+                    trip.getDestinations().add(dest);
                     destinationRepository.save(dest);
                     return dest;
                 })
                 .orElseGet(
                         () -> {
                             Destination dest = tripMapper.mapToDestination(destinationDTO);
-                            trip.getDestination().add(dest);
+                            trip.getDestinations().add(dest);
                             dest = destinationRepository.save(dest);
                             eventPublisher.publishEvent(new NewDestinationCreatedEvent(this, dest.getId()));
                             return dest;
                         });
 
-        return tripMapper.mapToDestinationDTO(tripRepository.save(trip).getDestination().getLast());
+        return tripMapper.mapToDestinationDTO(tripRepository.save(trip).getDestinations().getLast());
     }
 
     /**
      * Create new todo.
      */
-    public void deleteDestination(UUID destinationId) {
-        destinationRepository.findById(destinationId).ifPresentOrElse(entity -> destinationRepository.delete(entity),
-                () -> new NotFoundException(destinationId));
+    public void deleteDestination(UUID tripId, UUID destinationId) {
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new NotFoundException(tripId));
+        Destination destination = destinationRepository.findById(destinationId)
+                .orElseThrow(() -> new NotFoundException(destinationId));
+        trip.removeDestination(destination);
+        tripRepository.save(trip);
     }
 
     // /**

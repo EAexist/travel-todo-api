@@ -54,7 +54,7 @@ public class Trip {
     @ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(name = "trip_to_destination", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "destination_id"))
     @Builder.Default
-    private List<Destination> destination = new ArrayList<Destination>();
+    private List<Destination> destinations = new ArrayList<Destination>();
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -82,7 +82,7 @@ public class Trip {
         this.title = trip.getTitle();
         this.startDateIsoString = trip.getStartDateIsoString();
         this.endDateIsoString = trip.getEndDateIsoString();
-        this.destination = trip.getDestination();
+        this.destinations = trip.getDestinations();
         this.todolist = trip.getTodolist();
         this.reservations = trip.getReservations();
     }
@@ -116,5 +116,9 @@ public class Trip {
     public void removeReservation(Reservation reservation) {
         this.reservations.remove(reservation);
         reservation.setTrip(null);
+    }
+
+    public void removeDestination(Destination destination) {
+        this.destinations.remove(destination);
     }
 }

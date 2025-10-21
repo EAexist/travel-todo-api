@@ -118,9 +118,9 @@ public class TripController {
      */
 
     @DeleteMapping("trip/{tripId}/destination/{destinationId}")
-    public ResponseEntity<Void> deleteDestination(@PathVariable UUID destinationId) {
+    public ResponseEntity<Void> deleteDestination(@PathVariable UUID tripId, @PathVariable UUID destinationId) {
         try {
-            tripService.deleteDestination(destinationId);
+            tripService.deleteDestination(tripId, destinationId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (HttpClientErrorException e) {
             throw e;

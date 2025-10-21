@@ -12,6 +12,7 @@ import com.matchalab.trip_todo_api.mapper.TodoMapper;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoPatchDTO;
+import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.repository.CustomTodoContentRepository;
 import com.matchalab.trip_todo_api.repository.TodoRepository;
@@ -73,8 +74,11 @@ public class TodoService {
      * Delete todo.
      */
     public void deleteTodo(UUID todoId) {
-        todoRepository.findById(todoId).ifPresentOrElse(entity -> todoRepository.delete(entity),
-                () -> new NotFoundException(todoId));
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new NotFoundException(todoId));
+        Trip trip = todo.getTrip();
+        trip.removeTodo(todo);
+        tripRepository.save(trip);
     }
 
 }
