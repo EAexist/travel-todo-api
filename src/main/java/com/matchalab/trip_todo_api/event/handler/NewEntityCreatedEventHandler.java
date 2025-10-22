@@ -99,13 +99,16 @@ public class NewEntityCreatedEventHandler {
         log.info(String.format("[processNewDestinationAsync] destinationId: %s", event.getDestinationId()));
         UUID id = event.getDestinationId();
         Destination destination = destinationRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
-        RecommendedFlightChatResult recommendedFlightChatResult = chatModelService
-                .getRecommendedFlight(destination.getTitle());
-        destination.setRecommendedOutboundFlight(recommendedFlightChatResult.recommendedOutboundFlight().stream()
-                .map(this::processRecommendedFlightChatResult).toList());
 
-        destination.setRecommendedReturnFlight(recommendedFlightChatResult.recommendedReturnFlight().stream()
-                .map(this::processRecommendedFlightChatResult).toList());
+        if (destination.getIso2DigitNationCode() != null) {
+            RecommendedFlightChatResult recommendedFlightChatResult = chatModelService
+                    .getRecommendedFlight(destination.getTitle());
+            destination.setRecommendedOutboundFlight(recommendedFlightChatResult.recommendedOutboundFlight().stream()
+                    .map(this::processRecommendedFlightChatResult).toList());
+
+            destination.setRecommendedReturnFlight(recommendedFlightChatResult.recommendedReturnFlight().stream()
+                    .map(this::processRecommendedFlightChatResult).toList());
+        }
 
         log.info(String.format("destination: %s", Utils.asJsonString(destination)));
         return CompletableFuture.completedFuture(destinationRepository.save(destination));

@@ -2,8 +2,11 @@ package com.matchalab.trip_todo_api.model;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
@@ -51,10 +54,15 @@ public class Trip {
     @Builder.Default
     private Boolean isInitialized = false;
 
-    @ManyToMany(cascade = { CascadeType.MERGE })
-    @JoinTable(name = "trip_to_destination", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "destination_id"))
+    // @ManyToMany(cascade = { CascadeType.MERGE })
+    // @JoinTable(name = "trip_to_destination", joinColumns = @JoinColumn(name =
+    // "trip_id"), inverseJoinColumns = @JoinColumn(name = "destination_id"))
+    // @Builder.Default
+    // private List<Destination> destinations = new ArrayList<Destination>();
+
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Destination> destinations = new ArrayList<Destination>();
+    private List<TripDestination> destinations = new ArrayList<TripDestination>();
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -118,7 +126,28 @@ public class Trip {
         reservation.setTrip(null);
     }
 
-    public void removeDestination(Destination destination) {
-        this.destinations.remove(destination);
+    /* Destination */
+    public List<Destination> getDestinationsDirectly() {
+        return this.destinations.stream()
+                .map(TripDestination::getDestination)
+                .collect(Collectors.toList());
+    }
+
+    public boolean removeDestination(UUID destinationId) {
+        Optional<TripDestination> relationshipOpt = this.destinations.stream()
+                .filter(ba -> ba.getDestination().getId().equals(destinationId))
+                .findFirst();
+
+        if (relationshipOpt.isPresent()) {
+            TripDestination relationshipToRemove = relationshipOpt.get();
+
+            relationshipToRemove.getDestination().getTrips().remove(relationshipToRemove);
+
+            this.destinations.remove(relationshipToRemove);
+
+            return true;
+        }
+
+        return false;
     }
 }

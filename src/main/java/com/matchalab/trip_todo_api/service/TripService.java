@@ -18,21 +18,24 @@ import com.matchalab.trip_todo_api.mapper.TripMapper;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
+import com.matchalab.trip_todo_api.model.TripDestination;
+import com.matchalab.trip_todo_api.model.TripDestinationId;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripPatchDTO;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
-import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Todo.FlightTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
+import com.matchalab.trip_todo_api.repository.TripDestinationRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -46,6 +49,8 @@ public class TripService {
     private final DestinationRepository destinationRepository;
     @Autowired
     private final TodoPresetRepository todoPresetRepository;
+    @Autowired
+    private final TripDestinationRepository tripDestinationRepository;
 
     @Autowired
     private final TripMapper tripMapper;
@@ -62,6 +67,7 @@ public class TripService {
             TripRepository tripRepository,
             DestinationRepository destinationRepository,
             TodoPresetRepository todoPresetRepository,
+            TripDestinationRepository tripDestinationRepository,
             TripMapper tripMapper,
             TodoMapper todoMapper,
             ApplicationEventPublisher eventPublisher,
@@ -70,6 +76,7 @@ public class TripService {
         this.tripRepository = tripRepository;
         this.destinationRepository = destinationRepository;
         this.todoPresetRepository = todoPresetRepository;
+        this.tripDestinationRepository = tripDestinationRepository;
         this.tripMapper = tripMapper;
         this.todoMapper = todoMapper;
         this.eventPublisher = eventPublisher;
@@ -99,6 +106,14 @@ public class TripService {
     public TripDTO getTrip(UUID tripId) {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
         return tripMapper.mapToTripDTO(trip);
+    }
+
+    /**
+     * Provide the details of a Trip with the given id.
+     */
+    public List<DestinationDTO> getDestinations(UUID tripId) {
+        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
+        return trip.getDestinationsDirectly().stream().map(tripMapper::mapToDestinationDTO).toList();
     }
 
     /**
@@ -148,18 +163,18 @@ public class TripService {
                 .toList();
 
         Boolean doRecommendFlight = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
-                .getDestinations().stream().anyMatch(dest -> dest.getRecommendedOutboundFlight().size() > 0);
+                .getDestinationsDirectly().stream().anyMatch(dest -> dest.getRecommendedOutboundFlight().size() > 0);
 
         /*
          * Add 2 preset items; ouutbound flight reservation & return flight reservation
          */
         if (doRecommendFlight) {
 
-            List<FlightRoute> recommendedOutboudFlight = trip.getDestinations().stream()
+            List<FlightRoute> recommendedOutboudFlight = trip.getDestinationsDirectly().stream()
                     .map(dest -> dest.getRecommendedOutboundFlight()).flatMap(List::stream)
                     .collect(Collectors.toList());
 
-            List<FlightRoute> recommendedReturnFlight = trip.getDestinations().stream()
+            List<FlightRoute> recommendedReturnFlight = trip.getDestinationsDirectly().stream()
                     .map(dest -> dest.getRecommendedReturnFlight()).flatMap(List::stream)
                     .collect(Collectors.toList());
 
@@ -183,25 +198,38 @@ public class TripService {
      * Create new empty trip.
      */
     public DestinationDTO createDestination(UUID tripId, DestinationDTO destinationDTO) {
-        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 
-        destinationRepository
+        Destination destination = destinationRepository
                 .findByiso2DigitNationCodeAndTitle(destinationDTO.iso2DigitNationCode(), destinationDTO.title())
-                .map(dest -> {
-                    trip.getDestinations().add(dest);
-                    destinationRepository.save(dest);
-                    return dest;
-                })
                 .orElseGet(
                         () -> {
                             Destination dest = tripMapper.mapToDestination(destinationDTO);
-                            trip.getDestinations().add(dest);
                             dest = destinationRepository.save(dest);
                             eventPublisher.publishEvent(new NewDestinationCreatedEvent(this, dest.getId()));
                             return dest;
                         });
 
-        return tripMapper.mapToDestinationDTO(tripRepository.save(trip).getDestinations().getLast());
+        destination = destinationRepository.save(destination);
+
+        if (!tripDestinationRepository.existsById_TripIdAndId_DestinationId(tripId, destination.getId())) {
+
+            Trip trip = tripRepository.findById(tripId)
+                    .orElseThrow(() -> new EntityNotFoundException("Trip not found"));
+
+            TripDestination tripDestination = TripDestination.builder()
+                    .id(new TripDestinationId(tripId, destination.getId())).trip(trip).destination(destination).build();
+
+            // tripDestination.setId(new TripDestinationId(tripId, destination.getId()));
+
+            trip.getDestinations().add(tripDestination);
+            // destination.getTrips().add(tripDestination);
+
+            tripRepository.save(trip);
+
+            // destination = destinationRepository.save(destination);
+        }
+
+        return tripMapper.mapToDestinationDTO(destination);
     }
 
     /**
@@ -210,9 +238,7 @@ public class TripService {
     public void deleteDestination(UUID tripId, UUID destinationId) {
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new NotFoundException(tripId));
-        Destination destination = destinationRepository.findById(destinationId)
-                .orElseThrow(() -> new NotFoundException(destinationId));
-        trip.removeDestination(destination);
+        trip.removeDestination(destinationId);
         tripRepository.save(trip);
     }
 

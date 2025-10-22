@@ -95,6 +95,19 @@ public class TripController {
     }
 
     /**
+     * Provide the details of a Trip with the given id.
+     */
+    @GetMapping("trip/{tripId}/destination")
+    public ResponseEntity<List<DestinationDTO>> destination(@PathVariable UUID tripId) {
+        try {
+            return ResponseEntity.ok().body(tripService.getDestinations(tripId));
+        } catch (HttpClientErrorException e) {
+            throw e;
+            // return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
      * Add a destination to the Trip's destination list.
      * If the destination doesn't exist in databse, create new one.
      */
