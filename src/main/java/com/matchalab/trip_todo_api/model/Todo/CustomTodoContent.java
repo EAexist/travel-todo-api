@@ -2,9 +2,6 @@ package com.matchalab.trip_todo_api.model.Todo;
 
 import java.util.UUID;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.matchalab.trip_todo_api.model.Icon;
 
@@ -12,8 +9,6 @@ import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -28,6 +23,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomTodoContent extends TodoContent {
+
+    @Id
+    private UUID id = UUID.randomUUID();
 
     @JsonIgnore
     @Nullable
@@ -46,11 +44,11 @@ public class CustomTodoContent extends TodoContent {
             String type,
             String title,
             Icon icon, FlightTodoContent flightTodoContent) {
-        super(id, isStock,
+        super(isStock,
                 category,
-                type,
                 title,
                 icon);
+        this.id = id;
         this.flightTodoContent = flightTodoContent;
     }
 }

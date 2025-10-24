@@ -1,0 +1,254 @@
+[
+    {
+        "type": "accomodation",
+        "category": "RESERVATION",
+        "title": "숙박 예약",
+        "icon": {
+            "name": "🛌",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "insurance",
+        "category": "RESERVATION",
+        "title": "여행자 보험 가입",
+        "icon": {
+            "name": "🛡️",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "passport",
+        "category": "FOREIGN",
+        "title": "여권",
+        "icon": {
+            "name": "passport",
+            "type": "material-community"
+        }
+    },
+    {
+        "type": "cash",
+        "category": "FOREIGN",
+        "title": "환전 (현금)",
+        "icon": {
+            "name": "💱",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "prepaid_card",
+        "category": "FOREIGN",
+        "title": "환전 (충전식 카드)",
+        "icon": {
+            "name": "money-check-alt",
+            "type": "font-awesome-5"
+        }
+    },
+    {
+        "type": "credit_card",
+        "category": "FOREIGN",
+        "title": "해외 사용 신용카드",
+        "icon": {
+            "name": "credit-card",
+            "type": "font-awesome"
+        }
+    },
+    {
+        "type": "roaming",
+        "category": "FOREIGN",
+        "title": "로밍",
+        "icon": {
+            "name": "📶",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "visit_japan",
+        "category": "FOREIGN",
+        "title": "Visit Japan",
+        "icon": {
+            "name": "📝",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "military_approvement",
+        "category": "FOREIGN",
+        "title": "국외여행허가",
+        "icon": {
+            "name": "👨🏻‍✈️",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "clothing",
+        "category": "CLOTHING",
+        "title": "옷",
+        "icon": {
+            "name": "👕",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "toothbrush_set",
+        "category": "WASH",
+        "title": "칫솔, 치약",
+        "icon": {
+            "name": "🪥",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "charger",
+        "category": "ELECTRONICS",
+        "title": "폰 충전기",
+        "icon": {
+            "name": "smartphone",
+            "type": "image"
+        }
+    },
+    {
+        "type": "earphones",
+        "category": "ELECTRONICS",
+        "title": "이어폰",
+        "icon": {
+            "name": "🎧",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "power_bank",
+        "category": "ELECTRONICS",
+        "title": "보조 배터리",
+        "icon": {
+            "name": "power-bank",
+            "type": "image"
+        }
+    },
+    {
+        "type": "suitcase",
+        "category": "GOODS",
+        "title": "캐리어",
+        "icon": {
+            "name": "🧳",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "bag",
+        "category": "GOODS",
+        "title": "들고다닐 가방",
+        "icon": {
+            "name": "🎒",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "sunscreen",
+        "category": "WASH",
+        "title": "선크림",
+        "icon": {
+            "name": "shield-sun-outline",
+            "type": "material-community"
+        }
+    },
+    {
+        "type": "tissue",
+        "category": "GOODS",
+        "title": "휴대용 티슈",
+        "icon": {
+            "name": "🗳️",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "personal_medication",
+        "category": "GOODS",
+        "title": "개인 복용약",
+        "icon": {
+            "name": "💊",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "cosmetics",
+        "category": "WASH",
+        "title": "화장품",
+        "icon": {
+            "name": "💅",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "towel",
+        "category": "WASH",
+        "title": "수건",
+        "icon": {
+            "name": "towel",
+            "type": "image"
+        }
+    },
+    {
+        "type": "umbrella",
+        "category": "GOODS",
+        "title": "우산",
+        "icon": {
+            "name": "☂️",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "camera",
+        "category": "GOODS",
+        "title": "카메라",
+        "icon": {
+            "name": "📷",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "pajamas",
+        "category": "CLOTHING",
+        "title": "잠옷",
+        "icon": {
+            "name": "pajamas",
+            "type": "image"
+        }
+    },
+    {
+        "type": "sandals",
+        "category": "CLOTHING",
+        "title": "샌들",
+        "icon": {
+            "name": "sandals",
+            "type": "image"
+        }
+    },
+    {
+        "type": "sunglasses",
+        "category": "GOODS",
+        "title": "선글라스",
+        "icon": {
+            "name": "🕶️",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "tumbler",
+        "category": "GOODS",
+        "title": "텀블러",
+        "icon": {
+            "name": "🥤",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "adapter",
+        "category": "ELECTRONICS",
+        "title": "어댑터",
+        "icon": {
+            "name": "🔌",
+            "type": "tossface"
+        }
+    }
+]

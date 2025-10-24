@@ -1,15 +1,10 @@
 package com.matchalab.trip_todo_api.model.Todo;
 
-import java.util.UUID;
-
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import com.matchalab.trip_todo_api.generator.GeneratedOrCustomUUID;
 import com.matchalab.trip_todo_api.model.Icon;
 
-import io.micrometer.common.lang.NonNull;
-import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,16 +19,15 @@ import lombok.Setter;
 @MappedSuperclass
 @Builder(builderMethodName = "todoContentBuilder")
 public class TodoContent {
-    @Id
-    @NonNull
-    @Builder.Default
-    private UUID id = UUID.randomUUID();
+
+    // @Id
+    // @Builder.Default
+    // private UUID id = UUID.randomUUID();
 
     @Builder.Default
     private Boolean isStock = false;
 
     private String category;
-    private String type;
     private String title;
 
     @JdbcTypeCode(SqlTypes.JSON)
@@ -46,13 +40,13 @@ public class TodoContent {
 
     public TodoContent(String category, String type) {
         this.category = category;
-        this.type = type;
+        // this.type = type;
     }
 
     public TodoContent(TodoContent todoContent) {
         this.isStock = todoContent.getIsStock();
         this.category = todoContent.getCategory();
-        this.type = todoContent.getType();
+        // this.type = todoContent.getType();
         this.title = todoContent.getTitle();
         this.icon = todoContent.getIcon();
         // this.flightTodoContent = todoContent.getFlightTodoContent();

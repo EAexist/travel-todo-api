@@ -1,6 +1,7 @@
 package com.matchalab.trip_todo_api.service;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import com.matchalab.trip_todo_api.enums.TodoPresetType;
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
@@ -27,6 +29,7 @@ import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Todo.FlightTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
+import com.matchalab.trip_todo_api.model.Todo.TodoPresetStockTodoContent;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
@@ -138,13 +141,15 @@ public class TripService {
 
         /* If preset isn't prepared(linked), make one. */
         if (trip.getTodoPreset() == null) {
-            TodoPreset preset = todoPresetRepository.findByTitle("기본").orElseThrow(() -> new NotFoundException(null));
+            TodoPreset preset = todoPresetRepository.findByType(TodoPresetType.DEFAULT)
+                    .orElseThrow(() -> new NotFoundException(null));
             trip.setTodoPreset(preset);
             trip = tripRepository.save(trip);
         }
 
-        List<TodoPresetItemDTO> preset = trip.getTodoPreset().getTodoPresetStockTodoContents().stream().map(
-                todoMapper::mapToTodoPresetItemDTO)
+        List<TodoPresetItemDTO> preset = trip.getTodoPreset().getTodoPresetStockTodoContents().stream()
+                .sorted(Comparator.comparingInt(TodoPresetStockTodoContent::getOrderKey)).map(
+                        todoMapper::mapToTodoPresetItemDTO)
                 .toList();
 
         Boolean doRecommendFlight = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))

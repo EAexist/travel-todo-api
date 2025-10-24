@@ -23,7 +23,7 @@ import lombok.Setter;
 public class Airport {
 
     @Id
-    @CsvBindByName(column = "IataCode", required = true)
+    @CsvBindByName(column = "iataCode", required = true)
     private String iataCode;
 
     @CsvBindByName(column = "airportName", required = true)

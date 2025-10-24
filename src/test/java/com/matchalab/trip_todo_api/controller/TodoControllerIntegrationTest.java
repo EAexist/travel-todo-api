@@ -110,7 +110,7 @@ public class TodoControllerIntegrationTest {
                 new Destination(destination_osaka)));
 
         savedTrip = new Trip();
-        savedTrip.setDestination(savedDestinations);
+        savedTrip.setDestinations(savedDestinations);
 
         StockTodoContent stockTodoContent_currency = stockTodoContentRepository
                 .findByTitle("환전")

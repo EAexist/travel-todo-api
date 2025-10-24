@@ -15,9 +15,12 @@ import lombok.NoArgsConstructor;
 public class Airline {
 
     @Id
+    @CsvBindByName(column = "airlineIcaoCode", required = true)
+    private String icaoCode;
+
     @CsvBindByName(column = "airlineIataCode", required = true)
     private String iataCode;
 
     @CsvBindByName(column = "airlineName_trimmed", required = true)
-    private String name;
+    private String title;
 }

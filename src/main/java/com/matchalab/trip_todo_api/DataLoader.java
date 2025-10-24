@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.matchalab.trip_todo_api.enums.TodoPresetType;
 import com.matchalab.trip_todo_api.model.Flight.Airline;
 import com.matchalab.trip_todo_api.model.Flight.Airport;
 import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
@@ -59,14 +60,14 @@ public class DataLoader implements CommandLineRunner {
     // @Autowired
     // private DestinationRepository destinationRepository;
 
-    @Value("${spring.datasource.url}")
-    private String url;
+    // @Value("${spring.datasource.url}")
+    // private String url;
 
-    @Value("${spring.datasource.username}")
-    private String username;
+    // @Value("${spring.datasource.username}")
+    // private String username;
 
-    @Value("${spring.datasource.password}")
-    private String password;
+    // @Value("${spring.datasource.password}")
+    // private String password;
 
     @Autowired
     private final ResourceLoader resourceLoader;
@@ -76,22 +77,18 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
 
         try {
-            // todoPresetRepository.deleteAll();
-            // stockTodoContentRepository.deleteAll();
-            // todoPresetStockTodoContentRepository.deleteAll();
-            // log.info("Deleted All");
 
             initializeTodoPreset();
+            log.info("[DataLoader] Saved TodoPresets");
 
-            List<Airport> airports = new ArrayList<Airport>();
-            airports = readCsv();
-            airportRepository.saveAll(airports);
-            log.info("Saved: airports");
+            // List<Airport> airports = new ArrayList<Airport>();
+            // airports = readCsv();
+            // airportRepository.saveAll(airports);
+            // log.info("Saved: airports");
 
-            List<Airline> airlines = new ArrayList<Airline>();
-            airlines = readCsv_airline();
-            airlineRepository.saveAll(airlines);
-            log.info("Saved: airlines");
+            // List<Airline> airlines = new ArrayList<Airline>();
+            // airlines = readCsv_airline();
+            // airlineRepository.saveAll(airlines);
 
         } catch (DataIntegrityViolationException ignore) {
             ignore.printStackTrace();
@@ -99,21 +96,34 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void initializeTodoPreset() {
-        List<StockTodoContent> stockTodoContent = stockTodoContentRepository.saveAll(readStockTodoContentJson());
-        log.info("Saved: stockTodoContent");
 
-        TodoPreset defaultTodoPreset = todoPresetRepository.save(TodoPreset.builder().title("기본").build());
-        log.info("Saved: defaultTodoPreset");
-
-        defaultTodoPreset.getTodoPresetStockTodoContents().addAll(stockTodoContent.stream().map(content -> {
-            return TodoPresetStockTodoContent.builder().todoPreset(defaultTodoPreset).stockTodoContent(content)
-                    .isFlaggedToAdd(true).build();
-        }).toList());
-        log.info("Set: defaultTodoPreset.todoPresetStockTodoContent");
-
-        todoPresetRepository.save(defaultTodoPreset);
-        log.info("Saved: TodoPresetStockTodoContent");
+        todoPresetRepository.saveAll(
+                List.of(TodoPreset.builder().type(TodoPresetType.DEFAULT).build(),
+                        TodoPreset.builder().type(TodoPresetType.DOMESTIC).build(),
+                        TodoPreset.builder().type(TodoPresetType.FOREIGN).build(),
+                        TodoPreset.builder().type(TodoPresetType.JAPAN).build()));
     }
+
+    // private void initializeTodoPreset() {
+    // List<StockTodoContent> stockTodoContent =
+    // stockTodoContentRepository.saveAll(readStockTodoContentJson());
+    // log.info("Saved: stockTodoContent");
+
+    // TodoPreset defaultTodoPreset =
+    // todoPresetRepository.save(TodoPreset.builder().title("기본").build());
+    // log.info("Saved: defaultTodoPreset");
+
+    // defaultTodoPreset.getTodoPresetStockTodoContents().addAll(stockTodoContent.stream().map(content
+    // -> {
+    // return
+    // TodoPresetStockTodoContent.builder().todoPreset(defaultTodoPreset).stockTodoContent(content)
+    // .isFlaggedToAdd(true).build();
+    // }).toList());
+    // log.info("Set: defaultTodoPreset.todoPresetStockTodoContent");
+
+    // todoPresetRepository.save(defaultTodoPreset);
+    // log.info("Saved: TodoPresetStockTodoContent");
+    // }
 
     private List<Airport> readCsv() {
         String filePath = "classpath:/static/airports_sample.csv";
