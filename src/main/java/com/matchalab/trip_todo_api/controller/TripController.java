@@ -95,15 +95,15 @@ public class TripController {
     }
 
     /**
-     * Provide the details of a Trip with the given id.
+     * Get a trip's destinations.
      */
     @GetMapping("trip/{tripId}/destination")
-    public ResponseEntity<List<DestinationDTO>> destination(@PathVariable UUID tripId) {
+    public ResponseEntity<List<DestinationDTO>> getDestinations(@PathVariable UUID tripId) {
         try {
-            return ResponseEntity.ok().body(tripService.getDestinations(tripId));
+            List<DestinationDTO> destinationDTO = tripService.getDestinations(tripId);
+            return ResponseEntity.ok().body(destinationDTO);
         } catch (HttpClientErrorException e) {
             throw e;
-            // return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -112,10 +112,10 @@ public class TripController {
      * If the destination doesn't exist in databse, create new one.
      */
     @PostMapping("trip/{tripId}/destination")
-    public ResponseEntity<DestinationDTO> createDestination(@PathVariable UUID tripId,
+    public ResponseEntity<DestinationDTO> addDestination(@PathVariable UUID tripId,
             @RequestBody DestinationDTO requestedDestinationDTO) {
         try {
-            DestinationDTO destinationDTO = tripService.createDestination(tripId, requestedDestinationDTO);
+            DestinationDTO destinationDTO = tripService.addDestination(tripId, requestedDestinationDTO);
             return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequestUri()
                     .replacePath("/destination/{destinationId}")
                     .buildAndExpand(destinationDTO.id())

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import com.matchalab.trip_todo_api.enums.TodoPresetType;
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.event.NewFlightRouteCreatedEvent;
 import com.matchalab.trip_todo_api.event.NewTripCreatedEvent;
@@ -74,7 +75,8 @@ public class NewEntityCreatedEventHandler {
         UUID id = event.getTripId();
         Trip trip = tripRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
 
-        trip.setTodoPreset(todoPresetRepository.findByTitle("기본").orElseThrow(() -> new NotFoundException(null)));
+        trip.setTodoPreset(
+                todoPresetRepository.findByType(TodoPresetType.DEFAULT).orElseThrow(() -> new NotFoundException(null)));
         tripRepository.save(trip);
     }
 
@@ -121,9 +123,9 @@ public class NewEntityCreatedEventHandler {
         log.info(String.format("[processNewFlightRouteAsync] flightRouteId: %s", event.getFlightRouteId()));
         UUID id = event.getFlightRouteId();
         FlightRoute flightRoute = flightRouteRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
-        List<String> airlineIATAcodes = chatModelService.getRecommendedAirline(flightRoute);
+        List<String> airlineIcaoCodes = chatModelService.getRecommendedAirline(flightRoute);
 
-        List<Airline> airlines = airlineIATAcodes.stream().map(airlineRepository::findById).filter(Optional::isPresent)
+        List<Airline> airlines = airlineIcaoCodes.stream().map(airlineRepository::findById).filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
 

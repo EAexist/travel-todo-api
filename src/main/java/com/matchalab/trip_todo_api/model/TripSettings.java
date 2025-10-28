@@ -1,6 +1,11 @@
 package com.matchalab.trip_todo_api.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,11 +33,18 @@ public class TripSettings {
     private Boolean isTripMode = false;
 
     @Builder.Default
-    private Boolean doSortReservationsByCategory = false;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Integer> categoryKeyToIndex = new HashMap<String, Integer>();
 
-    @Builder.Default
-    private Boolean doHideCompletedTodo = true;
+    // @Builder.Default
+    // private Boolean doSortReservationsByCategory = false;
 
-    @Builder.Default
-    private Boolean doHideCompletedReservation = true;
+    // @Builder.Default
+    // private Boolean doHideCompletedTodo = true;
+
+    // @Builder.Default
+    // private Boolean doHideCompletedReservation = true;
+
+    // @Builder.Default
+    // private Boolean doShowSupplyTodosFirst = false;
 }

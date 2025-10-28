@@ -28,13 +28,15 @@ public class TodoPresetStockTodoContent {
     @Builder.Default
     private TodoPresetStockTodoContentId id = new TodoPresetStockTodoContentId();
 
+    @Builder.Default
+    private Boolean isFlaggedToAdd = false;
+
+    private int orderKey;
+
     @OneToOne(cascade = CascadeType.ALL)
     @MapsId("stockTodoContentId") // Maps the stockTodoContentId field of the composite key
     @JoinColumn(name = "stock-todo-content_id")
     private StockTodoContent stockTodoContent;
-
-    @Builder.Default
-    private Boolean isFlaggedToAdd = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("todoPresetId")

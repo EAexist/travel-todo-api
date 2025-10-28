@@ -1,6 +1,7 @@
 package com.matchalab.trip_todo_api.service;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import com.matchalab.trip_todo_api.enums.TodoPresetType;
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
@@ -28,6 +30,7 @@ import com.matchalab.trip_todo_api.model.DTO.TripPatchDTO;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.Todo.FlightTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
+import com.matchalab.trip_todo_api.model.Todo.TodoPresetStockTodoContent;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
@@ -93,7 +96,13 @@ public class TripService {
                 userAccount.getTrips().removeFirst();
             }
         }
-        Trip trip = tripRepository.save(new Trip());
+        Trip trip = new Trip();
+
+        /* Link TodoPreset */
+        TodoPreset preset = todoPresetRepository.findByType(TodoPresetType.DEFAULT)
+                .orElseThrow(() -> new NotFoundException(null));
+        trip.setTodoPreset(preset);
+        trip = tripRepository.save(trip);
         userAccount.addTrip(trip);
         userAccount.setActiveTripId(trip.getId());
         userAccountRepository.save(userAccount);
@@ -108,9 +117,10 @@ public class TripService {
         return tripMapper.mapToTripDTO(trip);
     }
 
-    /**
-     * Provide the details of a Trip with the given id.
+    /*
+     * Get list of all destinations of a trip.
      */
+
     public List<DestinationDTO> getDestinations(UUID tripId) {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
         return trip.getDestinationsDirectly().stream().map(tripMapper::mapToDestinationDTO).toList();
@@ -151,15 +161,9 @@ public class TripService {
 
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 
-        /* If preset isn't prepared(linked), make one. */
-        if (trip.getTodoPreset() == null) {
-            TodoPreset preset = todoPresetRepository.findByTitle("기본").orElseThrow(() -> new NotFoundException(null));
-            trip.setTodoPreset(preset);
-            trip = tripRepository.save(trip);
-        }
-
-        List<TodoPresetItemDTO> preset = trip.getTodoPreset().getTodoPresetStockTodoContents().stream().map(
-                todoMapper::mapToTodoPresetItemDTO)
+        List<TodoPresetItemDTO> preset = trip.getTodoPreset().getTodoPresetStockTodoContents().stream()
+                .sorted(Comparator.comparingInt(TodoPresetStockTodoContent::getOrderKey)).map(
+                        todoMapper::mapToTodoPresetItemDTO)
                 .toList();
 
         Boolean doRecommendFlight = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
@@ -194,10 +198,11 @@ public class TripService {
     }
 
     /**
-     *
-     * Create new empty trip.
+     * Add a destination to trip. If the destination doesn't exist in DB, create new
+     * one and then add it.
      */
-    public DestinationDTO createDestination(UUID tripId, DestinationDTO destinationDTO) {
+    public DestinationDTO addDestination(UUID tripId, DestinationDTO destinationDTO) {
+        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 
         Destination destination = destinationRepository
                 .findByiso2DigitNationCodeAndTitle(destinationDTO.iso2DigitNationCode(), destinationDTO.title())
@@ -212,9 +217,6 @@ public class TripService {
         destination = destinationRepository.save(destination);
 
         if (!tripDestinationRepository.existsById_TripIdAndId_DestinationId(tripId, destination.getId())) {
-
-            Trip trip = tripRepository.findById(tripId)
-                    .orElseThrow(() -> new EntityNotFoundException("Trip not found"));
 
             TripDestination tripDestination = TripDestination.builder()
                     .id(new TripDestinationId(tripId, destination.getId())).trip(trip).destination(destination).build();

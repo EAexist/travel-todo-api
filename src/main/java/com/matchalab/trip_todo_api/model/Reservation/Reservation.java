@@ -15,6 +15,8 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,6 +44,7 @@ public class Reservation {
     @Builder.Default
     private UUID id = UUID.randomUUID();
 
+    @Enumerated(EnumType.STRING)
     ReservationCategory category;
 
     @Lob

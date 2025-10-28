@@ -320,7 +320,7 @@ public class TripControllerIntegrationTest {
 
     @Test
     @Transactional
-    void createDestination_Given_ValidTripIdAndDestinationDTO_When_RequestPost_Then_AddDestinationToTrip()
+    void addDestination_Given_ValidTripIdAndDestinationDTO_When_RequestPost_Then_AddDestinationToTrip()
             throws Exception {
 
         UUID tripId = savedTrip.getId();
@@ -348,7 +348,7 @@ public class TripControllerIntegrationTest {
 
     @Test
     @Transactional
-    void createDestination_Given_AlreadyExistingDestination_Then_DoNotCreateRedundantDestination() throws Exception {
+    void addDestination_Given_AlreadyExistingDestination_Then_DoNotCreateRedundantDestination() throws Exception {
 
         UUID destinationId_osaka = destinationRepository.findByiso2DigitNationCodeAndTitle("JP", "오사카")
                 .orElseThrow(() -> new NotFoundException(null)).getId();
@@ -378,7 +378,7 @@ public class TripControllerIntegrationTest {
 
     @Test
     @Transactional
-    void createDestination_Given_FirstSeenDestinationWithFirstSeenFlightRoute_When_RequestPost_Then_AddFlightRouteAndAirlines()
+    void addDestination_Given_FirstSeenDestinationWithFirstSeenFlightRoute_When_RequestPost_Then_AddFlightRouteAndAirlines()
             throws Exception {
 
         // ResultActions result = mockMvc
@@ -414,7 +414,7 @@ public class TripControllerIntegrationTest {
     // @Transactional
     // @Transactional
     // void
-    // createDestination_Given_FirstSeenDestinationWithFirstSeenFlightRoute_When_RequestPost_Then_PublishNewFlightRouteCreatedEvent()
+    // addDestination_Given_FirstSeenDestinationWithFirstSeenFlightRoute_When_RequestPost_Then_PublishNewFlightRouteCreatedEvent()
     // throws Exception {
 
     // ResultActions result = mockMvc

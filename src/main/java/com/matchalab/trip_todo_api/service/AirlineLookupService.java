@@ -11,24 +11,26 @@ import com.matchalab.trip_todo_api.model.Flight.Airline;
 import com.matchalab.trip_todo_api.repository.AirlineRepository;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class AirlineLookupService {
     private final AirlineRepository repository;
-    private final Map<String, String> airlineLookupMap = new ConcurrentHashMap<>();
+    // private final Map<String, String> airlineLookupMap = new
+    // ConcurrentHashMap<>();
 
     public AirlineLookupService(AirlineRepository repository) {
         this.repository = repository;
     }
 
-    @PostConstruct
-    public void loadAirlineLookupMap() {
-        airlineLookupMap.putAll(
-                repository.findAll().stream()
-                        .collect(Collectors.toMap(Airline::getIataCode, Airline::getName)));
-    }
+    // @PostConstruct
+    // public void loadAirlineLookupMap() {
+    // airlineLookupMap.putAll(
+    // repository.findAll().stream()
+    // .collect(Collectors.toMap(Airline::getIataCode, Airline::getTitle)));
+    // }
 
-    public Optional<String> get(String iataCode) {
-        return Optional.ofNullable(airlineLookupMap.getOrDefault(iataCode, null));
+    public Optional<String> get(String icaoCode) {
+        return repository.findById(icaoCode).map(airline -> airline.getTitle());
     }
 }
