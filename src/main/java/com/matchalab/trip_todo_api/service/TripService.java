@@ -181,11 +181,20 @@ public class TripService {
         return preset;
     }
 
-    /**
-     *
-     * Create new empty trip.
+    /*
+     * Get list of all destinations of a trip.
      */
-    public DestinationDTO createDestination(UUID tripId, DestinationDTO destinationDTO) {
+    public List<DestinationDTO> getDestinations(UUID tripId) {
+        Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
+
+        return trip.getDestinations().stream().map(tripMapper::mapToDestinationDTO).toList();
+    }
+
+    /**
+     * Add a destination to trip. If the destination doesn't exist in DB, create new
+     * one and then add it.
+     */
+    public DestinationDTO addDestination(UUID tripId, DestinationDTO destinationDTO) {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 
         destinationRepository
