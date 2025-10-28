@@ -16,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
+import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripPatchDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
+import com.matchalab.trip_todo_api.model.Todo.TodoPresetStockTodoContent;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 
 import lombok.Getter;
@@ -36,6 +38,9 @@ public abstract class TripMapper {
     @Autowired
     protected StockTodoContentRepository stockTodoContentRepository;
 
+    @Autowired
+    protected TodoMapper todoMapper;
+
     protected <T> T unwrapJsonNullable(JsonNullable<T> nullable, @TargetType Class<T> targetType) {
         if (nullable == null || !nullable.isPresent()) {
             return null;
@@ -48,6 +53,12 @@ public abstract class TripMapper {
         return (trip.getDestinations() != null)
                 ? trip.getDestinations().stream().map(this::mapToDestinationDTO).toList()
                 : null;
+    }
+
+    @Named("mapToStockTodoContents")
+    public List<TodoContentDTO> mapToStockTodoContents(Trip trip) {
+        return trip.getTodoPreset().getTodoPresetStockTodoContents().stream()
+                .map(TodoPresetStockTodoContent::getStockTodoContent).map(todoMapper::mapToTodoContentDTO).toList();
     }
 
     @Named("mapToDestinations")
@@ -64,6 +75,7 @@ public abstract class TripMapper {
     }
 
     @Mapping(target = "destinations", expression = "java(mapToDestinationDTOs(trip))")
+    @Mapping(target = "stockTodoContents", expression = "java(mapToStockTodoContents(trip))")
     public abstract TripDTO mapToTripDTO(Trip trip);
 
     @Named("mapToDestinationTitles")

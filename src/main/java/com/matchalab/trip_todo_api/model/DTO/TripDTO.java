@@ -19,7 +19,9 @@ public record TripDTO(
         @Nullable String startDateIsoString,
         @Nullable String endDateIsoString,
         @Nullable List<DestinationDTO> destinations,
-        @Nullable List<TodoDTO> todolist, List<ReservationDTO> reservations,
+        @Nullable List<TodoDTO> todolist,
+        List<ReservationDTO> reservations,
+        List<TodoContentDTO> stockTodoContents,
         @Nullable TripSettings settings) {
 
     public TripDTO(UUID id,
@@ -29,7 +31,8 @@ public record TripDTO(
             String endDateIsoString,
             List<DestinationDTO> destinations,
             List<TodoDTO> todolist,
-            List<ReservationDTO> reservations, TripSettings settings) {
+            List<ReservationDTO> reservations,
+            List<TodoContentDTO> stockTodoContents, TripSettings settings) {
         this.id = id;
         this.isInitialized = isInitialized;
         this.title = title;
@@ -38,6 +41,7 @@ public record TripDTO(
         this.destinations = destinations;
         this.todolist = todolist;
         this.reservations = reservations;
+        this.stockTodoContents = stockTodoContents;
         this.settings = settings;
     }
 

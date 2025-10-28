@@ -65,7 +65,6 @@ public class Trip {
     private List<Reservation> reservations = new ArrayList<Reservation>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Nullable
     private TodoPreset todoPreset;
 
     @ManyToOne(fetch = FetchType.LAZY)

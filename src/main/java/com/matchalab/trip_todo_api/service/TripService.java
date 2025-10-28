@@ -89,7 +89,13 @@ public class TripService {
                 userAccount.getTrips().removeFirst();
             }
         }
-        Trip trip = tripRepository.save(new Trip());
+        Trip trip = new Trip();
+
+        /* Link TodoPreset */
+        TodoPreset preset = todoPresetRepository.findByType(TodoPresetType.DEFAULT)
+                .orElseThrow(() -> new NotFoundException(null));
+        trip.setTodoPreset(preset);
+        trip = tripRepository.save(trip);
         userAccount.addTrip(trip);
         userAccount.setActiveTripId(trip.getId());
         userAccountRepository.save(userAccount);
@@ -138,14 +144,6 @@ public class TripService {
     public List<TodoPresetItemDTO> getTodoPreset(UUID tripId) {
 
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
-
-        /* If preset isn't prepared(linked), make one. */
-        if (trip.getTodoPreset() == null) {
-            TodoPreset preset = todoPresetRepository.findByType(TodoPresetType.DEFAULT)
-                    .orElseThrow(() -> new NotFoundException(null));
-            trip.setTodoPreset(preset);
-            trip = tripRepository.save(trip);
-        }
 
         List<TodoPresetItemDTO> preset = trip.getTodoPreset().getTodoPresetStockTodoContents().stream()
                 .sorted(Comparator.comparingInt(TodoPresetStockTodoContent::getOrderKey)).map(
