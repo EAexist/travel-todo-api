@@ -24,9 +24,6 @@ public class TodoContent {
     // @Builder.Default
     // private UUID id = UUID.randomUUID();
 
-    @Builder.Default
-    private Boolean isStock = false;
-
     private String category;
     private String title;
 
@@ -44,7 +41,6 @@ public class TodoContent {
     }
 
     public TodoContent(TodoContent todoContent) {
-        this.isStock = todoContent.getIsStock();
         this.category = todoContent.getCategory();
         // this.type = todoContent.getType();
         this.title = todoContent.getTitle();

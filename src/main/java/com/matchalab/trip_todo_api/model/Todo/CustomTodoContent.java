@@ -39,13 +39,11 @@ public class CustomTodoContent extends TodoContent {
     @Builder
     public CustomTodoContent(
             UUID id,
-            Boolean isStock,
             String category,
             String type,
             String title,
             Icon icon, FlightTodoContent flightTodoContent) {
-        super(isStock,
-                category,
+        super(category,
                 title,
                 icon);
         this.id = id;

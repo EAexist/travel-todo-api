@@ -49,12 +49,11 @@ public class StockTodoContent extends TodoContent {
     @Builder
     public StockTodoContent(
             UUID id,
-            Boolean isStock,
             String category,
             String type,
             String title,
             Icon icon) {
-        super(isStock,
+        super(
                 category,
                 title,
                 icon);
