@@ -7,6 +7,7 @@ import com.matchalab.trip_todo_api.model.Icon;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -27,6 +28,8 @@ public class CustomTodoContent extends TodoContent {
     @Id
     private UUID id = UUID.randomUUID();
 
+    private String type;
+
     @JsonIgnore
     @Nullable
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -38,15 +41,18 @@ public class CustomTodoContent extends TodoContent {
 
     @Builder
     public CustomTodoContent(
-            UUID id,
             String category,
-            String type,
             String title,
-            Icon icon, FlightTodoContent flightTodoContent) {
+            String tip,
+            Icon icon,
+            UUID id,
+            String type, FlightTodoContent flightTodoContent) {
         super(category,
                 title,
+                tip,
                 icon);
         this.id = id;
+        this.type = type;
         this.flightTodoContent = flightTodoContent;
     }
 }

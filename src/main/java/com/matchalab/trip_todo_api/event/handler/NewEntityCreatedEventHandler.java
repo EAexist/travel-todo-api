@@ -68,18 +68,6 @@ public class NewEntityCreatedEventHandler {
     @Autowired
     private final ApplicationEventPublisher eventPublisher;
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void processNewTripCreated(NewTripCreatedEvent event) {
-        log.info(String.format("[processNewTripCreated] tripId: %s", event.getTripId()));
-        UUID id = event.getTripId();
-        Trip trip = tripRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
-
-        trip.setTodoPreset(
-                todoPresetRepository.findByType(TodoPresetType.DEFAULT).orElseThrow(() -> new NotFoundException(null)));
-        tripRepository.save(trip);
-    }
-
     private FlightRoute processRecommendedFlightChatResult(FlightRouteWithoutAirline frWithoutAirline) {
 
         return flightRouteRepository

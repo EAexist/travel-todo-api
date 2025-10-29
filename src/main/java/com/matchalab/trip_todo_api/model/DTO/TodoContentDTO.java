@@ -30,6 +30,7 @@ public class TodoContentDTO {
     private String category;
     private String type;
     private String title;
+    private String tip;
     private Icon icon;
 
     @Builder.Default

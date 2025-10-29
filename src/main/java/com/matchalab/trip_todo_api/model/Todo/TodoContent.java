@@ -26,25 +26,19 @@ public class TodoContent {
 
     private String category;
     private String title;
+    private String tip;
 
     @JdbcTypeCode(SqlTypes.JSON)
     private Icon icon;
 
-    // @Nullable
-    // @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // @Builder.Default
-    // private FlightTodoContent flightTodoContent = null;
-
     public TodoContent(String category, String type) {
         this.category = category;
-        // this.type = type;
     }
 
     public TodoContent(TodoContent todoContent) {
         this.category = todoContent.getCategory();
-        // this.type = todoContent.getType();
         this.title = todoContent.getTitle();
+        this.tip = todoContent.getTip();
         this.icon = todoContent.getIcon();
-        // this.flightTodoContent = todoContent.getFlightTodoContent();
     }
 }

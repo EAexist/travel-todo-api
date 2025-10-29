@@ -22,24 +22,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class StockTodoContent extends TodoContent {
-    // @Nullable
-    // @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // private FlightTodoContent flightTodoContent = null;
-
-    // @OneToMany(mappedBy = "stockTodoContent", cascade = CascadeType.ALL)
-    // private List<TodoPresetStockTodoContent> todoPresetStockTodoContent = new
-    // ArrayList<TodoPresetStockTodoContent>();
     @Id
     @Column(updatable = false, nullable = false)
     @ColumnDefault("gen_random_uuid()")
     private UUID id;
 
+    @Column(unique = true)
+    private String type;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id")
     private Todo todo;
-
-    @Column(unique = true)
-    private String type;
 
     public StockTodoContent(TodoContent todoContent) {
         super(todoContent);
@@ -48,14 +41,16 @@ public class StockTodoContent extends TodoContent {
 
     @Builder
     public StockTodoContent(
-            UUID id,
             String category,
-            String type,
             String title,
-            Icon icon) {
+            String tip,
+            Icon icon,
+            UUID id,
+            String type) {
         super(
                 category,
                 title,
+                tip,
                 icon);
         this.id = id;
         this.type = type;

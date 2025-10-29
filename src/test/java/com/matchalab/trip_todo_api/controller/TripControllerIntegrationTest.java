@@ -201,7 +201,6 @@ public class TripControllerIntegrationTest {
                 });
 
         tripRepository.save(savedTrip);
-        eventPublisher.publishEvent(new NewTripCreatedEvent(this, trip.getId()));
 
         log.info(String.format("[setUp] savedTrip=%s", Utils.asJsonString(tripMapper.mapToTripDTO(savedTrip))));
     }

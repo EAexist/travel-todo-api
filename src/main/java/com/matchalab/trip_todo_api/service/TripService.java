@@ -3,6 +3,7 @@ package com.matchalab.trip_todo_api.service;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -154,12 +155,42 @@ public class TripService {
         userAccountRepository.save(userAccount);
     }
 
+    private Trip updateTodoPreset(Trip trip) {
+        if (trip.getIsInitialized()) {
+            return trip;
+        } else if (trip.getIsTodoPresetUpdated()) {
+            return trip;
+
+        } else {
+            Set<String> nationCodeset = trip.getDestinationsDirectly().stream()
+                    .map(destination -> destination.getIso2DigitNationCode()).collect(Collectors.toSet());
+
+            TodoPresetType todoPresetType = TodoPresetType.DEFAULT;
+            if (nationCodeset.contains("JP")) {
+                todoPresetType = TodoPresetType.JAPAN;
+            } else if (nationCodeset.stream().anyMatch(code -> !code.equals("KR"))) {
+                todoPresetType = TodoPresetType.FOREIGN;
+            } else if (nationCodeset.contains("KR")) {
+                todoPresetType = TodoPresetType.DOMESTIC;
+            }
+
+            TodoPreset preset = todoPresetRepository.findByType(todoPresetType)
+                    .orElseThrow(() -> new NotFoundException(null));
+            trip.setTodoPreset(preset);
+            trip.setIsTodoPresetUpdated(true);
+            return tripRepository.save(trip);
+        }
+    }
+
     /**
      * Create new todo.
      */
     public List<TodoPresetItemDTO> getTodoPreset(UUID tripId) {
 
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
+
+        /* Update TodoPreset Based on Destinations */
+        trip = updateTodoPreset(trip);
 
         List<TodoPresetItemDTO> preset = trip.getTodoPreset().getTodoPresetStockTodoContents().stream()
                 .sorted(Comparator.comparingInt(TodoPresetStockTodoContent::getOrderKey)).map(
@@ -220,15 +251,9 @@ public class TripService {
 
             TripDestination tripDestination = TripDestination.builder()
                     .id(new TripDestinationId(tripId, destination.getId())).trip(trip).destination(destination).build();
-
-            // tripDestination.setId(new TripDestinationId(tripId, destination.getId()));
-
             trip.getDestinations().add(tripDestination);
-            // destination.getTrips().add(tripDestination);
-
+            trip.setIsTodoPresetUpdated(false);
             tripRepository.save(trip);
-
-            // destination = destinationRepository.save(destination);
         }
 
         return tripMapper.mapToDestinationDTO(destination);

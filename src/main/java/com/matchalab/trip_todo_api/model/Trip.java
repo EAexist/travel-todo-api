@@ -84,6 +84,9 @@ public class Trip {
     @Builder.Default
     private TripSettings settings = new TripSettings();
 
+    @Builder.Default
+    private Boolean isTodoPresetUpdated = true;
+
     public Trip(Trip trip) {
         this();
         this.title = trip.getTitle();

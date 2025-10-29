@@ -250,5 +250,78 @@
             "name": "🔌",
             "type": "tossface"
         }
+    },
+    {
+        "type": "adapter-JP",
+        "category": "ELECTRONICS",
+        "title": "어댑터 (Type A)",
+        "icon": {
+            "name": "🔌",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "adapter-US",
+        "category": "ELECTRONICS",
+        "title": "어댑터 (Type B)",
+        "icon": {
+            "name": "🔌",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "adapter-GB",
+        "category": "ELECTRONICS",
+        "title": "어댑터 (Type G)",
+        "icon": {
+            "name": "🔌",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "adapter-TH",
+        "category": "ELECTRONICS",
+        "title": "어댑터 (Type A & B)",
+        "icon": {
+            "name": "🔌",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "adapter-AU",
+        "category": "ELECTRONICS",
+        "title": "어댑터 (Type I)",
+        "icon": {
+            "name": "🔌",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "adapter-CN",
+        "category": "ELECTRONICS",
+        "title": "어댑터 (Type A & I)",
+        "tip": "대도시·호텔에서는 필요 없음",
+        "icon": {
+            "name": "🔌",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "adapter-TW",
+        "category": "ELECTRONICS",
+        "title": "어댑터 (Type A & B)",
+        "icon": {
+            "name": "🔌",
+            "type": "tossface"
+        }
+    },
+    {
+        "type": "adapter-PH",
+        "category": "ELECTRONICS",
+        "title": "어댑터 (Type A & B)",
+        "icon": {
+            "name": "🔌",
+            "type": "tossface"
+        }
     }
 ]
