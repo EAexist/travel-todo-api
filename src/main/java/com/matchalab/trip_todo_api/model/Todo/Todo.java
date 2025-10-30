@@ -4,15 +4,13 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Persistable;
 
-import com.matchalab.trip_todo_api.generator.GeneratedOrCustomUUID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.matchalab.trip_todo_api.model.Trip;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,7 +18,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

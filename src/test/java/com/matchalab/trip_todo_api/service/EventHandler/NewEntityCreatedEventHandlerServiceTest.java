@@ -26,7 +26,7 @@ import org.springframework.test.context.event.RecordApplicationEvents;
 
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.event.NewFlightRouteCreatedEvent;
-import com.matchalab.trip_todo_api.event.handler.NewEntityCreatedEventHandler;
+import com.matchalab.trip_todo_api.event.handler.FlightRouteEventListener;
 import com.matchalab.trip_todo_api.factory.AirportFactory;
 import com.matchalab.trip_todo_api.factory.DestinationFactory;
 import com.matchalab.trip_todo_api.model.Destination;
@@ -64,7 +64,7 @@ public class NewEntityCreatedEventHandlerServiceTest {
     private AirlineRepository airlineRepository;
 
     @InjectMocks
-    private NewEntityCreatedEventHandler newEntityCreatedEventHandler;
+    private FlightRouteEventListener newEntityCreatedEventHandler;
 
     /*
      * Event

@@ -3,6 +3,7 @@ package com.matchalab.trip_todo_api.model.Todo;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.matchalab.trip_todo_api.enums.TodoCategory;
 import com.matchalab.trip_todo_api.model.Icon;
 
 import io.micrometer.common.lang.Nullable;
@@ -41,15 +42,15 @@ public class CustomTodoContent extends TodoContent {
 
     @Builder
     public CustomTodoContent(
-            String category,
+            TodoCategory category,
             String title,
-            String tip,
+            String subtitle,
             Icon icon,
             UUID id,
             String type, FlightTodoContent flightTodoContent) {
         super(category,
                 title,
-                tip,
+                subtitle,
                 icon);
         this.id = id;
         this.type = type;

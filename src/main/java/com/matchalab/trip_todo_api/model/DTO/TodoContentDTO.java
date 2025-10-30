@@ -1,11 +1,11 @@
 package com.matchalab.trip_todo_api.model.DTO;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import com.matchalab.trip_todo_api.enums.TodoCategory;
 import com.matchalab.trip_todo_api.model.Icon;
-import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
-import com.matchalab.trip_todo_api.model.Todo.FlightTodoContent;
-import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -27,14 +27,14 @@ public class TodoContentDTO {
     @Builder.Default
     private Boolean isStock = false;
 
-    private String category;
+    private TodoCategory category;
     private String type;
     private String title;
-    private String tip;
+    private String subtitle;
     private Icon icon;
 
     @Builder.Default
-    private FlightTodoContent flightTodoContent = null;
+    private List<FlightRouteDTO> flightRoutes = new ArrayList<FlightRouteDTO>();
 
     // public TodoContentDTO(StockTodoContent todoContent) {
     // this.id = todoContent.getId();

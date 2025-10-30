@@ -113,12 +113,42 @@ public class MockChatModelService implements ChatModelService {
 
     @Override
     public RecommendedFlightChatResult getRecommendedFlight(String destinationTitle) {
-        return RecommendedFlightChatResult.builder()
-                .recommendedOutboundFlight(List.of(FlightRouteWithoutAirline.builder()
-                        .departureAirportIataCode("ICN").arrivalAirportIataCode("TKS").build()))
-                .recommendedReturnFlight(List.of(FlightRouteWithoutAirline.builder()
-                        .departureAirportIataCode("TKS").arrivalAirportIataCode("ICN").build()))
-                .build();
+
+        switch (destinationTitle) {
+            case "교토":
+            case "오사카":
+                return RecommendedFlightChatResult.builder()
+                        .recommendedOutboundFlight(List.of(FlightRouteWithoutAirline.builder()
+                                .departureAirportIataCode("ICN").arrivalAirportIataCode("KIX").build()))
+                        .recommendedReturnFlight(List.of(FlightRouteWithoutAirline.builder()
+                                .departureAirportIataCode("KIX").arrivalAirportIataCode("ICN").build()))
+                        .build();
+            case "도쿄":
+                return RecommendedFlightChatResult.builder()
+                        .recommendedOutboundFlight(List.of(FlightRouteWithoutAirline.builder()
+                                .departureAirportIataCode("ICN").arrivalAirportIataCode("NRT").build(),
+                                FlightRouteWithoutAirline.builder()
+                                        .departureAirportIataCode("ICN").arrivalAirportIataCode("HND").build()))
+                        .recommendedReturnFlight(List.of(FlightRouteWithoutAirline.builder()
+                                .departureAirportIataCode("NRT").arrivalAirportIataCode("ICN").build(),
+                                FlightRouteWithoutAirline.builder()
+                                        .departureAirportIataCode("HND").arrivalAirportIataCode("ICN").build()))
+                        .build();
+            case "제주":
+                return RecommendedFlightChatResult.builder()
+                        .recommendedOutboundFlight(List.of(FlightRouteWithoutAirline.builder()
+                                .departureAirportIataCode("ICN").arrivalAirportIataCode("CJU").build(),
+                                FlightRouteWithoutAirline.builder()
+                                        .departureAirportIataCode("GMP").arrivalAirportIataCode("CJU").build()))
+                        .recommendedReturnFlight(List.of(FlightRouteWithoutAirline.builder()
+                                .departureAirportIataCode("CJU").arrivalAirportIataCode("ICN").build(),
+                                FlightRouteWithoutAirline.builder()
+                                        .departureAirportIataCode("CJU").arrivalAirportIataCode("GMP").build()))
+                        .build();
+            default:
+                return RecommendedFlightChatResult.builder()
+                        .build();
+        }
     }
 
     @Override
@@ -129,6 +159,7 @@ public class MockChatModelService implements ChatModelService {
 
     @Override
     public List<String> getRecommendedAirline(FlightRoute flightRoute) {
-        return List.of("ZE");
+
+        return List.of("KAL", "AAR", "JNA", "JJA", "TWB", "ABL", "ASV", "APJ", "JAL", "ANA");
     }
 }

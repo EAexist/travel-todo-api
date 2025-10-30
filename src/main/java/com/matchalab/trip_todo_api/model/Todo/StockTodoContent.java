@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.matchalab.trip_todo_api.enums.TodoCategory;
 import com.matchalab.trip_todo_api.model.Icon;
 
 import jakarta.persistence.Column;
@@ -41,16 +42,16 @@ public class StockTodoContent extends TodoContent {
 
     @Builder
     public StockTodoContent(
-            String category,
+            TodoCategory category,
             String title,
-            String tip,
+            String subtitle,
             Icon icon,
             UUID id,
             String type) {
         super(
                 category,
                 title,
-                tip,
+                subtitle,
                 icon);
         this.id = id;
         this.type = type;

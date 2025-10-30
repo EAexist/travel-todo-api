@@ -1,6 +1,6 @@
 [
     {
-        "type": "accomodation",
+        "type": "ACCOMODATION",
         "category": "RESERVATION",
         "title": "숙박 예약",
         "icon": {
@@ -9,7 +9,7 @@
         }
     },
     {
-        "type": "insurance",
+        "type": "INSURANCE",
         "category": "WORK",
         "title": "여행자 보험 가입",
         "icon": {
@@ -18,7 +18,7 @@
         }
     },
     {
-        "type": "passport",
+        "type": "PASSPORT",
         "category": "FOREIGN",
         "title": "여권",
         "icon": {
@@ -27,7 +27,7 @@
         }
     },
     {
-        "type": "cash",
+        "type": "CASH",
         "category": "FOREIGN",
         "title": "환전 (현금)",
         "icon": {
@@ -36,7 +36,7 @@
         }
     },
     {
-        "type": "prepaid_card",
+        "type": "PREPAID_CARD",
         "category": "FOREIGN",
         "title": "환전 (충전식 카드)",
         "icon": {
@@ -45,7 +45,7 @@
         }
     },
     {
-        "type": "credit_card",
+        "type": "CREDIT_CARD",
         "category": "FOREIGN",
         "title": "해외 사용 신용카드",
         "icon": {
@@ -54,7 +54,7 @@
         }
     },
     {
-        "type": "roaming",
+        "type": "ROAMING",
         "category": "FOREIGN",
         "title": "로밍",
         "icon": {
@@ -63,16 +63,16 @@
         }
     },
     {
-        "type": "visit_japan",
+        "type": "VISIT_JAPAN",
         "category": "FOREIGN",
         "title": "Visit Japan",
         "icon": {
-            "name": "📝",
-            "type": "tossface"
+            "name": "visit-japan",
+            "type": "image"
         }
     },
     {
-        "type": "military_approvement",
+        "type": "MILITARY_APPROVEMENT",
         "category": "FOREIGN",
         "title": "국외여행허가",
         "icon": {
@@ -81,7 +81,7 @@
         }
     },
     {
-        "type": "clothing",
+        "type": "CLOTHING",
         "category": "CLOTHING",
         "title": "옷",
         "icon": {
@@ -90,7 +90,7 @@
         }
     },
     {
-        "type": "toothbrush_set",
+        "type": "TOOTHBRUSH_SET",
         "category": "WASH",
         "title": "칫솔, 치약",
         "icon": {
@@ -99,16 +99,16 @@
         }
     },
     {
-        "type": "charger",
+        "type": "CHARGER",
         "category": "ELECTRONICS",
         "title": "폰 충전기",
         "icon": {
-            "name": "smartphone",
+            "name": "charger",
             "type": "image"
         }
     },
     {
-        "type": "earphones",
+        "type": "EARPHONES",
         "category": "ELECTRONICS",
         "title": "이어폰",
         "icon": {
@@ -117,7 +117,7 @@
         }
     },
     {
-        "type": "power_bank",
+        "type": "POWER_BANK",
         "category": "ELECTRONICS",
         "title": "보조 배터리",
         "icon": {
@@ -126,8 +126,8 @@
         }
     },
     {
-        "type": "suitcase",
-        "category": "GOODS",
+        "type": "SUITCASE",
+        "category": "SUPPLY",
         "title": "캐리어",
         "icon": {
             "name": "🧳",
@@ -135,8 +135,8 @@
         }
     },
     {
-        "type": "bag",
-        "category": "GOODS",
+        "type": "BAG",
+        "category": "SUPPLY",
         "title": "들고다닐 가방",
         "icon": {
             "name": "🎒",
@@ -144,7 +144,7 @@
         }
     },
     {
-        "type": "sunscreen",
+        "type": "SUNSCREEN",
         "category": "WASH",
         "title": "선크림",
         "icon": {
@@ -153,8 +153,8 @@
         }
     },
     {
-        "type": "tissue",
-        "category": "GOODS",
+        "type": "TISSUE",
+        "category": "SUPPLY",
         "title": "휴대용 티슈",
         "icon": {
             "name": "🗳️",
@@ -162,8 +162,8 @@
         }
     },
     {
-        "type": "personal_medication",
-        "category": "GOODS",
+        "type": "PERSONAL_MEDICATION",
+        "category": "SUPPLY",
         "title": "개인 복용약",
         "icon": {
             "name": "💊",
@@ -171,7 +171,7 @@
         }
     },
     {
-        "type": "cosmetics",
+        "type": "COSMETICS",
         "category": "WASH",
         "title": "화장품",
         "icon": {
@@ -180,7 +180,7 @@
         }
     },
     {
-        "type": "towel",
+        "type": "TOWEL",
         "category": "WASH",
         "title": "수건",
         "icon": {
@@ -189,8 +189,8 @@
         }
     },
     {
-        "type": "umbrella",
-        "category": "GOODS",
+        "type": "UMBRELLA",
+        "category": "SUPPLY",
         "title": "우산",
         "icon": {
             "name": "☂️",
@@ -198,8 +198,8 @@
         }
     },
     {
-        "type": "camera",
-        "category": "GOODS",
+        "type": "CAMERA",
+        "category": "SUPPLY",
         "title": "카메라",
         "icon": {
             "name": "📷",
@@ -207,7 +207,7 @@
         }
     },
     {
-        "type": "pajamas",
+        "type": "PAJAMAS",
         "category": "CLOTHING",
         "title": "잠옷",
         "icon": {
@@ -216,7 +216,7 @@
         }
     },
     {
-        "type": "sandals",
+        "type": "SANDALS",
         "category": "CLOTHING",
         "title": "샌들",
         "icon": {
@@ -225,8 +225,8 @@
         }
     },
     {
-        "type": "sunglasses",
-        "category": "GOODS",
+        "type": "SUNGLASSES",
+        "category": "SUPPLY",
         "title": "선글라스",
         "icon": {
             "name": "🕶️",
@@ -234,8 +234,8 @@
         }
     },
     {
-        "type": "tumbler",
-        "category": "GOODS",
+        "type": "TUMBLER",
+        "category": "SUPPLY",
         "title": "텀블러",
         "icon": {
             "name": "🥤",
@@ -243,7 +243,7 @@
         }
     },
     {
-        "type": "adapter",
+        "type": "ADAPTER",
         "category": "ELECTRONICS",
         "title": "어댑터",
         "icon": {
@@ -252,7 +252,7 @@
         }
     },
     {
-        "type": "adapter-JP",
+        "type": "ADAPTER_JP",
         "category": "ELECTRONICS",
         "title": "어댑터 (Type A)",
         "icon": {
@@ -261,7 +261,7 @@
         }
     },
     {
-        "type": "adapter-US",
+        "type": "ADAPTER_US",
         "category": "ELECTRONICS",
         "title": "어댑터 (Type B)",
         "icon": {
@@ -270,7 +270,7 @@
         }
     },
     {
-        "type": "adapter-GB",
+        "type": "ADAPTER_GB",
         "category": "ELECTRONICS",
         "title": "어댑터 (Type G)",
         "icon": {
@@ -279,7 +279,7 @@
         }
     },
     {
-        "type": "adapter-TH",
+        "type": "ADAPTER_TH",
         "category": "ELECTRONICS",
         "title": "어댑터 (Type A & B)",
         "icon": {
@@ -288,7 +288,7 @@
         }
     },
     {
-        "type": "adapter-AU",
+        "type": "ADAPTER_AU",
         "category": "ELECTRONICS",
         "title": "어댑터 (Type I)",
         "icon": {
@@ -297,7 +297,7 @@
         }
     },
     {
-        "type": "adapter-CN",
+        "type": "ADAPTER_CN",
         "category": "ELECTRONICS",
         "title": "어댑터 (Type A & I)",
         "tip": "대도시·호텔에서는 필요 없음",
@@ -307,7 +307,7 @@
         }
     },
     {
-        "type": "adapter-TW",
+        "type": "ADAPTER_TW",
         "category": "ELECTRONICS",
         "title": "어댑터 (Type A & B)",
         "icon": {
@@ -316,7 +316,7 @@
         }
     },
     {
-        "type": "adapter-PH",
+        "type": "ADAPTER_PH",
         "category": "ELECTRONICS",
         "title": "어댑터 (Type A & B)",
         "icon": {

@@ -12,12 +12,9 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.matchalab.trip_todo_api.enums.TodoPresetType;
 import com.matchalab.trip_todo_api.event.NewDestinationAddedEvent;
-import com.matchalab.trip_todo_api.event.NewFlightRouteCreatedEvent;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.mapper.FlightRouteMapper;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
-import com.matchalab.trip_todo_api.model.genAI.FlightRouteWithoutAirline;
 import com.matchalab.trip_todo_api.repository.AirlineRepository;
 import com.matchalab.trip_todo_api.repository.DestinationRepository;
 import com.matchalab.trip_todo_api.repository.FlightRouteRepository;
@@ -33,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 @Setter
-public class NewDestinationAddedEventHandler {
+public class NewDestinationAddedEventListener {
 
     @Autowired
     private final TripRepository tripRepository;

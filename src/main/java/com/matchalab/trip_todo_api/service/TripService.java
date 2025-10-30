@@ -1,21 +1,26 @@
 package com.matchalab.trip_todo_api.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.matchalab.trip_todo_api.enums.TodoCategory;
 import com.matchalab.trip_todo_api.enums.TodoPresetType;
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.exception.TripNotFoundException;
+import com.matchalab.trip_todo_api.mapper.FlightRouteMapper;
 import com.matchalab.trip_todo_api.mapper.TodoMapper;
 import com.matchalab.trip_todo_api.mapper.TripMapper;
 import com.matchalab.trip_todo_api.model.Destination;
@@ -24,6 +29,7 @@ import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.TripDestination;
 import com.matchalab.trip_todo_api.model.TripDestinationId;
 import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
+import com.matchalab.trip_todo_api.model.DTO.FlightRouteDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
 import com.matchalab.trip_todo_api.model.DTO.TripDTO;
@@ -38,6 +44,7 @@ import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
 import com.matchalab.trip_todo_api.repository.TripDestinationRepository;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;
+import com.matchalab.trip_todo_api.utils.Utils;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +70,9 @@ public class TripService {
     private final TodoMapper todoMapper;
 
     @Autowired
+    private final FlightRouteMapper flightRouteMapper;
+
+    @Autowired
     private final ApplicationEventPublisher eventPublisher;
 
     private final int maxNumberOfTrip;
@@ -74,6 +84,7 @@ public class TripService {
             TripDestinationRepository tripDestinationRepository,
             TripMapper tripMapper,
             TodoMapper todoMapper,
+            FlightRouteMapper flightRouteMapper,
             ApplicationEventPublisher eventPublisher,
             @Value("${app.max-number-of-trip}") int maxNumberOfTrip) {
         this.userAccountRepository = userAccountRepository;
@@ -83,6 +94,7 @@ public class TripService {
         this.tripDestinationRepository = tripDestinationRepository;
         this.tripMapper = tripMapper;
         this.todoMapper = todoMapper;
+        this.flightRouteMapper = flightRouteMapper;
         this.eventPublisher = eventPublisher;
         this.maxNumberOfTrip = maxNumberOfTrip;
     }
@@ -195,34 +207,39 @@ public class TripService {
         List<TodoPresetItemDTO> preset = trip.getTodoPreset().getTodoPresetStockTodoContents().stream()
                 .sorted(Comparator.comparingInt(TodoPresetStockTodoContent::getOrderKey)).map(
                         todoMapper::mapToTodoPresetItemDTO)
-                .toList();
+                .collect(Collectors.toList());
 
         Boolean doRecommendFlight = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId))
-                .getDestinationsDirectly().stream().anyMatch(dest -> dest.getRecommendedOutboundFlight().size() > 0);
+                .getDestinationsDirectly().stream()
+                .anyMatch(dest -> dest.getIso2DigitNationCode() != null && dest.getIso2DigitNationCode() != "KR");
+        // .getDestinationsDirectly().stream().anyMatch(dest ->
+        // dest.getRecommendedOutboundFlight().size() > 0);
 
         /*
          * Add 2 preset items; ouutbound flight reservation & return flight reservation
          */
         if (doRecommendFlight) {
 
-            List<FlightRoute> recommendedOutboudFlight = trip.getDestinationsDirectly().stream()
-                    .map(dest -> dest.getRecommendedOutboundFlight()).flatMap(List::stream)
-                    .collect(Collectors.toList());
+            List<FlightRouteDTO> recommendedOutboudFlight = trip.getOutboundFlights().stream()
+                    .map(flightRouteMapper::mapToFlightRouteDTO).toList();
+            List<FlightRouteDTO> recommendedReturnFlight = trip.getReturnFlights().stream()
+                    .map(flightRouteMapper::mapToFlightRouteDTO).toList();
 
-            List<FlightRoute> recommendedReturnFlight = trip.getDestinationsDirectly().stream()
-                    .map(dest -> dest.getRecommendedReturnFlight()).flatMap(List::stream)
-                    .collect(Collectors.toList());
+            log.info(Utils.asJsonString(recommendedOutboudFlight));
+            log.info(Utils.asJsonString(recommendedReturnFlight));
 
-            preset.addAll(Arrays.asList(
+            preset.addAll(List.of(
                     new TodoPresetItemDTO(true,
-                            TodoContentDTO.builder().isStock(false).category("reservation").type("flight")
-                                    .title("가는 항공편").icon(new Icon("✈️"))
-                                    .flightTodoContent(new FlightTodoContent(null, recommendedOutboudFlight)).build()),
+                            TodoContentDTO.builder().id(UUID.nameUUIDFromBytes("outbound-flight".getBytes()))
+                                    .isStock(false).category(TodoCategory.RESERVATION).type("FLIGHT_OUTBOUND")
+                                    .title("항공권 구매").icon(new Icon("🛫")).subtitle("출발 비행기")
+                                    .flightRoutes(recommendedOutboudFlight).build()),
 
                     new TodoPresetItemDTO(true,
-                            TodoContentDTO.builder().isStock(false).category("reservation").type("flight")
-                                    .title("오는 항공편").icon(new Icon("✈️"))
-                                    .flightTodoContent(new FlightTodoContent(null, recommendedReturnFlight))
+                            TodoContentDTO.builder().id(UUID.nameUUIDFromBytes("return-flight".getBytes()))
+                                    .isStock(false).category(TodoCategory.RESERVATION).type("FLIGHT_RETURN")
+                                    .title("항공권 구매").icon(new Icon("🛬")).subtitle("돌아오는 비행기")
+                                    .flightRoutes(recommendedReturnFlight)
                                     .build())));
         }
         return preset;
@@ -232,6 +249,7 @@ public class TripService {
      * Add a destination to trip. If the destination doesn't exist in DB, create new
      * one and then add it.
      */
+    @Transactional
     public DestinationDTO addDestination(UUID tripId, DestinationDTO destinationDTO) {
         Trip trip = tripRepository.findById(tripId).orElseThrow(() -> new TripNotFoundException(tripId));
 
@@ -241,6 +259,9 @@ public class TripService {
                         () -> {
                             Destination dest = tripMapper.mapToDestination(destinationDTO);
                             dest = destinationRepository.save(dest);
+                            log.info(String.format(
+                                    "[addDestination] publishing new NewDestinationCreatedEvent(this, %s)",
+                                    dest.getId()));
                             eventPublisher.publishEvent(new NewDestinationCreatedEvent(this, dest.getId()));
                             return dest;
                         });

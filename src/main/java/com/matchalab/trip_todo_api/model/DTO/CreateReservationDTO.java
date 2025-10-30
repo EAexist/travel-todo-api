@@ -1,9 +1,11 @@
 package com.matchalab.trip_todo_api.model.DTO;
 
+import com.matchalab.trip_todo_api.enums.ReservationCategory;
+
 import lombok.Builder;
 
 @Builder
 public record CreateReservationDTO(
-        String category,
+        ReservationCategory category,
         String confirmationText) {
 }

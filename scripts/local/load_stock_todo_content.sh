@@ -18,7 +18,7 @@ function load_stockTodoContent() {
 
 
     # 2. Define and save CSV header
-    echo "type_key,category,title,tip,icon" > "$CSV_FILE_LOCAL"
+    echo "type_key,category,title,subtitle,icon" > "$CSV_FILE_LOCAL"
     echo "-> CSV header saved to ${CSV_FILE_LOCAL}."
 
 
@@ -29,7 +29,7 @@ function load_stockTodoContent() {
             .type, 
             .category, 
             .title, 
-            .tip, 
+            .subtitle, 
             (.icon | tojson) 
         ] 
         | @csv

@@ -76,4 +76,14 @@ public class Destination {
         this.region = region;
         this.description = description;
     }
+
+    public void addRecommendedOutboundFlight(List<FlightRoute> flightRoutes) {
+        this.recommendedOutboundFlight.clear();
+        this.recommendedOutboundFlight.addAll(flightRoutes);
+    }
+
+    public void addRecommendedReturnFlight(List<FlightRoute> flightRoutes) {
+        this.recommendedReturnFlight.clear();
+        this.recommendedReturnFlight.addAll(flightRoutes);
+    }
 }

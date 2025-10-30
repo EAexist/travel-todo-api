@@ -1,6 +1,6 @@
 package com.matchalab.trip_todo_api.mapper;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -14,6 +14,7 @@ import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.matchalab.trip_todo_api.exception.NotFoundException;
+import com.matchalab.trip_todo_api.model.DTO.FlightRouteDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.DTO.TodoPatchDTO;
@@ -30,7 +31,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { FlightRouteMapper.class })
 // @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -39,6 +40,9 @@ public abstract class TodoMapper {
 
     @Autowired
     protected StockTodoContentRepository stockTodoContentRepository;
+
+    @Autowired
+    protected FlightRouteMapper flightRouteMapper;
 
     public TodoMapper(StockTodoContentRepository stockTodoContentRepository) {
         this.stockTodoContentRepository = stockTodoContentRepository;
@@ -71,7 +75,16 @@ public abstract class TodoMapper {
     public abstract TodoContentDTO mapToTodoContentDTO(StockTodoContent stockTodoContent);
 
     @Mapping(target = "isStock", expression = "java(false)")
+    @Mapping(target = "flightRoutes", expression = "java(mapToFlightRoutes(customTodoContent))")
     public abstract TodoContentDTO mapToTodoContentDTO(CustomTodoContent customTodoContent);
+
+    @Mapping(target = "flightRoutes", expression = "java(mapToFlightRoutes(customTodoContent))")
+    public List<FlightRouteDTO> mapToFlightRoutes(CustomTodoContent customTodoContent) {
+        return customTodoContent.getFlightTodoContent() != null ? customTodoContent.getFlightTodoContent().getRoutes()
+                .stream().map(flightRouteMapper::mapToFlightRouteDTO)
+                .toList() : null;
+
+    }
 
     /*
      * mapToEntity
@@ -133,6 +146,6 @@ public abstract class TodoMapper {
      * mapToTodoPresetItemDTO
      */
 
-    @Mapping(target = "todoContent", expression = "java(mapToTodoContentDTO(todoPresetStockTodoContent.getStockTodoContent()))")
+    @Mapping(target = "content", expression = "java(mapToTodoContentDTO(todoPresetStockTodoContent.getStockTodoContent()))")
     public abstract TodoPresetItemDTO mapToTodoPresetItemDTO(TodoPresetStockTodoContent todoPresetStockTodoContent);
 }

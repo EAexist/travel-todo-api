@@ -26,6 +26,8 @@ import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
 import com.matchalab.trip_todo_api.model.Todo.TodoPresetStockTodoContent;
 import com.matchalab.trip_todo_api.repository.AirlineRepository;
 import com.matchalab.trip_todo_api.repository.AirportRepository;
+import com.matchalab.trip_todo_api.repository.DestinationRepository;
+import com.matchalab.trip_todo_api.repository.FlightRouteRepository;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
 import com.matchalab.trip_todo_api.repository.TodoPresetStockTodoContentRepository;
@@ -40,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@Profile({ "!local", "local-init-data" })
+// @Profile({ "!local", "local-init-data" })
 public class DataLoader implements CommandLineRunner {
 
     @Autowired
@@ -51,6 +53,10 @@ public class DataLoader implements CommandLineRunner {
     private AirlineRepository airlineRepository;
     @Autowired
     private TodoPresetRepository todoPresetRepository;
+    @Autowired
+    private DestinationRepository destinationRepository;
+    @Autowired
+    private FlightRouteRepository flightRouteRepository;
     @Autowired
     private TodoPresetStockTodoContentRepository todoPresetStockTodoContentRepository;
     // @Autowired
@@ -77,6 +83,8 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
 
         try {
+            destinationRepository.deleteAll();
+            flightRouteRepository.deleteAll();
 
             initializeTodoPreset();
             log.info("[DataLoader] Saved TodoPresets");

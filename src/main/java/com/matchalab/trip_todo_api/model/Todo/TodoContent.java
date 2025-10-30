@@ -3,8 +3,11 @@ package com.matchalab.trip_todo_api.model.Todo;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.matchalab.trip_todo_api.enums.TodoCategory;
 import com.matchalab.trip_todo_api.model.Icon;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,21 +27,22 @@ public class TodoContent {
     // @Builder.Default
     // private UUID id = UUID.randomUUID();
 
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private TodoCategory category;
     private String title;
-    private String tip;
+    private String subtitle;
 
     @JdbcTypeCode(SqlTypes.JSON)
     private Icon icon;
 
-    public TodoContent(String category, String type) {
+    public TodoContent(TodoCategory category, String type) {
         this.category = category;
     }
 
     public TodoContent(TodoContent todoContent) {
         this.category = todoContent.getCategory();
         this.title = todoContent.getTitle();
-        this.tip = todoContent.getTip();
+        this.subtitle = todoContent.getSubtitle();
         this.icon = todoContent.getIcon();
     }
 }

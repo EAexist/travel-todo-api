@@ -14,7 +14,7 @@ function load_table_from_csv() {
     SQL_FILE_LOCAL=$3 
 
     CSV_FILE_TEMP_CONTAINER="/tmp/$TARGET_TABLE.csv"
-    SQL_FILE_CONTAINER="/tmp/upsert_airports.sql"
+    SQL_FILE_CONTAINER="/tmp/upsert_$TARGET_TABLEs.sql"
 
     # 1. Clear the Airport table (Run DDL)
     # echo "1. Clearing Airport table..."
@@ -27,14 +27,19 @@ function load_table_from_csv() {
 
     # 1. Copy the processed CSV data into the container
     echo "1. Copying processed CSV data and SQL script to container at ${CSV_FILE_TEMP_CONTAINER}..."
+    
     docker cp ${CSV_FILE_LOCAL} ${CONTAINER_NAME}:${CSV_FILE_TEMP_CONTAINER}
+    echo "--- ${CSV_FILE_TEMP_CONTAINER} content (partial) ---"
+    docker exec "$CONTAINER_NAME" sh -c "head -n 3 \"$CSV_FILE_TEMP_CONTAINER\""
+    
     docker cp ${SQL_FILE_LOCAL} ${CONTAINER_NAME}:${SQL_FILE_CONTAINER}
+
 
     # 2. Load data using \COPY (The clean CSV file columns now match the DB columns by order)
     echo "2. Loading data into Airport table using COPY..."
 
-    docker exec $CONTAINER_NAME psql -U $DB_USER -d $DB_NAME -f "$SQL_FILE_CONTAINER"
-        # -v TARGET_TABLE=${TARGET_TABLE} \
+    # docker exec $CONTAINER_NAME psql -U $DB_USER -d $DB_NAME -f "$SQL_FILE_CONTAINER"
+    docker exec "$CONTAINER_NAME" sh -c "psql -U \"$DB_USER\" -d \"$DB_NAME\" -f \"$SQL_FILE_CONTAINER\""    # -v TARGET_TABLE=${TARGET_TABLE} \
         # -v CSV_FILE_TEMP_CONTAINER=${CSV_FILE_TEMP_CONTAINER} \
 
     if [ $? -ne 0 ]; then
@@ -43,8 +48,7 @@ function load_table_from_csv() {
     fi
 
     # 3. Clean up temporary file
-    rm ${TEMP_CSV_FILE}
-    docker exec $CONTAINER_NAME sh -c "rm \"${CSV_FILE_TEMP_CONTAINER}\""
+    docker exec $CONTAINER_NAME sh -c "rm \"${CSV_FILE_TEMP_CONTAINER}\" \"${SQL_FILE_CONTAINER}\""
     echo "3. Cleanup complete."
 
     # 4. Verify data
@@ -55,20 +59,20 @@ function load_table_from_csv() {
 function load_airport() {
 
     TARGET_TABLE="airport"
-    CSV_FILE_LOCAL="./data/airports_formatted.csv"    
+    CSV_FILE_LOCAL="./data/temp/airports_formatted.csv"    
     SQL_FILE_LOCAL="./sql/reference_data/airport/upsert_airports.sql" 
 
-    # CSV_FILE_RAW="./data/airports_sample.csv"    
-    # echo "Pre-processing CSV: Selecting columns by name"
-    # csvcut -c "iataCode,airportName,cityName,iso2DigitNationCode" "${CSV_FILE_RAW}"> "${CSV_FILE_LOCAL}"
-
+    CSV_FILE_RAW="./data/airports_sample.csv"    
+    echo "Pre-processing CSV: Selecting columns by name"
+    csvcut --output-encoding UTF-8 -c "iataCode,airportName,cityName,iso2DigitNationCode" "${CSV_FILE_RAW}"> "${CSV_FILE_LOCAL}"
+    sync
+    echo "--- ${CSV_FILE_LOCAL} content (partial) ---"
+    head -n 3 "$CSV_FILE_LOCAL"
 
     # if [ $? -ne 0 ]; then
     #     echo "ERROR: Failed to pre-process CSV using csvcut. Check csvkit installation."
     #     exit 1
     # fi
-    
-    CSV_FILE_LOCAL="./data/airports_sample.csv" 
 
     load_table_from_csv ${TARGET_TABLE} ${CSV_FILE_LOCAL} ${SQL_FILE_LOCAL}
 }
@@ -76,12 +80,14 @@ function load_airport() {
 function load_airline() {
     
     TARGET_TABLE="airline"
-    CSV_FILE_LOCAL="./data/airlines_formatted.csv"    
+    CSV_FILE_LOCAL="./data/temp/airlines_formatted.csv"    
     SQL_FILE_LOCAL="./sql/reference_data/airline/upsert_airlines.sql" 
 
     CSV_FILE_RAW="./data/airlines_sample.csv"    
     echo "Pre-processing CSV: Selecting columns by name"
     csvcut -c "airlineIataCode,airlineName_trimmed" "${CSV_FILE_RAW}" > "${CSV_FILE_LOCAL}"
+
+
 
     if [ $? -ne 0 ]; then
         echo "ERROR: Failed to pre-process CSV using csvcut. Check csvkit installation."
@@ -92,4 +98,4 @@ function load_airline() {
 }
 
 load_airport
-# load_airline
+load_airline

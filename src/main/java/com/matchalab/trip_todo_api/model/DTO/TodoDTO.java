@@ -1,5 +1,6 @@
 package com.matchalab.trip_todo_api.model.DTO;
 
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.annotation.Nullable;
@@ -11,5 +12,6 @@ public record TodoDTO(
         int orderKey,
         String note,
         @Nullable String completeDateIsoString,
+        @Nullable List<FlightRouteDTO> flightRoutes,
         TodoContentDTO content) {
 }

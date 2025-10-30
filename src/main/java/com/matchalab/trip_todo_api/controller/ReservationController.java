@@ -77,7 +77,7 @@ public class ReservationController {
             ReservationCategory category;
             try {
                 category = createReservationDTO.category() != null
-                        ? ReservationCategory.valueOf(createReservationDTO.category())
+                        ? createReservationDTO.category()
                         : ReservationCategory.UNKNOWN;
             } catch (IllegalArgumentException e) {
                 category = ReservationCategory.UNKNOWN;

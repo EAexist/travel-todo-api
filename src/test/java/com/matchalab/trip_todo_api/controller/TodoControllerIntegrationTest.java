@@ -99,10 +99,6 @@ public class TodoControllerIntegrationTest {
 
     @BeforeAll
     void setUp() {
-        // customTodoContentRepository.deleteAll();
-        // todoRepository.deleteAll();
-        // tripRepository.deleteAll();
-        // destinationRepository.deleteAll();
 
         userAccountId = userAccountRepository.save(new UserAccount()).getId();
 

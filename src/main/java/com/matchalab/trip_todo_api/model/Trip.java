@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.matchalab.trip_todo_api.model.DTO.FlightRouteDTO;
+import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
@@ -151,5 +154,22 @@ public class Trip {
         }
 
         return false;
+    }
+
+    public List<FlightRoute> getOutboundFlights() {
+        return this.collectFlightRoutes(
+                this.getDestinationsDirectly().stream()
+                        .map(dest -> dest.getRecommendedOutboundFlight()));
+    }
+
+    public List<FlightRoute> getReturnFlights() {
+        return this.collectFlightRoutes(
+                this.getDestinationsDirectly().stream()
+                        .map(dest -> dest.getRecommendedReturnFlight()));
+    }
+
+    private List<FlightRoute> collectFlightRoutes(Stream<List<FlightRoute>> stream) {
+        return new ArrayList<>(stream.flatMap(List::stream).collect(Collectors.toSet()));
+
     }
 }

@@ -6,8 +6,6 @@ airportName,cityName,iso2DigitNationCode,iataCode
 아오모리 공항,아오모리,JP,AOJ
 아사히카와 공항,아사히카와,JP,AKJ
 청주국제공항,청주,KR,CJJ
-치치지마 공항,치치지마,JP,n/a
-조후 공항,조후,JP,n/a
 주부 국제공항,나고야,JP,NGO
 대구국제공항,대구,KR,TAE
 후쿠에 공항,후쿠에,JP,FUJ
@@ -38,7 +36,6 @@ airportName,cityName,iso2DigitNationCode,iataCode
 고베 공항,오사카,JP,UKB
 고치 료마 공항,코치,JP,KCZ
 고마쓰 공항,고마츠,JP,KMQ
-고즈시마 공항,고즈시마,JP,n/a
 구마모토 공항,구마모토,JP,KMJ
 구메지마 공항,쿠메지마,JP,UEO
 구시로 공항,구시로,JP,KUH
@@ -73,7 +70,6 @@ airportName,cityName,iso2DigitNationCode,iataCode
 오키노에라부 공항,오키노에라부지마,JP,OKE
 오쿠시리 공항,오쿠시리,JP,OIR
 오사카 국제공항,오사카,JP,ITM
-오사카 야오 공항,오사카,JP,n/a
 오시마 공항,오시마,JP,OIM
 포항공항,포항,KR,KPO
 리시리 공항,리시리,JP,RIS
@@ -81,7 +77,6 @@ airportName,cityName,iso2DigitNationCode,iataCode
 사도공항,사도,JP,SDS
 사가공항,사거,JP,HSG
 센다이 공항,센다이,JP,SDJ
-서산 공군기지,서산,KR,n/a
 시모지시마 공항,시모지시마,JP,SHI
 시즈오카 공항,시즈오카,JP,FSZ
 쇼나이 공항,쇼나이,JP,SYO
