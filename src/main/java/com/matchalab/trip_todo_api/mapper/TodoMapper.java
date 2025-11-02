@@ -13,12 +13,12 @@ import org.mapstruct.TargetType;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.matchalab.trip_todo_api.DTO.FlightRouteDTO;
+import com.matchalab.trip_todo_api.DTO.TodoContentDTO;
+import com.matchalab.trip_todo_api.DTO.TodoDTO;
+import com.matchalab.trip_todo_api.DTO.TodoPatchDTO;
+import com.matchalab.trip_todo_api.DTO.TodoPresetItemDTO;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
-import com.matchalab.trip_todo_api.model.DTO.FlightRouteDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoPatchDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
 import com.matchalab.trip_todo_api.model.Todo.CustomTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.Todo;

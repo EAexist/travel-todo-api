@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.matchalab.trip_todo_api.DTO.CreateReservationDTO;
+import com.matchalab.trip_todo_api.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
-import com.matchalab.trip_todo_api.model.DTO.CreateReservationDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Reservation.ReservationDTO;
 import com.matchalab.trip_todo_api.model.Reservation.ReservationPatchDTO;

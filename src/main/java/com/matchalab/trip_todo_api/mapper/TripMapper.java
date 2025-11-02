@@ -13,13 +13,13 @@ import org.mapstruct.TargetType;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.matchalab.trip_todo_api.DTO.DestinationDTO;
+import com.matchalab.trip_todo_api.DTO.TodoContentDTO;
+import com.matchalab.trip_todo_api.DTO.TripDTO;
+import com.matchalab.trip_todo_api.DTO.TripPatchDTO;
+import com.matchalab.trip_todo_api.DTO.TripSummaryDTO;
 import com.matchalab.trip_todo_api.model.Destination;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
-import com.matchalab.trip_todo_api.model.DTO.TripDTO;
-import com.matchalab.trip_todo_api.model.DTO.TripPatchDTO;
-import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
 import com.matchalab.trip_todo_api.model.Todo.TodoPresetStockTodoContent;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 

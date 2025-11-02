@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.matchalab.trip_todo_api.DTO.TripDTO;
+import com.matchalab.trip_todo_api.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.exception.NotFoundException;
 import com.matchalab.trip_todo_api.mapper.TripMapper;
 import com.matchalab.trip_todo_api.mapper.UserAccountMapper;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.DTO.TripDTO;
-import com.matchalab.trip_todo_api.model.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;

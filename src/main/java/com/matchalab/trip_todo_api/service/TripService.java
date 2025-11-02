@@ -15,6 +15,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.matchalab.trip_todo_api.DTO.DestinationDTO;
+import com.matchalab.trip_todo_api.DTO.FlightRouteDTO;
+import com.matchalab.trip_todo_api.DTO.TodoContentDTO;
+import com.matchalab.trip_todo_api.DTO.TodoPresetItemDTO;
+import com.matchalab.trip_todo_api.DTO.TripDTO;
+import com.matchalab.trip_todo_api.DTO.TripPatchDTO;
+import com.matchalab.trip_todo_api.config.ResourceQuota;
 import com.matchalab.trip_todo_api.enums.TodoCategory;
 import com.matchalab.trip_todo_api.enums.TodoPresetType;
 import com.matchalab.trip_todo_api.event.NewDestinationCreatedEvent;
@@ -28,12 +35,6 @@ import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.TripDestination;
 import com.matchalab.trip_todo_api.model.TripDestinationId;
-import com.matchalab.trip_todo_api.model.DTO.DestinationDTO;
-import com.matchalab.trip_todo_api.model.DTO.FlightRouteDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoPresetItemDTO;
-import com.matchalab.trip_todo_api.model.DTO.TripDTO;
-import com.matchalab.trip_todo_api.model.DTO.TripPatchDTO;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.Todo.FlightTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
@@ -75,7 +76,8 @@ public class TripService {
     @Autowired
     private final ApplicationEventPublisher eventPublisher;
 
-    private final int maxNumberOfTrip;
+    @Autowired
+    ResourceQuota resourceQuota;
 
     public TripService(UserAccountRepository userAccountRepository,
             TripRepository tripRepository,
@@ -85,8 +87,7 @@ public class TripService {
             TripMapper tripMapper,
             TodoMapper todoMapper,
             FlightRouteMapper flightRouteMapper,
-            ApplicationEventPublisher eventPublisher,
-            @Value("${app.max-number-of-trip}") int maxNumberOfTrip) {
+            ApplicationEventPublisher eventPublisher) {
         this.userAccountRepository = userAccountRepository;
         this.tripRepository = tripRepository;
         this.destinationRepository = destinationRepository;
@@ -96,7 +97,6 @@ public class TripService {
         this.todoMapper = todoMapper;
         this.flightRouteMapper = flightRouteMapper;
         this.eventPublisher = eventPublisher;
-        this.maxNumberOfTrip = maxNumberOfTrip;
     }
 
     public TripDTO createTrip(UUID userId) {
@@ -104,8 +104,8 @@ public class TripService {
         UserAccount userAccount = userAccountRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(userId));
 
-        if (userAccount.getTrips().size() >= maxNumberOfTrip) {
-            while (userAccount.getTrips().size() >= maxNumberOfTrip) {
+        if (userAccount.getTrips().size() >= resourceQuota.getMaxTrips()) {
+            while (userAccount.getTrips().size() >= resourceQuota.getMaxTrips()) {
                 userAccount.getTrips().removeFirst();
             }
         }

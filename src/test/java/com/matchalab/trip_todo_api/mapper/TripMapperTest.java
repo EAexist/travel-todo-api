@@ -20,12 +20,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.matchalab.trip_todo_api.DTO.TripDTO;
+import com.matchalab.trip_todo_api.DTO.TripSummaryDTO;
 import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.mapper.TripMapper;
 import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.DTO.TripDTO;
-import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
 import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.mapper.TodoMapperImpl;
 import com.matchalab.trip_todo_api.mapper.TripMapperImpl;

@@ -17,9 +17,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import com.matchalab.trip_todo_api.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.mapper.TodoMapper;
-import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.mapper.TodoMapperImpl;
 import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;

@@ -14,10 +14,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import com.matchalab.trip_todo_api.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.mapper.TodoMapper;
 import com.matchalab.trip_todo_api.mapper.UserAccountMapper;
-import com.matchalab.trip_todo_api.model.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.trip_todo_api.mapper.TripMapperImpl;
 import com.matchalab.trip_todo_api.mapper.UserAccountMapperImpl;

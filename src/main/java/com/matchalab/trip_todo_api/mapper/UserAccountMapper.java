@@ -8,9 +8,9 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.matchalab.trip_todo_api.DTO.TripSummaryDTO;
+import com.matchalab.trip_todo_api.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.DTO.TripSummaryDTO;
-import com.matchalab.trip_todo_api.model.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 
 import lombok.extern.slf4j.Slf4j;

@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.matchalab.trip_todo_api.model.DTO.FlightRouteDTO;
+import com.matchalab.trip_todo_api.DTO.FlightRouteDTO;
 import com.matchalab.trip_todo_api.model.Flight.Airport;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.genAI.FlightRouteWithoutAirline;

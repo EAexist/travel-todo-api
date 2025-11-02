@@ -30,15 +30,15 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.StreamUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.matchalab.trip_todo_api.DTO.CreateReservationDTO;
+import com.matchalab.trip_todo_api.DTO.TodoContentDTO;
+import com.matchalab.trip_todo_api.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.config.MockReservationConfig;
 import com.matchalab.trip_todo_api.config.TestConfig;
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
 import com.matchalab.trip_todo_api.factory.ReservationFactory;
 import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.DTO.CreateReservationDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoContentDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Reservation.ReservationDTO;
 import com.matchalab.trip_todo_api.model.Todo.Todo;

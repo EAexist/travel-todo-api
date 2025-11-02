@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.matchalab.trip_todo_api.model.DTO.FlightRouteDTO;
+import com.matchalab.trip_todo_api.DTO.FlightRouteDTO;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Todo.Todo;

@@ -1,4 +1,4 @@
-package com.matchalab.trip_todo_api.model.DTO;
+package com.matchalab.trip_todo_api.DTO;
 
 import com.matchalab.trip_todo_api.enums.ReservationCategory;
 

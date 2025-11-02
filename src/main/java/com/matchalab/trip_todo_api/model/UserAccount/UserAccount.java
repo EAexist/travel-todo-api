@@ -7,8 +7,8 @@ import java.util.UUID;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.matchalab.trip_todo_api.DTO.GoogleUserDTO;
 import com.matchalab.trip_todo_api.model.Trip;
-import com.matchalab.trip_todo_api.model.DTO.GoogleUserDTO;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;

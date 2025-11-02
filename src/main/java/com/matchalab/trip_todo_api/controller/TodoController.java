@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.matchalab.trip_todo_api.model.DTO.TodoDTO;
-import com.matchalab.trip_todo_api.model.DTO.TodoPatchDTO;
+import com.matchalab.trip_todo_api.DTO.TodoDTO;
+import com.matchalab.trip_todo_api.DTO.TodoPatchDTO;
 import com.matchalab.trip_todo_api.service.TodoService;
 import com.matchalab.trip_todo_api.utils.Utils;
 

@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 import com.amadeus.Airport;
-import com.matchalab.trip_todo_api.model.DTO.AirportDTO;
+import com.matchalab.trip_todo_api.DTO.AirportDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
