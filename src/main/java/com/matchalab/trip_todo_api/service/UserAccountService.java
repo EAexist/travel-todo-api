@@ -1,10 +1,8 @@
 package com.matchalab.trip_todo_api.service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.matchalab.trip_todo_api.DTO.TripDTO;
@@ -40,12 +38,20 @@ public class UserAccountService {
     @Autowired
     private final UserAccountMapper userAccountMapper;
 
-    public UserAccountDTO createInitialTripIfEmpty(UserAccount userAccount) {
+    public UserAccountDTO createInitialEmptyTrip(UserAccount userAccount) {
 
         if (userAccount.getTrips().isEmpty()) {
             tripService.createTrip(userAccount.getId());
         }
-        return userAccountMapper.mapToUserAccountDTO(userAccount);
+        return getUserAccountDTO(userAccount);
+    }
+
+    public UserAccountDTO createInitialSampleTrip(UserAccount userAccount) {
+
+        if (userAccount.getTrips().isEmpty()) {
+            tripService.createSampleTrip(userAccount.getId());
+        }
+        return getUserAccountDTO(userAccount);
     }
 
     public TripDTO getActiveTrip(UUID userAccountId) {
@@ -74,6 +80,11 @@ public class UserAccountService {
         } else {
             throw new NotFoundException(tripId);
         }
+    }
+
+    private UserAccountDTO getUserAccountDTO(UserAccount userAccount) {
+        return userAccountMapper.mapToUserAccountDTO(userAccountRepository.findById(userAccount.getId())
+                .orElseThrow(() -> new NotFoundException(userAccount.getId())));
 
     }
 }

@@ -36,6 +36,12 @@ public class TripSettings {
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Integer> categoryKeyToIndex = new HashMap<String, Integer>();
 
+    public TripSettings(TripSettings sourceTripSettings) {
+        this();
+        this.isTripMode = sourceTripSettings.isTripMode;
+        this.categoryKeyToIndex = sourceTripSettings.categoryKeyToIndex;
+    }
+
     // @Builder.Default
     // private Boolean doSortReservationsByCategory = false;
 

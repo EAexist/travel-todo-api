@@ -76,8 +76,11 @@ public class UserAccount {
     }
 
     public Trip addTrip(Trip trip) {
+        // Add
         this.trips.add(trip);
         trip.setUserAccount(this);
+        // Always set newly added trip as activeTrip
+        this.setActiveTripId(trip.getId());
         return trip;
     }
 

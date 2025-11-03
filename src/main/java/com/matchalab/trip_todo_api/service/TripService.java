@@ -1,13 +1,10 @@
 package com.matchalab.trip_todo_api.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,8 +32,6 @@ import com.matchalab.trip_todo_api.model.Icon;
 import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.TripDestination;
 import com.matchalab.trip_todo_api.model.TripDestinationId;
-import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
-import com.matchalab.trip_todo_api.model.Todo.FlightTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
 import com.matchalab.trip_todo_api.model.Todo.TodoPresetStockTodoContent;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
@@ -47,7 +42,6 @@ import com.matchalab.trip_todo_api.repository.TripRepository;
 import com.matchalab.trip_todo_api.repository.UserAccountRepository;
 import com.matchalab.trip_todo_api.utils.Utils;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -78,6 +72,9 @@ public class TripService {
 
     @Autowired
     ResourceQuota resourceQuota;
+
+    @Value("${app.demo.sample-trip-uuid}")
+    private UUID sampleTripId;
 
     public TripService(UserAccountRepository userAccountRepository,
             TripRepository tripRepository,
@@ -117,7 +114,28 @@ public class TripService {
         trip.setTodoPreset(preset);
         trip = tripRepository.save(trip);
         userAccount.addTrip(trip);
-        userAccount.setActiveTripId(trip.getId());
+        userAccountRepository.save(userAccount);
+        return tripMapper.mapToTripDTO(trip);
+    }
+
+    public TripDTO createSampleTrip(UUID userId) {
+
+        UserAccount userAccount = userAccountRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(userId));
+
+        if (userAccount.getTrips().size() >= resourceQuota.getMaxTrips()) {
+            while (userAccount.getTrips().size() >= resourceQuota.getMaxTrips()) {
+                userAccount.getTrips().removeFirst();
+            }
+        }
+
+        Trip sampleTrip = tripRepository.findById(sampleTripId).orElseThrow(() -> new NotFoundException(sampleTripId)); // Fetch
+                                                                                                                        // Sample
+                                                                                                                        // Trip
+
+        Trip trip = new Trip(sampleTrip); // Deep Copy
+        trip = tripRepository.save(trip);
+        userAccount.addTrip(trip);
         userAccountRepository.save(userAccount);
         return tripMapper.mapToTripDTO(trip);
     }

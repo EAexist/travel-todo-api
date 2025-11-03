@@ -2,21 +2,18 @@ package com.matchalab.trip_todo_api.model;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.matchalab.trip_todo_api.DTO.FlightRouteDTO;
 import com.matchalab.trip_todo_api.model.Flight.FlightRoute;
 import com.matchalab.trip_todo_api.model.Reservation.Reservation;
 import com.matchalab.trip_todo_api.model.Todo.Todo;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,8 +21,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -90,14 +85,55 @@ public class Trip {
     @Builder.Default
     private Boolean isTodoPresetUpdated = true;
 
-    public Trip(Trip trip) {
+    public Trip(Trip sourceTrip) {
         this();
-        this.title = trip.getTitle();
-        this.startDateIsoString = trip.getStartDateIsoString();
-        this.endDateIsoString = trip.getEndDateIsoString();
-        this.destinations = trip.getDestinations();
-        this.todolist = trip.getTodolist();
-        this.reservations = trip.getReservations();
+        this.title = sourceTrip.getTitle();
+        this.startDateIsoString = sourceTrip.getStartDateIsoString();
+        this.endDateIsoString = sourceTrip.getEndDateIsoString();
+        this.isInitialized = sourceTrip.getIsInitialized();
+        this.destinations = sourceTrip.getDestinations();
+        this.todolist = sourceTrip.getTodolist();
+        this.reservations = sourceTrip.getReservations();
+        this.reservations = sourceTrip.getReservations();
+    }
+
+    /* Deep Copy Constructor. 샘플 Trip을 복사할 때 사용. */
+    public Trip(Trip sourceTrip, String newUserId) {
+        this();
+        this.title = sourceTrip.title;
+        this.startDateIsoString = sourceTrip.getStartDateIsoString();
+        this.endDateIsoString = sourceTrip.getEndDateIsoString();
+        this.isInitialized = sourceTrip.getIsInitialized();
+
+        // One-to-many relationship 설정 (TripDestination, Todo, Reservation)
+        // TripDestination
+        this.destinations = new ArrayList<>();
+        for (TripDestination sourceTripDestination : sourceTrip.getDestinations()) {
+            Destination newDestination = new Destination(sourceTripDestination.getDestination());
+            TripDestination newTripDestination = new TripDestination(sourceTripDestination, this, newDestination);
+            newTripDestination.setTrip(this);
+            this.destinations.add(newTripDestination);
+        }
+        // Todo
+        this.todolist = new ArrayList<>();
+        for (Todo sourceTodo : sourceTrip.getTodolist()) {
+            Todo newTodo = new Todo(sourceTodo);
+            newTodo.setTrip(this);
+            this.todolist.add(newTodo);
+        }
+        // Reservation
+        this.reservations = new ArrayList<>();
+        for (Reservation sourceReservation : sourceTrip.getReservations()) {
+            Reservation newReservation = new Reservation(sourceReservation);
+            newReservation.setTrip(this);
+            this.reservations.add(newReservation);
+        }
+
+        // One-to-one relationship 설정 (TripSettings)
+        this.settings = new TripSettings(sourceTrip.settings);
+
+        // Many-to-one relationship 설정 (TodoPreset)
+        this.todoPreset = sourceTrip.todoPreset;
     }
 
     /* Todo */

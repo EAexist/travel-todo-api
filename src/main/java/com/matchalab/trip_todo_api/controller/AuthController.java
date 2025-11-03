@@ -22,7 +22,6 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.matchalab.trip_todo_api.DTO.UserAccountDTO;
 import com.matchalab.trip_todo_api.mapper.UserAccountMapper;
-import com.matchalab.trip_todo_api.model.Trip;
 import com.matchalab.trip_todo_api.model.UserAccount.GoogleProfile;
 import com.matchalab.trip_todo_api.model.UserAccount.KakaoProfile;
 import com.matchalab.trip_todo_api.model.UserAccount.UserAccount;
@@ -58,7 +57,17 @@ public class AuthController {
     public ResponseEntity<UserAccountDTO> guestLogin() {
         UserAccount userAccount = userAccountRepository.save(new UserAccount());
 
-        UserAccountDTO userAccountDTO = userAccountService.createInitialTripIfEmpty(userAccount);
+        UserAccountDTO userAccountDTO = userAccountService.createInitialEmptyTrip(userAccount);
+
+        return ResponseEntity.created(Utils.getLocation((userAccountDTO.id())))
+                .body(userAccountDTO);
+    }
+
+    @PostMapping(value = "/browser-cache")
+    public ResponseEntity<UserAccountDTO> webBrowserCacheLogin() {
+        UserAccount userAccount = userAccountRepository.save(new UserAccount());
+
+        UserAccountDTO userAccountDTO = userAccountService.createInitialSampleTrip(userAccount);
 
         return ResponseEntity.created(Utils.getLocation((userAccountDTO.id())))
                 .body(userAccountDTO);
@@ -82,7 +91,7 @@ public class AuthController {
             UserAccount userAccount = userOptional
                     .orElse(userAccountRepository.save(new UserAccount(idToken, kakaoProfile)));
 
-            UserAccountDTO userAccountDTO = userAccountService.createInitialTripIfEmpty(userAccount);
+            UserAccountDTO userAccountDTO = userAccountService.createInitialEmptyTrip(userAccount);
 
             return ResponseEntity.status(isCreated ? HttpStatus.CREATED : HttpStatus.SEE_OTHER)
                     .location(Utils.getLocation((userAccountDTO.id())))
@@ -114,7 +123,7 @@ public class AuthController {
             // UserAccount user = userOptional.orElse(userAccountRepository.save(new
             // UserAccount(googleUserDTO)));
 
-            userAccountService.createInitialTripIfEmpty(userAccount);
+            userAccountService.createInitialEmptyTrip(userAccount);
 
             return ResponseEntity.status(isCreated ? HttpStatus.CREATED : HttpStatus.OK)
                     .location(Utils.getLocation((userAccount.getId())))

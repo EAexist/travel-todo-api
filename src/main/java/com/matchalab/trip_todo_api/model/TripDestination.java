@@ -35,4 +35,12 @@ public class TripDestination {
     @MapsId("destinationId")
     @JoinColumn(name = "destination_id")
     private Destination destination;
+
+    public TripDestination(TripDestination source, Trip newTrip, Destination newDestination) {
+        this.id = new TripDestinationId(newTrip.getId(), newDestination.getId());
+
+        // 💡 새로운 Trip 및 Destination 인스턴스를 참조하도록 설정
+        this.trip = newTrip;
+        this.destination = newDestination;
+    }
 }
