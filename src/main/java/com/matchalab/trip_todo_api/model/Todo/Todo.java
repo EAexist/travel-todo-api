@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Persistable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.matchalab.trip_todo_api.model.Trip;
 
 import jakarta.annotation.Nullable;
@@ -93,14 +92,14 @@ public class Todo implements Persistable<UUID> {
     }
 
     public Todo(Todo todo) {
-        this.id = todo.getId();
+        this.id = UUID.randomUUID();
         this.note = todo.getNote();
         this.completeDateIsoString = todo.getCompleteDateIsoString();
         this.orderKey = todo.getOrderKey();
         this.customTodoContent = todo.getCustomTodoContent() != null
                 ? new CustomTodoContent(todo.getCustomTodoContent())
                 : null;
-        this.stockTodoContent = todo.getStockTodoContent() != null ? new StockTodoContent(todo.getStockTodoContent())
+        this.stockTodoContent = todo.getStockTodoContent() != null ? todo.getStockTodoContent()
                 : null;
         this.isNew = todo.isNew();
     }

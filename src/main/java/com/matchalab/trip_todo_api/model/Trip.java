@@ -20,10 +20,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +33,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "trip", indexes = {
+        @Index(name = "idx_sample", columnList = "is_sample")
+})
 @Getter
 @Setter
 @Builder
@@ -85,20 +90,23 @@ public class Trip {
     @Builder.Default
     private Boolean isTodoPresetUpdated = true;
 
-    public Trip(Trip sourceTrip) {
-        this();
-        this.title = sourceTrip.getTitle();
-        this.startDateIsoString = sourceTrip.getStartDateIsoString();
-        this.endDateIsoString = sourceTrip.getEndDateIsoString();
-        this.isInitialized = sourceTrip.getIsInitialized();
-        this.destinations = sourceTrip.getDestinations();
-        this.todolist = sourceTrip.getTodolist();
-        this.reservations = sourceTrip.getReservations();
-        this.reservations = sourceTrip.getReservations();
-    }
+    @Builder.Default
+    private Boolean isSample = false;
+
+    // public Trip(Trip sourceTrip) {
+    // this();
+    // this.title = sourceTrip.getTitle();
+    // this.startDateIsoString = sourceTrip.getStartDateIsoString();
+    // this.endDateIsoString = sourceTrip.getEndDateIsoString();
+    // this.isInitialized = sourceTrip.getIsInitialized();
+    // this.destinations = sourceTrip.getDestinations();
+    // this.todolist = sourceTrip.getTodolist();
+    // this.reservations = sourceTrip.getReservations();
+    // this.reservations = sourceTrip.getReservations();
+    // }
 
     /* Deep Copy Constructor. 샘플 Trip을 복사할 때 사용. */
-    public Trip(Trip sourceTrip, String newUserId) {
+    public Trip(Trip sourceTrip) {
         this();
         this.title = sourceTrip.title;
         this.startDateIsoString = sourceTrip.getStartDateIsoString();

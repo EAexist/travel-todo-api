@@ -1,5 +1,6 @@
 package com.matchalab.trip_todo_api.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mapstruct.BeanMapping;
@@ -57,8 +58,9 @@ public abstract class TripMapper {
 
     @Named("mapToStockTodoContents")
     public List<TodoContentDTO> mapToStockTodoContents(Trip trip) {
-        return trip.getTodoPreset().getTodoPresetStockTodoContents().stream()
-                .map(TodoPresetStockTodoContent::getStockTodoContent).map(todoMapper::mapToTodoContentDTO).toList();
+        return trip.getTodoPreset() != null ? trip.getTodoPreset().getTodoPresetStockTodoContents().stream()
+                .map(TodoPresetStockTodoContent::getStockTodoContent).map(todoMapper::mapToTodoContentDTO).toList()
+                : new ArrayList<TodoContentDTO>();
     }
 
     @Named("mapToDestinations")

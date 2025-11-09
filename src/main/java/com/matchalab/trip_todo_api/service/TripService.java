@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,8 +72,12 @@ public class TripService {
     @Autowired
     ResourceQuota resourceQuota;
 
-    @Value("${app.demo.sample-trip-uuid}")
-    private UUID sampleTripId;
+    // @Value("${app.demo.sample-trip-uuid-source-btyes}")
+    // private String sampleTripUuidSourceBytes;
+
+    // private UUID getSampleTripId() {
+    // return UUID.nameUUIDFromBytes(sampleTripUuidSourceBytes.getBytes());
+    // }
 
     public TripService(UserAccountRepository userAccountRepository,
             TripRepository tripRepository,
@@ -129,14 +132,46 @@ public class TripService {
             }
         }
 
-        Trip sampleTrip = tripRepository.findById(sampleTripId).orElseThrow(() -> new NotFoundException(sampleTripId)); // Fetch
-                                                                                                                        // Sample
-                                                                                                                        // Trip
+        Trip sampleTrip = tripRepository.findTop1ByIsSampleTrue()
+                .orElseThrow(() -> new NotFoundException(null)); // Fetch
+        // Sample
+        // Trip
 
         Trip trip = new Trip(sampleTrip); // Deep Copy
         trip = tripRepository.save(trip);
         userAccount.addTrip(trip);
         userAccountRepository.save(userAccount);
+        return tripMapper.mapToTripDTO(trip);
+    }
+
+    public TripDTO createAdminSampleTrip(UUID userId) {
+
+        if (tripRepository.findTop1ByIsSampleTrue().isPresent()) {
+            return null;
+        }
+
+        UserAccount userAccount = userAccountRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(userId));
+
+        if (userAccount.getTrips().size() >= resourceQuota.getMaxTrips()) {
+            while (userAccount.getTrips().size() >= resourceQuota.getMaxTrips()) {
+                userAccount.getTrips().removeFirst();
+            }
+        }
+        Trip trip = new Trip();
+
+        // Link TodoPreset
+        TodoPreset preset = todoPresetRepository.findByType(TodoPresetType.DEFAULT)
+                .orElseThrow(() -> new NotFoundException(null));
+        trip.setTodoPreset(preset);
+
+        // Set Sample
+        trip.setIsSample(true);
+        trip = tripRepository.save(trip);
+
+        userAccount.addTrip(trip);
+        userAccountRepository.save(userAccount);
+
         return tripMapper.mapToTripDTO(trip);
     }
 

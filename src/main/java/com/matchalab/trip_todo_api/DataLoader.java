@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
@@ -14,7 +13,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,14 +21,7 @@ import com.matchalab.trip_todo_api.model.Flight.Airline;
 import com.matchalab.trip_todo_api.model.Flight.Airport;
 import com.matchalab.trip_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.trip_todo_api.model.Todo.TodoPreset;
-import com.matchalab.trip_todo_api.model.Todo.TodoPresetStockTodoContent;
-import com.matchalab.trip_todo_api.repository.AirlineRepository;
-import com.matchalab.trip_todo_api.repository.AirportRepository;
-import com.matchalab.trip_todo_api.repository.DestinationRepository;
-import com.matchalab.trip_todo_api.repository.FlightRouteRepository;
-import com.matchalab.trip_todo_api.repository.StockTodoContentRepository;
 import com.matchalab.trip_todo_api.repository.TodoPresetRepository;
-import com.matchalab.trip_todo_api.repository.TodoPresetStockTodoContentRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -42,23 +33,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-// @Profile({ "!local", "local-init-data" })
+@Profile({ "!local", "local-init-data" })
 public class DataLoader implements CommandLineRunner {
-
-    @Autowired
-    private StockTodoContentRepository stockTodoContentRepository;
-    @Autowired
-    private AirportRepository airportRepository;
-    @Autowired
-    private AirlineRepository airlineRepository;
     @Autowired
     private TodoPresetRepository todoPresetRepository;
-    @Autowired
-    private DestinationRepository destinationRepository;
-    @Autowired
-    private FlightRouteRepository flightRouteRepository;
-    @Autowired
-    private TodoPresetStockTodoContentRepository todoPresetStockTodoContentRepository;
     // @Autowired
     // private TripRepository tripRepository;
     // @Autowired
@@ -83,8 +61,6 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
 
         try {
-            destinationRepository.deleteAll();
-            flightRouteRepository.deleteAll();
 
             initializeTodoPreset();
             log.info("[DataLoader] Saved TodoPresets");

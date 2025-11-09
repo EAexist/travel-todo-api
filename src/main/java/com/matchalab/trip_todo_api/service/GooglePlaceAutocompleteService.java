@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -13,9 +14,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -46,38 +46,47 @@ public class GooglePlaceAutocompleteService {
 
     public GooglePlaceAutoCompleteResponse googlePlaceAutocomplete(String input, String language, String type) {
         log.info(String.format("input=%s , language=%s", input, language));
-        RestTemplate restTemplate = new RestTemplate();
-        URI uri = UriComponentsBuilder.fromUriString(GOOGLE_PLACES_API_BASE_URL)
-                .queryParam("input", input)
-                .queryParam("key", GOOGLE_PLACES_API_KEY)
-                .queryParam("language", language)
-                .queryParam("type", type)
-                // .queryParams(query)
-                .build()
-                .toUri();
 
-        GooglePlaceAutoCompleteResponse response = restTemplate.getForObject(uri,
-                GooglePlaceAutoCompleteResponse.class);
+        List<GooglePlaceData> googlePlaceDataList = new ArrayList<GooglePlaceData>();
+        String httpStatus;
 
-        List<GooglePlaceData> googlePlaceDataList = response.predictions();
+        if (!containsHangul(input)) {
+            httpStatus = HttpStatus.OK.name();
+        } else {
 
-        log.info(String.format("googlePlaceDataList size: %s", googlePlaceDataList.size()));
+            RestTemplate restTemplate = new RestTemplate();
+            URI uri = UriComponentsBuilder.fromUriString(GOOGLE_PLACES_API_BASE_URL)
+                    .queryParam("input", input)
+                    .queryParam("key", GOOGLE_PLACES_API_KEY)
+                    .queryParam("language", language)
+                    .queryParam("type", type)
+                    // .queryParams(query)
+                    .build()
+                    .toUri();
 
-        googlePlaceDataList = googlePlaceDataList.stream().filter(googlePlaceData -> {
-            String iso2DigitNationCode = iso2DigitNationCodeDataCache
-                    .getIso2DigitNationCodeByName(googlePlaceData.terms().getLast().value());
+            GooglePlaceAutoCompleteResponse response = restTemplate.getForObject(uri,
+                    GooglePlaceAutoCompleteResponse.class);
 
-            if ((iso2DigitNationCode != null) && isNationAllowed(iso2DigitNationCode)) {
-                return true;
-            } else {
-                return false;
-            }
-        }).toList();
+            googlePlaceDataList = response.predictions();
 
-        log.info(String.format("googlePlaceDataList size: %s", googlePlaceDataList.size()));
-        log.info(String.format("googlePlaceDataList: %s", Utils.asJsonString(googlePlaceDataList)));
+            log.info(String.format("googlePlaceDataList size: %s", googlePlaceDataList.size()));
+            log.info(String.format("googlePlaceDataList: %s", Utils.asJsonString(googlePlaceDataList)));
 
-        return GooglePlaceAutoCompleteResponse.builder().predictions(googlePlaceDataList).status(response.status())
+            googlePlaceDataList = googlePlaceDataList.stream().filter(googlePlaceData -> {
+                String iso2DigitNationCode = iso2DigitNationCodeDataCache
+                        .getIso2DigitNationCodeByName(googlePlaceData.terms().getLast().value());
+
+                if ((iso2DigitNationCode != null) && isNationAllowed(iso2DigitNationCode)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }).toList();
+
+            httpStatus = response.status();
+        }
+
+        return GooglePlaceAutoCompleteResponse.builder().predictions(googlePlaceDataList).status(httpStatus)
                 .build();
     }
 
@@ -112,6 +121,11 @@ public class GooglePlaceAutocompleteService {
      */
     private boolean isNationAllowed(String iso2DigitNationCode) {
         return nationSet.contains(iso2DigitNationCode);
+    }
+
+    private boolean containsHangul(String str) {
+        String regex = ".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*";
+        return str.matches(regex);
     }
 
 }

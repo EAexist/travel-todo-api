@@ -1,7 +1,5 @@
 package com.matchalab.trip_todo_api.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.matchalab.trip_todo_api.model.GooglePlaceAutoCompleteResponse;
-import com.matchalab.trip_todo_api.model.GooglePlaceData;
 import com.matchalab.trip_todo_api.service.GooglePlaceAutocompleteService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +28,8 @@ public class ProxyController {
     @GetMapping("/place/autocomplete/json")
     public GooglePlaceAutoCompleteResponse googlePlaceAutocomplete(@RequestParam String input,
             @RequestParam String language, @RequestParam String type) {
+
+        log.info(String.format("input=%s , language=%s", input, language));
 
         return googlePlaceAutocompleteService.googlePlaceAutocomplete(input, language, type);
     }
