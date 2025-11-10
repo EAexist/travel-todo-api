@@ -57,10 +57,10 @@ public class AuthController {
     @Autowired
     private TripService tripService;
 
-    @Value("${google.client-id}")
+    @Value("${app.google.client-id}")
     private String googleClientId;
 
-    @Value("${google.web-client-id}")
+    @Value("${app.google.web-client-id}")
     private String googleWebClientId;
 
     @Value("#{'${app.security.admin-emails}'.split(',')}")

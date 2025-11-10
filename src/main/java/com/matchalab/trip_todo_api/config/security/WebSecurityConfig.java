@@ -31,7 +31,7 @@ import com.matchalab.trip_todo_api.service.UserAccountService;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    @Value("#{'${cors.allowed-origins}'.split(',')}")
+    @Value("#{'${app.cors.allowed-origins}'.split(',')}")
     private List<String> allowedOrigins;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.kakao.issuer-uri}")

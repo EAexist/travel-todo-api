@@ -38,7 +38,7 @@ public class AdminLoginFilter extends OncePerRequestFilter {
 
     private final String adminAuthPath;
 
-    @Value("${google.web-client-id}")
+    @Value("${app.google.web-client-id}")
     private String googleWebClientId;
 
     @Value("#{'${app.security.admin-emails}'.split(',')}")
