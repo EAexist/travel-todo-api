@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/trip-todo
+    username: guest
+    password: hello_guest
+  jpa:
+    hibernate:
+      ddl-auto: update
+    #   ddl-auto: create-drop
+    # properties:
+    #   hibernate:
+    # dialect: org.hibernate.dialect.PostgreSQLDialect
+    # "[format_sql]": true
+    # show_sql: true
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web:
+            FilterChainProxy: DEBUG
+server:
+  port: 8443
+  servlet:
+    session:
+      timeout: 4h
+  ssl:
+    enabled: true
+    key-store-type: PKCS12
+    key-store: classpath:certs/keystore.p12
+    key-store-password: changeit
+    key-alias: springboot
+app:
+  cors:
+    allowed-origins: https://localhost,https://trip-todo.vercel.app,https://trip-todo-matchalab-matchalab-project.vercel.app
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local-init-data
+  jpa:
+    hibernate:
+      ddl-auto: create

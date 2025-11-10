@@ -22,8 +22,11 @@ bin/
 pgdata/
 
 # Sensitive information
-src/main/resources/*
-!src/main/resources/static
+src/main/resources/certs
+src/main/resources/static/local
+src/main/resources/templates
+src/main/resources/application-aws.yml
+src/main/resources/application-render.yml
 *.pem
 test-local.sh
 

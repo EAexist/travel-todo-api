@@ -1,0 +1,48 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          kakao:
+            issuer-uri: https://kauth.kakao.com
+          google:
+            issuer-uri: https://accounts.google.com
+  session:
+    jdbc:
+      initialize-schema: always
+  ai:
+    vertex:
+      ai:
+        gemini:
+          project-id: travel-checklist-461608k
+          credentials-uri: classpath:/certs/application_default_credentials.json
+          location: us-west1
+          chat:
+            options:
+              model: gemini-2.0-flash-lite
+  cloud:
+    gcp:
+      project-id: travel-checklist-461608
+      credentials:
+        location: classpath:/certs/gc-service-account-key.json
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+app:
+  quota:
+    max-trips: 5
+    max-trip-duration-days: 60
+    max-destinations: 4
+    max-todos: 64
+    max-reservations: 64
+  security:
+    admin-emails: hyeon.expression@gmail.com
+  google:
+    client-id: 428235231680-j847tt5013n612lk39j8rjp6gih61fsd.apps.googleusercontent.com
+    web-client-id: 428235231680-9nkmdpjmnp35484s3unlpm6nnf4g05t4.apps.googleusercontent.com
+  cors:
+    allowed-origins: ""
