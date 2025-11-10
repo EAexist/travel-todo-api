@@ -1,1 +1,0 @@
-docker build --build-arg JAR_FILE=build/libs/\*.jar  -t eaexists/trip-todo-api:latest .

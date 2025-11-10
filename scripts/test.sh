@@ -1,1 +1,0 @@
-docker compose up -d && ./gradlew clean test -Dspring.profiles.active=local && docker compose down

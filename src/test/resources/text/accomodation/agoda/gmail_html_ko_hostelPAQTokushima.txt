@@ -1,0 +1,2910 @@
+Delivered-To: hyeon.expression@gmail.com
+Received: by 2002:a05:6214:2507:b0:6d8:9c0f:fdb3 with SMTP id gf7csp1613464qvb;
+        Sun, 23 Feb 2025 15:26:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHYQXPA44FGhc72e5zftpQyozZSOoIhxjZVT79Uq9biZoKJ4UCr+qpADJacOgamC62ylYlK
+X-Received: by 2002:a05:620a:240b:b0:7c0:b795:9812 with SMTP id af79cd13be357-7c0ceee325emr1759057885a.7.1740353181301;
+        Sun, 23 Feb 2025 15:26:21 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1740353181; cv=none;
+        d=google.com; s=arc-20240605;
+        b=JWy9b8NzCguwGXKFcAiPpwk8c67KNC2BGLTd/qlhhYvIqAHdNytHToHV+fnqvDxEvP
+         5U6hCMSeqVpHDbvZmgUzroWmC8s5BXaKLVFowatl+Y/ci7+00CeL8MJNE2PCc8Q3/qNh
+         iFq/04756oH0nRg92qeuy7JZXzVPFuq6q4dOJGsL5bEjiuogduAPQmAozjqLP9AtUHcX
+         qdyrl7k49R9BhRSJGhI3iKLB2nbdPSGNI6l2svGG8L1ufxICnm/H2JH1n7FgtBJdW7Un
+         iFLltIwSxuIAxtr8kba9Uk9Y2Hpg29PwQw3iUmiL5AULQOwbqS2jcq58aIdU4+3/ps6Z
+         VZ/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:subject:message-id:mime-version:from:date:dkim-signature
+         :dkim-signature;
+        bh=n9gk5+IzqbNWUmJDAY1BnPAkweWshXG1kYvvsXFD3X4=;
+        fh=J02uG7QyIn1ChQwOxNDkHaHN1H4OxfmbcZv+XUms5/g=;
+        b=kDye5StfqY+1IGuXV0LJYiQ8L+N72rsl5hVYdoM2f7sD/U2Vy9UvcoYdJ8j63HVioC
+         IxLDAqqcrBaFi7psLMwFLqoAYL5BETqMvYBVcf3IA1M6D8bDmMc5HTAjHU/xARKTuVFR
+         gV2mYfO7nL9x1NEsZ8FxZWawMomptFEUeEmQ3tPC+Xt/w1a3IlXpKpJoS12QntTz+VNY
+         4IUJjNYb5cRL6fXqoirPyCtvkjOjKsHXOqUWhgPQmz2o8aeWoDGtprE7iIeaIZcHfrUq
+         ZiU+QCIOFNnlaZz9BP78JC4tShvpcOyJWuPQa05uEcc0i6R0q1qG+cdSDpq4khfDGuwT
+         hzwA==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@agoda.com header.s=rsv header.b=qv+UbWj1;
+       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b="Or/gvqIh";
+       spf=pass (google.com: domain of bounces+7154445-1aaf-hyeon.expression=gmail.com@reservations.agoda.com designates 167.89.57.3 as permitted sender) smtp.mailfrom="bounces+7154445-1aaf-hyeon.expression=gmail.com@reservations.agoda.com";
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=agoda.com
+Return-Path: <bounces+7154445-1aaf-hyeon.expression=gmail.com@reservations.agoda.com>
+Received: from o23.transactional.email.agoda.com (o23.transactional.email.agoda.com. [167.89.57.3])
+        by mx.google.com with ESMTPS id 6a1803df08f44-6e6ac52cee8si59651086d6.403.2025.02.23.15.26.20
+        for <hyeon.expression@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Feb 2025 15:26:21 -0800 (PST)
+Received-SPF: pass (google.com: domain of bounces+7154445-1aaf-hyeon.expression=gmail.com@reservations.agoda.com designates 167.89.57.3 as permitted sender) client-ip=167.89.57.3;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@agoda.com header.s=rsv header.b=qv+UbWj1;
+       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b="Or/gvqIh";
+       spf=pass (google.com: domain of bounces+7154445-1aaf-hyeon.expression=gmail.com@reservations.agoda.com designates 167.89.57.3 as permitted sender) smtp.mailfrom="bounces+7154445-1aaf-hyeon.expression=gmail.com@reservations.agoda.com";
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=agoda.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agoda.com; h=content-type:from:mime-version:subject:x-feedback-id:to:cc: content-type:from:subject:to; s=rsv; bh=n9gk5+IzqbNWUmJDAY1BnPAkweWshXG1kYvvsXFD3X4=; b=qv+UbWj1+6Jv2G/+QVn04XbDYoNg5kRuF4/dV6EBEJs1tlyiXU1bl/iED/XYiIQPFrSm U84qftcN4Tpj/pfz6ih04AjIa3L1ERaX7aMFrSGeei6OnE4sMHbJU61NdgUxi+xPDR21x5 fQQw8lyZJleoI0uuxjarKWT1OU3ihhg6zyCXyS+mYtsU33upq2pE0GKQ0jME/kNPVPgbwh 7BHix3rseTTKrufQXVU0uEilKEZZSSwfLldIlOegzYIxzaqUR5bvFDO41ex96SCKWJ7j+c 3hIMf4l8TMjBPYxClR39t1t4fiqQ67PAR2NiLLOBmUZTj5AG6Tv8c1rBgHqMElFA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.info; h=content-type:from:mime-version:subject:x-feedback-id:to:cc: content-type:from:subject:to; s=smtpapi; bh=n9gk5+IzqbNWUmJDAY1BnPAkweWshXG1kYvvsXFD3X4=; b=Or/gvqIhLJ17tW5SSz51zEndb0h4msz5awo9oBGOf0Dtd51dKcuRc9/gwgAcK1SOH49n w/bKVLDwdL3yZ/5ri0Xo6HvZX3gqbYXYzKuXBHd0hl1x2W/V7tkjsiQTP8Z/y/9xCJTfO2 SJzIDdmic54514VhBcAe620FLJ7AMUANs=
+Received: by recvd-84754f57cd-fqdxl with SMTP id recvd-84754f57cd-fqdxl-1-67BBAE9C-2A 2025-02-23 23:26:20.649876518 +0000 UTC m=+2186194.980392407
+Received: from NzE1NDQ0NQ (unknown) by geopod-ismtpd-2 (SG) with HTTP id WUwEUHhDQxWLvLYtPKXKDw Sun, 23 Feb 2025 23:26:20.576 +0000 (UTC)
+Content-Type: multipart/mixed; boundary=ba4d080eb9a3b8f1d1e563d5da25fac968468c6d90db0ec2fc1617b875aa
+Date: Sun, 23 Feb 2025 23:26:20 +0000 (UTC)
+From: Agoda Customer Service <no-reply@agoda.com>
+Mime-Version: 1.0
+Message-ID: <WUwEUHhDQxWLvLYtPKXKDw@geopod-ismtpd-2>
+Subject: Agoda 예약 확정서 - 예약 번호: 1546592100
+X-Feedback-ID: 7154445:SG
+X-SG-EID: u001.syISfcbP3ELXcoMVpK8CPGvjDHNmw/8JY/LOqi6YhDQ5P53taVIesoa9fT9WG0VN4lNAe7p+zAJU+qhcsILVax93B9MkuuJDq+rWEaycJluKBQka9KXALlyCuB1lAX3He0kOZsceWBBngfMHq9QNmzoUCOloHhjX7u29zEatu7W+e6MS1qJjY/Q9/Hvc4fCEFK2ERt+mIA1cdLWqjXAryRoiXVr8kskK2dpZob8a5q5z5faY+db4WwVYhNNhTCzGw4W1SPvfDddMpceZIYm0wg==
+X-SG-ID: u001.SdBcvi+Evd/bQef8eZF3BpTL9BgbK5wfSJMJGMsmprCibeZ9yI2AuhOZ/5vU4DRBL3Vx/pN+nmU3EWfgbR7KcsWVvDyb2JKTdtnLEnTXU2BrI6cBBfz7KNY2UgiXUyoYzZhnZ3sghvAu3vn7ScyfcxDbEX0FzKzLAmbEPfOeOWfteTsrG4KHtzXTrXXjh3oXiFKzIqNeoZfj4pj2zAcaEfTkU5sARHfpOGOIaLzXmPkQ28tsv8N8/3IWbEeAZzyn6BTMeA7B5Eg4gx9x11iYg1zoHsQIVxsYDSFSYZ+N1J3gMP5u3JvaFfCQ6ApFK5ArjTqVpv/W2kHuzY1EhvnTvYUoWru9EDt53s/EEh0ONIkzKLQFvghZPbZrEWnMa1Wg7ZB0GB05AayUCgCZ8eWg9cStoDJJ7x+PGuHbE8lUMhiIxd3TgdYM7Sp4nII20lJcoeWLLyCCUGlQUM/ke6vxAEDMiElwW681Q8Ta731WN+4zDt6YcjZDRAWlp8WJzTpFygXIdpJmKnZtwJOKr4sYd2NYY5ZzFFXfMyfQYjtpY+vbluTwVIwywoA0YCPSNni3L6UIkvphBGVaiavEG1xRTqjWo1ataa39RVleHFHaCs/YplWj15Xv+6N0ciRfoXz4hGnJ/c2G2qbGrnCBydWBNoCf1sXMNk8hBCwU6mZ/qfhDh1LdtDNB8PCG5cbRzYK2z7RTeVYYpxnIqaFgFw/CEJ4ePEz+Bxdm9uggXqCZDoKvwfWWmXeey/aOojz++deYggGs4wVJzYQNuet7+b+IebAzaF0p54+QW9MGQJZGxCNaK12iFkzBsMly6UdEmXE8trUBtSZv6P6Vjk1/nmmj5NFVo49WB0LOJMKAlDNTfC/C9OUsiUh87mToyyYvsObsjc1s6tj7T8gDYW0E8QQ8JFPwsC4Az9Tw0tXvQ1aSopjoN9s7tUgkY0Z2NpnqWgYVc25fdgW85oDlSFl/pfW3KRE2VGQCvAAhLvGibehxbeCC7rau5GbOA2KOP+I4bxkDLsafogvtRbkN1CTeHOsxe4NMUf0LQvCNWTzX2jz7D1ngkOvpJM7azqcOtseVf7u4y/xhul278MOah1lzxm/doxbSp4q7fw+RETQ7CeboSwot4TIBh+DiHHk5cZdjD7k0Xy7IWgFk3aN6NAmFAraMK/qazZwVv0UQuDsbReSuc3b4EZNXzD9OX7zGvj/Q/gIx66JrFePOIYGzzxVBM5tbBaTdQ6T+4KKQ3JO1X+LL33dp8ZCJvc8K5RWE4TK0AdDnd8AY6MBGlAl5R3wGusotOz8nMdTIc6Cwceojl8uSKyfgh5OVpNNlgonxyUFYHsXrYsNxPiBk/RSBpCs+aRQub7/rYC99fDjyrl7VLVuuxsalb6HhiYEaIocPY20fHdJfFhEoeNDiPQ5q9tfTx+pw3aBN3PxfjVXzj323S979NS9JKFf9UH33TuhR5aMc4K/K45wpUd1a4HsNzj5D4i566s/WVhOIxIdV7gzPu0tAATNreUBgcffT8JQ7ywMmkTKnwqvuTWa9zeHKhf6HRtu4UijzeD5GehSSEMf4+54Cb2qWAidFmhq59+aG0gQ73yWURd+XaK2Mw0OiHRfB5Ikjqxu1BIKmq63Kvsz69mkK4i225Q4zoiySGcgfj2Kn9J7xs7Ybddz+D67ajWPS6Ew6RYqiwUYfEQ148OvB/fCzD7zWXdeYEwJzFti/KlAkeI7aw/2NkgtfHr8Nc114agWCJaTZvr7R46c7PxnFwbCfk0BGVKQLOAJXov59QhweWOlpHNEaCa3ZHIXB99WRLI1Let8PN30XxRQK4ODNlNws0L6m+/lSzajDgn0q19Ns3TMrvpqiHuvpyCZm1hbt/1fJWY/rW7FboH5YTn+bl06FzmuQCf1vraMHpb3p5ePFdoZNC9/RLTnEt4iNTg7LJtUVnKn04wGmYX+QgOyCnP3XQ4445nDml1L3r0nxros8ebqRPlzlRNW2G3QLo7huXFhye2fi8/ek4/k9mcDnnor9fWn5xaozCaolsKgSc5c9Y8I8+aLn2dJWY2r26hOo4cHeha+ne0OEql5UnZgudkRwSsJZAtrmhNpEe+VTnwnMRqB2KgV1CfPvZrR7q9JAgzzdRg32WV5v8VnXpaN+8g74rp6VjivxwQggF3kQZVaLdoeNCS2LUdKjt/pPTqyn8Jp5BM+q0AJMAqG62GXEq73xPHwh/FEwUC/qmXGTyEQgVnliDWLrPAYEAF/NSM9uG7LWiNlRAs9PZF/Ptvlkg96/YMdgbwlLnmnH3E9QPKi9eyoSOnYeiAs3PeCL1lV9D0eecCFvzOpe+ZWJtw9WEVE9NMbgjdATSlcepSo8GxID5nMJysL7H1+9dRx1Qd0u1I9oZZv9sDh+sWdo2w9bQUcweTWZc5/LJUvXg+BIsM7tVO/L0YCdl8xhRcIEjJIK+x7tfok+XRs+YRxpwUvtdkyL/QS1RnxdZ7eE9fSbLtENzZyONGu+TYpXgv81gHYldG7zwdBo78bBLQEiNjuIjYr1z81jAKL0MoaPHqUt4ep5ap7uRF6AJpqtzSLUCjihWg8H0Ybepd2j+TTLJYflqVB/ADkGpDIy+UxY8N4af1MQJj38r5XYPEtGtTP7un8hLd0tVJFUjY2DSerbpi9V+UPWMKseFjHi3BVDeDBWn0YFcRlOCfo9EMOpVXpUe/i6FnpupVCj7izoGkVWJhHYj2+jBk+me3eGFd0MUu6FPqEo0fP8DlWci+kt+042BG95bIZw2xoK7k5ZlOzrec3ygcVzyDWHy6pNOYAvY2MAlUiiZYlIGKrplOovQgZ9tVRB9ckYoCm2mphPQbGyz05rwgmDI0JzfTNr5fpxHk3QaxodBWha+jn0H2vuCrvHXzvu8tDEQqV3ZYipQydbktRzRShO/PTNfI2OEfhpLVtQXfsRNckN89J+xhiv1XvKaYKVzDChKr5tW4wam7bFC9XVAXUL3N7+nif/Z/RURD2oN3gXYyRTxzpa4BQVIoxoN8VtcCDLf/tck5QAx1XnJa+V6qKIM+SVxZDLT6Ysd7uCUw7Vcb4vA1+xKHIIyGHIuLMWb+58VVWHCxCsxSDRzn/dFoWymAY5TAdW+uSVeDFSxXuoPG8N+yobSzE/EAniLptJe/PeAgkGqDiI43nkwAlt78tB3x119fAwJ32WlYgS1MBdG1bLqsdhToYH7sqPgqMmgqOOhGP3NFcmMEJbpc+rYS8FCsscjycZT3+TZc484m8HOo92hAEJWlfB9GgVxVokqAkT38JqfSD1n2Meoj3rX9LadPIbgKKjaKSBFdpkql2UFwIrcIM9pecqYzmrgnV8gYAREiJxDpEysOTpXNZ194L826eVe8Lv6Q0ICY9Nw1JwBc/R
+To: hyeon.expression@gmail.com
+X-Entity-ID: u001./BTizzMt4FzXKU8Bd1InWw==
+
+--ba4d080eb9a3b8f1d1e563d5da25fac968468c6d90db0ec2fc1617b875aa
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=utf-8
+Mime-Version: 1.0
+
+
+
+<Html lang=3D"ko-kr">
+<Head>
+    <style>
+        .tile {
+            border: 1px solid#c1cbe0;
+            font-size: 16px;
+            padding: 0;
+            padding-bottom: 24px;
+            max-width: 650px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .tileWithoutBottom {
+            border: 1px solid#c1cbe0;
+            font-size: 16px;
+            padding: 0;
+            margin: 0 auto;
+            margin-top: 16px;
+            max-width: 650px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .transparentTile {
+            background-color: transparent;
+            padding: 0;
+            margin: 0 auto;
+            max-width: 650px;
+            border-radius: 8px;
+            width: 100%;
+            border: 0;
+        }
+
+        .table_tile_wrapper {
+            margin: 16px auto 0;
+            max-width: 650px;
+            width: 100%;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between; /* Adjust as needed */
+        }
+
+    </style>
+
+    <style>
+    .default-button {
+        display: inline-block;
+        margin: 0 auto;
+        max-width: 400px;
+        border-radius: 999px;
+        color: #FFF;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .amendmentBanner {
+        border: 1px solid #007e3e;
+        margin: 0 auto 16px;
+        border-radius: 8px;
+        background-color: #F3F9F2;
+        font-size: 14px;
+    }
+
+    .lineBanner {
+        margin-top: 16px;
+    }
+
+    .table_banner {
+        color: #007e3e;
+        width: 100%;
+        border: 0;
+    }
+
+    .td_banner_title {
+        padding: 24px 24px 0px 24px;
+    }
+
+    .td_banner_description {
+        padding: 16px 24px 0px 24px;
+    }
+
+    .p_banner_title {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .p_banner_secondary_title {
+        font-weight: bold;
+        font-size: 16px;
+        color: #4a5466
+    }
+
+    .p_banner_secondary_description {
+        font-size: 14px;
+        color: #4a5466
+    }
+
+    .p_Banner_description {
+        font-size: 14px;
+    }
+
+    .td_oatOptedInBanner_logo {
+        padding-top: 32px;
+        padding-left: 24px;
+        padding-bottom: 8px;
+    }
+
+    .img_oatOptedInBanner_logo {
+        width: 36px;
+        height: 36px;
+    }
+
+    .img_lineBanner_logo {
+        border-radius: 8px;
+    }
+
+    .vip_card_benefit {
+        font-size: 20px;
+        color: #ffffff
+    }
+
+    .vip_card_bottom_description {
+        font-size: 10px;
+        color: #eff4fc
+    }
+
+    .property_contact_container {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .property_contact_flex_button {
+        margin: 0 3px;
+        /*flex: 1;*/
+        word-break: break-word;
+    }
+
+    .card_item {
+        width: 90%;
+    }
+
+    .card_item_desc {
+        width: 156px;
+    }
+
+    .card_item_block_first {
+        width: 215px;
+        padding-left: 16px;
+        padding-right: 8px;
+    }
+
+    .card_item_block_last {
+        width: 215px;
+        padding-right: 16px;
+        padding-left: 8px;
+    }
+
+    .card_item_block {
+        width: 215px;
+    }
+
+    .aso_panel_row {
+        background-color: #F8F7F9;
+        margin-bottom: 6px;
+    }
+
+    .aso_panel_column {
+        padding: 8px 15px 15px;
+    }
+
+    .aso_sub_title_text {
+        font-size: 14px;
+        font-weight: bold;
+        color: #4a5466;
+    }
+
+    .aso_rate_plan_name_text {
+        font-family: helvetica, 'helvetica neue', arial, verdana, sans-seri=
+f;
+        line-height: 20px;
+        font-size: 14px;
+        font-weight: bold;
+        padding-top: 12px;
+        color: #2A2A2E;
+        white-space: nowrap;
+        position: relative;
+    }
+
+    .aso_sub_title_information {
+        font-family: helvetica, 'helvetica neue', arial, verdana, sans-seri=
+f;
+        line-height: 20px;
+        font-size: 12px;
+        font-weight: normal;
+        padding-top: 2px;
+        color: #2A2A2E
+    }
+
+    .agoda_vip_benefit_banner {
+        width: 280px;
+    }
+
+    .panel_with_title_banner {
+        padding-left: 24px;
+        text-align: left;
+        font-size: 12px;
+        border-radius: 8px 8px 0 0;
+        vertical-align: middle;
+        height:30px;
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        font-weight : bold;
+    }
+    .panel_with_title_banner_img {
+        height: 20px;
+        width : 20px;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    td.responsive-cta-text {
+        width: 55%;
+    }
+
+    td.responsive-button {
+        display: block;
+        width: 90%;
+        position: relative;
+    }
+
+    img.cta-icon-size {
+        height: 48px;
+        width: 48px;
+    }
+
+    td.cta-icon {
+        vertical-align: middle;
+    }
+
+    @media screen and (max-width: 600px) {
+        .mobile_padding {
+            padding-right: 16px;
+        }
+
+        .download_app_qr {
+            display: none !important;
+        }
+
+        .card_item {
+            min-width: 100%!important;
+            height: 150px!important;
+        }
+
+        .card_item_list_container {
+            display: grid!important;
+        }
+
+        .card_item_desc {
+            width: 378px!important;
+        }
+
+        .card_item_block {
+            position: relative!important;
+            padding-left: 16px!important;
+            padding-right: 16px!important;
+            width: 93% !important;
+        }
+
+        .card_item_block_last {
+            position: relative!important;
+            padding-left: 16px!important;
+            padding-right: 16px!important;
+            width: 93% !important;
+        }
+
+        .card_item_block_first {
+            position: relative!important;
+            padding-left: 16px!important;
+            padding-right: 16px!important;
+            width: 93% !important;
+        }
+
+        .property_contact_container {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .property_contact_flex_button {
+            position: relative;
+            margin-bottom:5px;
+            width: 100% !important;
+        }
+
+        td.responsive-cta-text {
+            display: block;
+            width: 85%;
+            position: relative;
+        }
+
+        td.responsive-button {
+            display: block;
+            width: 88%;
+            position: relative;
+        }
+
+        img.cta-icon-size {
+            height: 32px;
+            width: 32px;
+        }
+
+        td.cta-icon {
+            vertical-align: top;
+        }
+    }
+
+    @media screen and (max-width: 400px) {
+        .agoda_vip_benefit_banner {
+            width: 100%;
+        }
+    }
+
+
+</style>
+<style>
+    .flight-margin-left-s {
+        margin-left: 12px;
+    }
+
+    .flight-p-details {
+        margin: 4px 0px 0px 0px;
+    }
+
+    .flight-p-details-light {
+        margin: 5px 0px;
+        color: #6B7388;
+        font-size: 12px;
+    }
+
+    .flight-padding-left-s {
+        padding-left: 12px;
+    }
+
+    .flight-padding-left-m {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .flight-margin-left-m {
+        margin-left: 24px;
+    }
+
+    .flight-p-cross-line {
+        width: 100%;
+        text-align: center;
+        border-top: 1px solid#C1CBE0;
+        line-height: 0.1em;
+        margin: 16px 0px 0px 0px;
+    }
+
+    .cross-line-margin-top-bottom-16-px {
+        margin: 16px 0 16px;
+    }
+
+    .cross-line-margin-passenger {
+        margin: 12px 0px;
+    }
+
+    .flight-table-info {
+        width: 100%;
+    }
+
+    .flight-tr-info {
+        text-align: center;
+    }
+
+    .flight-td-content {
+        margin: 0;
+        padding: 0;
+    }
+
+    .flight-td-content-height-1 {
+        height: 16px;
+        line-height: 16px;
+    }
+
+    .flight-td-content-height-2 {
+        height: 24px;
+        line-height: 24px;
+    }
+
+    .flight-p-heading-3 {
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .flight-p-body-2-strong {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .flight-p-body-2 {
+        font-size: 14px;
+    }
+
+    .flight-p-caption-1 {
+        font-size: 12px;
+    }
+
+    .flight-p-caption-1-grey {
+        font-size: 12px;
+        color: #6B7388
+    }
+
+    .flight-divider {
+        margin: 12px 0px;
+        border-top: 1px solid#C1CBE0;
+    }
+
+    .flight-td-banner-description {
+        padding: 0px 24px;
+    }
+
+    .flight-p-heading-margin-bottom {
+        margin-bottom: 16px;
+    }
+
+    .flight-td-logo {
+        vertical-align: top;
+        min-width: 26px;
+    }
+
+    .flight-img-airline-logo {
+        width: 24px;
+        object-fit: contain;
+    }
+
+    .flight-segment-header-table {
+        border-spacing: 0px;
+    }
+
+    .flight-segment-header-table-td {
+        padding: 0px;
+    }
+
+    .flight-segment-header-td-logo {
+        vertical-align: top;
+        padding-right: 8px;
+    }
+
+    .flight-segment-p {
+        margin: 0px 0px 4px 0px;
+    }
+
+    .flight-img-direction {
+        width: 15px;
+        height: auto;
+        margin-top: 10px;
+    }
+
+    .flight-type-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    .flight-table-logo-and-code {
+        width: 120px;
+        float: left;
+    }
+
+    .flight-table-slice {
+        width: 180px;
+        float: left;
+    }
+
+    .flight-table-direction-and-duration {
+        width: 70px;
+        float: left;
+    }
+
+    .flight-span-layover {
+        background: #fff;
+        padding: 0 10px;
+        font-size: 12px;
+    }
+
+    .flight-img-airline-small-logo {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        object-position: bottom;
+    }
+
+    .flight-img-right-arrow {
+        width: 10px;
+        height: 10px;
+        object-fit: contain;
+    }
+
+    .flight-img-seat {
+        width: 12px;
+        height: 12px;
+        object-fit: contain;
+    }
+
+    .flight-p-body-seat {
+        font-size: 14px;
+        margin: 2px 0px;
+    }
+
+    .flight-icon {
+        width: 17px;
+        height: 17px;
+        object-fit: contain;
+    }
+
+    .flight-li-p {
+        margin: 1px;
+    }
+
+    .flight-baggage-route {
+        padding-top: 8px;
+    }
+</style>
+
+</Head>
+<body style=3D"width:100%;font-family:helvetica, 'helvetica neue', arial, v=
+erdana, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;=
+padding:0;Margin:0;background-color: #eff4fc; margin: 0;color: #252c38;box-=
+sizing: border-box;">
+<div style=3D"background-color: #eff4fc;">
+
+
+
+
+<style>
+    a:visited {
+        color: inherit;
+    }
+</style>
+
+
+    <table border=3D0 align=3D"center" cellspacing=3D0 cellpadding=3D0
+           style=3D"background-color: transparent;padding: 0; margin: 0 aut=
+o;max-width: 650px;border-radius: 8px;">
+        <tbody>
+        <tr>
+            <td style=3D"height: 32px; line-height: 32px;">
+                &nbsp;
+            </td>
+        </tr>
+        <tr style=3D" text-align: center;">
+            <td style=3D"padding:0;margin:0;">
+                    <img id=3D"imgLogoUrlSrcAndAlt" height=3D"40" role=3D"i=
+mg"
+                         src=3D"https://img.agoda.net/images/emailmarketing=
+/spwl_agodatheme/company_logo_header.png" alt=3D"Agoda Logo" aria-label=3D"=
+Agoda Logo" lang=3D"en"/>
+            </td>
+        </tr>
+        <tr>
+            <td style=3D"height: 32px; line-height: 32px;">
+                &nbsp;
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table class=3D"table_tile_wrapper" style=3D"margin: 16px auto 0;max-wi=
+dth: 650px;width: 100%;"
+           align=3D"center">
+        <tr>
+            <td
+                   =20
+                    class=3D"tile" bgcolor=3D"white"
+                    style=3D"border-top: 6px solid #007e3e;border-radius: 8=
+px;padding-bottom: 24px;border-left:1px solid #c1cbe0;border-right:1px soli=
+d #c1cbe0;border-bottom:1px solid #c1cbe0;">
+        <table border=3D0 cellspacing=3D0 align=3D"center" cellpadding=3D0
+               id=3D"confirmation-info-section">
+            <tr>
+                <td colspan=3D"3" style=3D"height: 24px; line-height: 24px;=
+margin:0;padding:0">
+                    &nbsp;
+                </td>
+            </tr>
+                <tr style=3D"text-align: center;">
+                    <td colspan=3D"3"
+                        style=3D"padding:0;padding-left: 24px; padding-righ=
+t: 24px; padding-top: 12px;font-size: 20px; font-weight: bold; color:#007e3=
+e;">
+    <h2 style=3D"font-weight: bold; font-size: 20px;">=EA=B3=A0=EA=B0=9D=EB=
+=8B=98=EC=9D=98 =EC=98=88=EC=95=BD=EC=9D=B4 =ED=99=95=EC=A0=95=EB=90=98=EC=
+=97=88=EC=8A=B5=EB=8B=88=EB=8B=A4.</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan=3D"3" style=3D"height: 32px; line-height: 3=
+2px;margin:0;padding:0">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr style=3D"text-align: center;">
+                    <td colspan=3D"3" style=3D"padding-left: 24px; padding-=
+right: 24px;">
+                        <p style=3D"margin:0; padding:0" id=3D"message1">=
+=EA=B3=A0=EA=B0=9D=EB=8B=98, =EC=95=88=EB=85=95=ED=95=98=EC=84=B8=EC=9A=94.=
+</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan=3D"3" style=3D"height: 16px; line-height: 1=
+6px;margin:0;padding:0">
+                        &nbsp;
+                    </td>
+                </tr>
+                    <tr style=3D"text-align: center;">
+                        <td colspan=3D"3" style=3D"padding-left: 24px; padd=
+ing-right: 24px;">
+                            <p style=3D"margin:0; padding:0" id=3D"message2=
+">=EC=98=88=EC=95=BD =EB=B2=88=ED=98=B8=EB=8A=94 1546592100=EC=9D=B4=EB=A9=
+=B0, =EC=95=84=EB=9E=98 =EB=B2=84=ED=8A=BC=EC=9C=BC=EB=A1=9C =EC=97=B0=EA=
+=B2=B0=EB=90=98=EB=8A=94 =EC=85=80=ED=94=84=EC=84=9C=EB=B9=84=EC=8A=A4 =EC=
+=98=88=EC=95=BD =EA=B4=80=EB=A6=AC =EA=B8=B0=EB=8A=A5=EC=9D=84 =EC=9D=B4=EC=
+=9A=A9=ED=95=B4 =EC=98=88=EC=95=BD =EC=A0=95=EB=B3=B4 =ED=99=95=EC=9D=B8, =
+=EC=98=88=EC=95=BD =EC=B7=A8=EC=86=8C, =EC=98=88=EC=95=BD =EB=B3=80=EA=B2=
+=BD=EC=9D=84 =ED=95=98=EC=8B=A4 =EC=88=98 =EC=9E=88=EC=8A=B5=EB=8B=88=EB=8B=
+=A4.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=3D"3" style=3D"height: 16px; line-heigh=
+t: 16px;margin:0;padding:0">
+                            &nbsp;
+                        </td>
+                    </tr>
+                <tr style=3D"text-align: center;">
+                    <td colspan=3D"3" style=3D"padding-left: 24px; padding-=
+right: 24px; font-weight: 400;">
+                        <p style=3D"margin:0; padding:0" id=3D"subtextTwo">=
+=EA=B3=A0=EA=B0=9D=EB=8B=98=EC=9D=98 =EC=88=99=EC=86=8C =EC=98=88=EC=95=BD=
+=EC=9D=B4 =ED=99=95=EC=A0=95=EB=90=98=EC=97=88=EC=8A=B5=EB=8B=88=EB=8B=A4. =
+=EC=B2=A8=EB=B6=80=EB=90=9C =EC=98=88=EC=95=BD =ED=99=95=EC=A0=95=EC=84=9C =
+=EC=A0=95=EB=B3=B4=EB=A5=BC =ED=99=95=EC=9D=B8=ED=95=B4 =EC=A3=BC=EC=8B=9C=
+=EA=B8=B0 =EB=B0=94=EB=9E=8D=EB=8B=88=EB=8B=A4. =EC=98=88=EC=95=BD=EC=97=90=
+ =EB=8C=80=ED=95=9C =EC=A3=BC=EC=9A=94 =EC=97=85=EB=8D=B0=EC=9D=B4=ED=8A=B8=
+ =EC=82=AC=ED=95=AD =EB=B0=9C=EC=83=9D =EC=8B=9C =EC=9D=B4=EB=A9=94=EC=9D=
+=BC=EB=A1=9C =EC=97=B0=EB=9D=BD=EB=93=9C=EB=A6=AC=EA=B2=A0=EC=8A=B5=EB=8B=
+=88=EB=8B=A4.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan=3D"3" style=3D"line-height: 16px;margin:0;p=
+adding:0">
+                        &nbsp;
+                    </td>
+                </tr>
+            <tr style=3D"text-align: center;">
+        <!--[if mso]>
+        <td width=3D"20%"></td>
+        <td class=3D"manageBookingButton" style=3D"background-color: #2067d=
+a; padding: 8px;" width=3D"60%">
+    <a id=3D"mmb_link" href=3D"https://agoda.onelink.me/1640755593?pid=3Dre=
+direct&c=3DCONFIRMATION_EMAIL_ONELINK&af_dp=3Dagoda%3a%2f%2fmmb%2f%3fbookin=
+gToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&deep_link_value=3Dagoda%3a%2f%2fmmb%2=
+f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&af_sub1=3DEXP-ID-AM-7093-B&=
+af_sub3=3Dbebf6434-a5d7-42ce-805f-3715787ae814&af_sub4=3DHotel&af_force_dee=
+plink=3Dtrue&af_web_dp=3Dhttps%3a%2f%2fwww.agoda.com%2faccount%2feditbookin=
+g.html%3fbookingId%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d%26" target=3D"_blank"
+       style=3D"display: inline-block;margin: 0 auto; border-radius:999px; =
+color: #ffffff; font-size: 16px; font-weight: normal; background-color:#206=
+7da;  text-decoration: none;">
+    =EC=98=88=EC=95=BD =EA=B4=80=EB=A6=AC=ED=95=98=EA=B8=B0
+    </a>
+        </td>
+        <td width=3D"20%"></td>
+        <![endif]-->
+        <!--[if !mso]><!-->
+        <td></td>
+        <td class=3D"manageBookingButton" colspan=3D"2">
+    <div style=3D"display: block; width: 100%">
+        <span style=3D"display: inline-block; margin-top: 4px; padding:1px;=
+">
+            <a id=3D"mmb_link" href=3D"https://agoda.onelink.me/1640755593?=
+pid=3Dredirect&c=3DCONFIRMATION_EMAIL_ONELINK&af_dp=3Dagoda%3a%2f%2fmmb%2f%=
+3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&deep_link_value=3Dagoda%3a%2f=
+%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&af_sub1=3DEXP-ID-AM=
+-7093-B&af_sub3=3Dbebf6434-a5d7-42ce-805f-3715787ae814&af_sub4=3DHotel&af_f=
+orce_deeplink=3Dtrue&af_web_dp=3Dhttps%3a%2f%2fwww.agoda.com%2faccount%2fed=
+itbooking.html%3fbookingId%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d%26" target=3D"_bl=
+ank" class=3D"default-button"
+               style=3D"
+                   background-color: #2067da;
+                   padding: 12px 82px;
+                   font-size: 16px;
+                   font-weight: normal;
+                   color: #ffffff;
+                   border-radius: 999px;
+                   text-decoration: none;
+                   border: 1px solid #ffffff
+               "
+            >
+                =EC=98=88=EC=95=BD =EA=B4=80=EB=A6=AC=ED=95=98=EA=B8=B0
+            </a>
+        </span>
+    </div>
+        </td>
+        <td></td>
+        <!--<![endif]-->
+    </tr>
+        <tr>
+            <td
+                colspan=3D"3"
+                class=3D"app_only_link_note"
+            >
+                <table style=3D"padding: 10px 8px 0px 12px; line-height: 20=
+px; color: #DF5505; vertical-align: top; font-size: 12px; margin: 0 auto;">
+                    <tr>
+                        <td style=3D"padding-right: 2px; vertical-align: to=
+p;">
+                            <img
+                                src=3D"https://cdn0.agoda.net/images/icons/=
+circle-info_2x.png"
+                                alt=3D"app only link note"
+                                width=3D"15"
+                                style=3D"width: 15px; padding: 0; padding-t=
+op: 2px;"
+                            >
+                        </td>
+                        <td>
+                            =ED=9C=B4=EB=8C=80=EC=A0=84=ED=99=94=EC=97=90=
+=EC=84=9C =EC=9D=B4 =EB=B2=84=ED=8A=BC=EC=9D=84 =ED=81=B4=EB=A6=AD=ED=95=98=
+=EB=A9=B4 =EC=95=84=EA=B3=A0=EB=8B=A4 =EC=95=B1=EC=9C=BC=EB=A1=9C =EC=9D=B4=
+=EB=8F=99=ED=95=A9=EB=8B=88=EB=8B=A4.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        </table>
+            </td>
+        </tr>
+    </table>
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+        <center>
+            <table class=3D"table_tile_wrapper" style=3D"margin: 16px auto =
+0;max-width: 650px;width: 100%;">
+                <tbody>
+                <tr>
+                    <td id=3D"single_property_booking_information" class=3D=
+"tile" bgcolor=3D"white"
+                        style=3D"padding-bottom: 24px;border-radius: 8px;bo=
+rder:1px solid #c1cbe0;">
+    <table style=3D"width: 100%">
+        <tr>
+            <td style=3D"height: 24px; line-height: 24px;margin:0;padding:0=
+">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td style=3D"padding:0;Margin:0;padding-left: 24px; padding-rig=
+ht: 24px;" id=3D"property-name">
+                 <span style=3D"display: inline-block; font-size: 18px;">
+                    <h2 style=3D"font-size: 1em" id=3D"lblHotelNameData">HO=
+STEL PAQ tokushima</h2>
+                 </span>
+                    <img border=3D"0" src=3D"http://img.agoda.net/content/d=
+efault/documents/images/ebe/orange-yellow_star-2@2x.png" width=3D"auto" hei=
+ght=3D"14" alt=3D"2.0 stars rating out of five" style=3D"display: inline-bl=
+ock;">
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"left"
+                style=3D"text-align: left;padding:0;Margin:0; font-size: 16=
+px; padding-left: 24px; padding-right: 24px;">
+                <p id=3D"lblLocalHotelNameData" style=3D"margin:0;padding:0=
+">
+                    =E3=83=9B=E3=82=B9=E3=83=86=E3=83=ABPAQ=E5=BE=B3=E5=B3=
+=B6
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style=3D"padding:0;Margin:0;padding-top:12px;">
+                <table border=3D0 cellspacing=3D0 cellpadding=3D0>
+                    <tbody>
+                    <tr>
+                        <td
+                                style=3D"margin:0; padding: 0 8px 0 24px; v=
+ertical-align: top;"
+                        width=3D"128" height=3D"128">
+                            <img role=3D"img" aria-label=3D"property image"=
+ src=3D"http://pix8.agoda.net/hotelImages/7220324/-1/d1e7e97f856a463f648553=
+6c8fe40dad.jpg?ca=3D9&ce=3D1&s=3D450x302" alt=3D"property image"
+                                 style=3D"display:block;width: 128px;height=
+: 128px;object-fit: cover;border-radius: 16px;"
+                                 width=3D"128" height=3D"128">
+                        </td>
+                        <td
+                                style=3D"padding:0;Margin:0;padding-left: 8=
+px; padding-right: 24px; vertical-align: top;">
+                            <table border=3D0 cellspacing=3D0 cellpadding=
+=3D0>
+                                <tbody>
+                                <tr>
+                                    <td style=3D"padding:0; margin:0; font-=
+size: 14px;">
+                                        <p id=3D"lblHotelAddressData" style=
+=3D"margin:0;padding:0">
+                                            Tokushima city nakatouriimachi =
+2-5, =EB=8F=84=EC=BF=A0=EC=8B=9C=EB=A7=88, =EC=9D=BC=EB=B3=B8, 770-0844
+                                        </p>
+                                    </td>
+                                </tr>
+                                    <tr>
+                                        <td style=3D"padding:0; margin:0;pa=
+dding-top: 8px">
+                                              <p id=3D"lblLocalHotelAddress=
+Data" style=3D"margin:0;padding:0;font-size: 14px;" lang=3Dko-kr>
+                                                =E5=BE=B3=E5=B3=B6=E5=B8=82=
+=E4=B8=AD=E9=80=9A=E7=94=BA2=E4=B8=81=E7=9B=AE5=E7=95=AA, =E5=BE=B3=E5=B3=
+=B6, =E6=97=A5=E6=9C=AC, 770-0844
+                                              </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td
+                                                style=3D"padding:0;Margin:0=
+;padding-top:8px">
+                                            <a id=3D"linkDirection"
+                                               href=3D"http://www.google.co=
+m/maps/place/HOSTEL+PAQ+tokushima/@34.0706032,134.5517271,17z"
+                                               target=3D"_blank"
+                                               style=3D"Margin:0;line-heigh=
+t:19px;color:#2067da; text-decoration: underline; font-size:14px">
+                                                =EC=88=99=EC=86=8C =EC=9C=
+=84=EC=B9=98 =ED=99=95=EC=9D=B8
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style=3D"padding:0;padding-left: 24px;padding-right: 24px;p=
+adding-top:16px">
+                <table border=3D0 cellspacing=3D0 cellpadding=3D0 style=3D"=
+width: 100%;">
+                    <tbody>
+                    <tr>
+                        <td
+                                style=3D"margin: 0; padding: 0; border-top:=
+ 1px solid #c1cbe0;height: 16px; line-height: 16px;">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style=3D"padding:0;Margin:0;padding-left: 24px;padding-righ=
+t: 24px;">
+                <table border=3D0 cellspacing=3D0 cellpadding=3D0 style=3D"=
+width: 100%;">
+                    <tbody>
+                    <tr>
+                        <td
+                                style=3D"padding:0;Margin:0; padding-right:=
+ 24px; border-right: 1px solid #c1cbe0; width:50%;  vertical-align: top;">
+                            <table align=3D"left" border=3D0 cellspacing=3D=
+0 cellpadding=3D0>
+                                <tbody>
+                                <tr>
+                                    <td align=3D"left"
+                                        style=3D"padding:0;Margin:0; font-s=
+ize: 14px; color:#4a5466; text-align: left;">
+                                        <p style=3D"margin:0;padding:0">
+                                            =EC=B2=B4=ED=81=AC=EC=9D=B8
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align=3D"left"
+                                        style=3D"padding:0;Margin:0; text-a=
+lign: left;padding-top: 8px;"
+                                        id=3D"checkin-date">
+                                        <p style=3D"margin:0;padding:0">
+                                            2025=EB=85=84 2=EC=9B=94 24=EC=
+=9D=BC (=EC=9B=94=EC=9A=94=EC=9D=BC)
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align=3D"left"
+                                        style=3D"padding:0;Margin:0; text-a=
+lign: left;padding-top: 8px;"
+                                        id=3D"checkin-time">
+                                        <p style=3D"margin:0;padding:0">
+                                            15:00
+                                        </p>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td
+                                style=3D"padding:0;Margin:0; padding-left: =
+24px; width: 50%; vertical-align: top;">
+                            <table align=3D"right" border=3D0 cellspacing=
+=3D0 cellpadding=3D0>
+                                <tbody>
+                                <tr>
+                                    <td align=3D"right"
+                                        style=3D"padding:0;Margin:0; font-s=
+ize: 14px; color:#4a5466; text-align: right;">
+                                        <p style=3D"margin:0;padding:0">
+                                            =EC=B2=B4=ED=81=AC=EC=95=84=EC=
+=9B=83
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align=3D"right"
+                                        style=3D"padding:0;Margin:0; paddin=
+g-top:8px ; text-align: right;"
+                                        id=3D"checkout-date">
+                                        <p style=3D"margin:0;padding:0">
+                                            2025=EB=85=84 2=EC=9B=94 25=EC=
+=9D=BC (=ED=99=94=EC=9A=94=EC=9D=BC)
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align=3D"right"
+                                        style=3D"padding:0;Margin:0; text-a=
+lign: right;padding-top: 8px;"
+                                        id=3D"checkout-time">
+                                        <p style=3D"margin:0;padding:0">
+                                            10:00
+                                        </p>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style=3D"padding-left: 24px;padding-right: 24px;">
+                <table border=3D0 cellspacing=3D0 cellpadding=3D0 style=3D"=
+width: 100%;">
+                    <tbody>
+                    <tr>
+                        <td
+                                style=3D"margin: 0; padding: 0; border-bott=
+om: 1px solid #c1cbe0;height: 16px; line-height: 16px;">
+                            &nbsp;
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tbody>
+        <tr>
+            <td style=3D"padding:0;padding-left: 24px;padding-right: 24px; =
+padding-top: 16px">
+                <p style=3D"margin:0;padding:0; font-size: 14px;">
+                    <a style=3D'color:#2067da;' href=3D'https://agoda.oneli=
+nk.me/1640755593?pid=3Dredirect&c=3DCONFIRMATION_EMAIL_ONELINK&af_dp=3Dagod=
+a%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&deep_link_va=
+lue=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&af=
+_sub1=3DEXP-ID-AM-7093-B&af_sub3=3Dbebf6434-a5d7-42ce-805f-3715787ae814&af_=
+sub4=3DHotel&af_force_deeplink=3Dtrue&af_web_dp=3Dhttps%3a%2f%2fwww.agoda.c=
+om%2faccount%2feditbooking.html%3fbookingId%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d%=
+26' target=3D'_blank'>=EC=98=88=EC=95=BD =EA=B4=80=EB=A6=AC=ED=95=98=EA=B8=
+=B0</a> =ED=8E=98=EC=9D=B4=EC=A7=80=EC=97=90=EC=84=9C =EC=88=99=EC=86=8C =
+=EC=A0=95=EC=B1=85=EA=B3=BC =ED=8E=B8=EC=9D=98 =EC=8B=9C=EC=84=A4/=EC=84=9C=
+=EB=B9=84=EC=8A=A4=EC=97=90 =EA=B4=80=ED=95=B4=EC=84=9C=EB=8F=84 =EC=89=BD=
+=EA=B2=8C =ED=99=95=EC=9D=B8=ED=95=A0 =EC=88=98 =EC=9E=88=EC=8A=B5=EB=8B=88=
+=EB=8B=A4.
+                </p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+      <table >
+              <tr>
+                  <td style=3D"padding:0;Margin:0;padding-left: 24px; paddi=
+ng-right: 28px; padding-top: 28px;">
+                         <span style=3D"display: inline-block; font-size: 1=
+8px;">
+                             <h3 style=3D"font-size: 1em">=EC=88=99=EC=86=
+=8C=EC=97=90 =EC=97=B0=EB=9D=BD=ED=95=98=EA=B8=B0</h3>
+                         </span>
+                  </td>
+              </tr>
+          <tr>
+            <td style=3D"padding:0; padding-left: 24px;padding-right: 24px;=
+ padding-top: 10px;">
+              <p style=3D"margin:0;padding:0; text-decoration: none; font-s=
+ize: 14px;">
+                =EC=88=99=EC=86=8C=EC=99=80 =EA=B4=80=EB=A0=A8=ED=95=9C =EB=
+=8D=94 =EC=9E=90=EC=84=B8=ED=95=9C =EC=82=AC=ED=95=AD=EC=9D=80 =EC=88=99=EC=
+=86=8C=EB=A1=9C =EC=A7=81=EC=A0=91 =EB=AC=B8=EC=9D=98=ED=95=B4 =EC=A3=BC=EC=
+=8B=9C=EA=B8=B0 =EB=B0=94=EB=9E=8D=EB=8B=88=EB=8B=A4.
+              </p>
+            </td>
+          </tr>
+      </table>
+            <table style=3D"width: 100%; table-layout: fixed; align-items: =
+center;" cellspacing=3D"10">
+                <tr class=3D"property_contact_container">
+                        <td class=3D"property_contact_flex_button" style=3D=
+"width: 100%;box-sizing: border-box;">
+    <table align=3D"center" cellpadding=3D"0" cellspacing=3D"0" style=3D"wi=
+dth: 100%;">
+        <tr style=3D"background-color: #ffffff;">
+            <td align=3D"center"
+                style=3D"margin:0; width: 100%;padding:8px;border: 1px #206=
+7da solid;border-radius: 10px;"
+                id=3D"property-phone">
+                <table style=3D"width: 100%; box-sizing: border-box;">
+                        <tr style=3D"text-align: center">
+                            <td width=3D"20" style=3D"vertical-align: middl=
+e;">
+                                <img src=3D"https://cdn6.agoda.net/images/e=
+mail/booking-confirmation/pigeon/phone2.png"
+                                     alt=3D"phone icon" width=3D"20">
+
+                            </td>
+                        </tr>
+                    <tr style=3D"text-align: center">
+                        <td>
+                            <a style=3D"margin:0;padding:0;text-align: cent=
+er;display: inline;text-decoration: none;padding-top:4px;" href=3D"tel:+818=
+86798990"
+                               target=3D"_blank" >
+                                <p style=3D"flex-wrap: wrap;word-break: bre=
+ak-word;font-size: 14px; color: #2067da;">+81886798990</p>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+                        </td>
+                </tr>
+            </table>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <table class=3D"table_tile_wrapper" style=3D"margin: 16px auto 0;max-wi=
+dth: 650px;width: 100%;">
+        <tr>
+            <td class=3D"tile" bgcolor=3D"white" style=3D"padding-bottom: 2=
+4px;border-radius: 8px;border:1px solid #c1cbe0">
+                <table style=3D"width: 100%">
+                    <tr>
+                        <td colspan=3D"3"
+                            style=3D"padding:0;margin:0;padding-left:24px;p=
+adding-right:24px;padding-top:24px;font-weight: bold; font-size: 18px; line=
+-height: 21px;">
+                            <h2 style=3D"font-size: 1em">=EC=98=88=EC=95=BD=
+ =EC=84=B8=EB=B6=80 =EC=82=AC=ED=95=AD</h2>=20
+                        </td>
+                    </tr>
+                    <tr id=3D"property_booking_information">
+                        <td colspan=3D"1"
+                            style=3D"width: 160px; padding: 16px 18px 10px =
+24px; color: #252c38; line-height: 25px; vertical-align: top;">
+                            =EA=B0=9D=EC=8B=A4 =EC=88=98 =EB=B0=8F =EC=88=
+=99=EB=B0=95 =EC=88=98=20
+                        </td>
+                        <td colspan=3D"2"
+                            style=3D"padding: 16px 18px 10px 0; line-height=
+: 25px; color: #252c38; vertical-align: top;"
+                            id=3D"booking-reservation">
+                            =EA=B0=9D=EC=8B=A4 1=EA=B0=9C, 1=EB=B0=95
+                        </td>
+                    </tr>
+<tr style=3D"border-collapse:collapse;">
+    <td align=3D"left" style=3D"padding:0 24px 0 24px;margin:0" colspan=3D"=
+3">
+        <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" style=3D"=
+border-collapse:collapse;border-spacing:0px;">
+            <tr style=3D"border-collapse:collapse;">
+                <td width=3D"100%" valign=3D"top" align=3D"center" style=3D=
+"padding:0;margin:0;">
+                    <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse:collapse;border-spacing:0px;">
+                        <tr style=3D"border-collapse:collapse;">
+                            <td align=3D"center" style=3D"padding:0;margin:=
+0">
+                                <table border=3D"0" width=3D"100%" height=
+=3D"100%" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse:coll=
+apse;border-spacing:0px;">
+                                    <tr style=3D"border-collapse:collapse;"=
+>
+                                        <td style=3D"padding:0;Margin:0px 0=
+px 0px 0px;border-bottom:1px solid #c1cbe0;background:none;height:1px;width=
+:100%;margin:0px;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+                    <tr>
+                    <tr>
+                        <td colspan=3D"1"
+                            style=3D"width: 160px; padding: 10px 18px 10px =
+24px; color: #252c38; line-height: 25px; vertical-align: top;">
+                            =EA=B0=9D=EC=8B=A4 =EC=A2=85=EB=A5=98=20
+                        </td>
+                        <td colspan=3D"2"
+                            style=3D"padding: 10px 18px 10px 0; line-height=
+: 25px; color: #252c38; vertical-align: top;"
+                            id=3D"booking-roomtype">
+                            =EB=8F=84=EB=AF=B8=ED=86=A0=EB=A6=AC =EB=82=B4 =
+1=EC=9D=B8 =EC=98=88=EC=95=BD (=ED=98=BC=EC=84=B1)
+                        </td>
+                    </tr>
+<tr style=3D"border-collapse:collapse;">
+    <td align=3D"left" style=3D"padding:0 24px 0 24px;margin:0" colspan=3D"=
+3">
+        <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" style=3D"=
+border-collapse:collapse;border-spacing:0px;">
+            <tr style=3D"border-collapse:collapse;">
+                <td width=3D"100%" valign=3D"top" align=3D"center" style=3D=
+"padding:0;margin:0;">
+                    <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse:collapse;border-spacing:0px;">
+                        <tr style=3D"border-collapse:collapse;">
+                            <td align=3D"center" style=3D"padding:0;margin:=
+0">
+                                <table border=3D"0" width=3D"100%" height=
+=3D"100%" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse:coll=
+apse;border-spacing:0px;">
+                                    <tr style=3D"border-collapse:collapse;"=
+>
+                                        <td style=3D"padding:0;Margin:0px 0=
+px 0px 0px;border-bottom:1px solid #c1cbe0;background:none;height:1px;width=
+:100%;margin:0px;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+                    <tr>
+                        <td colspan=3D"1"
+                            style=3D"width: 160px; padding: 10px 18px 10px =
+24px; color: #252c38; line-height: 25px; vertical-align: top;">
+                            =EB=8C=80=ED=91=9C =ED=88=AC=EC=88=99=EA=B0=9D=
+=20
+                        </td>
+                        <td colspan=3D"2"
+                            style=3D"padding: 10px 18px 10px 0; line-height=
+: 25px; color: #252c38; vertical-align: top;"
+                            id=3D"booking-leadguest">
+                            PYO HYEON
+                        </td>
+                    </tr>
+<tr style=3D"border-collapse:collapse;">
+    <td align=3D"left" style=3D"padding:0 24px 0 24px;margin:0" colspan=3D"=
+3">
+        <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" style=3D"=
+border-collapse:collapse;border-spacing:0px;">
+            <tr style=3D"border-collapse:collapse;">
+                <td width=3D"100%" valign=3D"top" align=3D"center" style=3D=
+"padding:0;margin:0;">
+                    <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse:collapse;border-spacing:0px;">
+                        <tr style=3D"border-collapse:collapse;">
+                            <td align=3D"center" style=3D"padding:0;margin:=
+0">
+                                <table border=3D"0" width=3D"100%" height=
+=3D"100%" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse:coll=
+apse;border-spacing:0px;">
+                                    <tr style=3D"border-collapse:collapse;"=
+>
+                                        <td style=3D"padding:0;Margin:0px 0=
+px 0px 0px;border-bottom:1px solid #c1cbe0;background:none;height:1px;width=
+:100%;margin:0px;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+                    <tr>
+                        <td colspan=3D"1"
+                            style=3D"width: 160px; padding: 10px 18px 10px =
+24px; color: #252c38; line-height: 25px; vertical-align: top;">
+                            =EC=88=99=EB=B0=95 =EC=9D=B8=EC=9B=90=20
+                        </td>
+                        <td colspan=3D"2"
+                            style=3D"padding: 10px 18px 10px 0; line-height=
+: 25px; color: #252c38; vertical-align: top;"
+                            id=3D"booking-occupancy">
+                            =EC=84=B1=EC=9D=B8 1=EB=AA=85
+                        </td>
+                    </tr>
+<tr style=3D"border-collapse:collapse;">
+    <td align=3D"left" style=3D"padding:0 24px 0 24px;margin:0" colspan=3D"=
+3">
+        <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" style=3D"=
+border-collapse:collapse;border-spacing:0px;">
+            <tr style=3D"border-collapse:collapse;">
+                <td width=3D"100%" valign=3D"top" align=3D"center" style=3D=
+"padding:0;margin:0;">
+                    <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse:collapse;border-spacing:0px;">
+                        <tr style=3D"border-collapse:collapse;">
+                            <td align=3D"center" style=3D"padding:0;margin:=
+0">
+                                <table border=3D"0" width=3D"100%" height=
+=3D"100%" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse:coll=
+apse;border-spacing:0px;">
+                                    <tr style=3D"border-collapse:collapse;"=
+>
+                                        <td style=3D"padding:0;Margin:0px 0=
+px 0px 0px;border-bottom:1px solid #c1cbe0;background:none;height:1px;width=
+:100%;margin:0px;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+                        <tr>
+                            <td colspan=3D"1"
+                                style=3D"width: 160px; padding: 10px 18px 1=
+0px 24px; color: #252c38; vertical-align: top; line-height: 25px;">
+                                =ED=98=9C=ED=83=9D=20
+                            </td>
+                            <td colspan=3D"2"
+                                style=3D"padding: 10px 18px 10px 0; line-he=
+ight: 25px; color: #007e3e; vertical-align: top;"
+                                id=3D"booking-basic-benefits">
+                                =EB=AC=B4=EB=A3=8C Wi-Fi, =EC=9D=B5=EC=8A=
+=A4=ED=94=84=EB=A0=88=EC=8A=A4 =EC=B2=B4=ED=81=AC=EC=9D=B8
+                            </td>
+                        </tr>
+<tr style=3D"border-collapse:collapse;">
+    <td align=3D"left" style=3D"padding:0 24px 0 24px;margin:0" colspan=3D"=
+3">
+        <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" style=3D"=
+border-collapse:collapse;border-spacing:0px;">
+            <tr style=3D"border-collapse:collapse;">
+                <td width=3D"100%" valign=3D"top" align=3D"center" style=3D=
+"padding:0;margin:0;">
+                    <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse:collapse;border-spacing:0px;">
+                        <tr style=3D"border-collapse:collapse;">
+                            <td align=3D"center" style=3D"padding:0;margin:=
+0">
+                                <table border=3D"0" width=3D"100%" height=
+=3D"100%" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse:coll=
+apse;border-spacing:0px;">
+                                    <tr style=3D"border-collapse:collapse;"=
+>
+                                        <td style=3D"padding:0;Margin:0px 0=
+px 0px 0px;border-bottom:1px solid #c1cbe0;background:none;height:1px;width=
+:100%;margin:0px;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+                        <tr>
+                            <td colspan=3D"1"
+                                style=3D"width: 160px; padding: 10px 18px 1=
+0px 24px; color: #252c38; line-height: 25px; vertical-align: top;">
+                                =ED=8A=B9=EB=B3=84 =EC=9A=94=EC=B2=AD =EC=
+=82=AC=ED=95=AD=20
+                            </td>
+                            <td colspan=3D"2"
+                                style=3D"padding: 10px 18px 10px 0; line-he=
+ight: 25px; color: #252c38; vertical-align: top;"
+                                id=3D"booking-specialrequest">
+                                   =20
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan=3D"3"
+                                style=3D"color: #4a5466; line-height: 20px;=
+ padding:0;padding-left:24px;padding-bottom:10px">
+                                (=EB=AA=A8=EB=93=A0 =ED=8A=B9=EB=B3=84 =EC=
+=9A=94=EC=B2=AD =EC=82=AC=ED=95=AD =EB=B0=98=EC=98=81 =EC=97=AC=EB=B6=80=EB=
+=8A=94 =EC=B2=B4=ED=81=AC=EC=9D=B8 =EC=8B=9C =EC=88=99=EC=86=8C =EC=97=AC=
+=EA=B1=B4=EC=97=90 =EB=94=B0=EB=9D=BC =EB=8B=AC=EB=9D=BC=EC=A7=88 =EC=88=98=
+ =EC=9E=88=EC=8A=B5=EB=8B=88=EB=8B=A4.)
+                            </td>
+                        </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+        <table class=3D"table_tile_wrapper" style=3D"margin: 16px auto 0;ma=
+x-width: 650px;width: 100%;">
+            <tbody>
+            <tr style=3D"padding:0;margin:0;padding-top: 16px;">
+                <td class=3D"tile" bgcolor=3D"white"
+                    style=3D"border-radius: 8px;padding-bottom: 24px;border=
+:1px solid #c1cbe0;">
+                    <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0"=
+ width=3D"100%"
+                           style=3D"font-size: 14px;padding: 0; margin: 0 a=
+uto;">
+                        <tbody>
+                        <tr style=3D"padding-bottom: 24px;">
+                            <td id=3D"cancellation_policy_title_text" colsp=
+an=3D"3"
+                                style=3D"padding: 16px 24px 0 24px;font-wei=
+ght: bold; font-size: 18px; line-height: 21px;">
+                                <h2 style=3D"font-size: 1em">=EC=98=88=EC=
+=95=BD =EC=B7=A8=EC=86=8C =EC=A0=95=EC=B1=85</h2>
+                            </td>
+                        </tr>
+
+
+                            <tr>
+                                <td id=3D"important_information_title_text"=
+ colspan=3D"3"
+                                    style=3D"color: #252c38;line-height: 25=
+px; font-weight: 600;padding: 24px 24px 0 24px">
+                                    [ =EC=A4=91=EC=9A=94 =EC=82=AC=ED=95=AD=
+ ]
+                                </td>
+                            </tr>
+                                <tr>
+                                    <td id=3D"cancellationText_0" colspan=
+=3D"3"
+                                        style=3D"line-height: 14px;color: #=
+252c38;padding: 10px 24px 0 24px">
+                                        =EB=B3=B8 =EC=98=88=EC=95=BD=EC=9D=
+=80 '=ED=99=98=EB=B6=88 =EB=B6=88=EA=B0=80'=ED=95=98=EB=A9=B0 =EC=88=98=EC=
+=A0=95=ED=95=98=EA=B1=B0=EB=82=98 =EB=B3=80=EA=B2=BD=ED=95=A0 =EC=88=98 =EC=
+=97=86=EC=8A=B5=EB=8B=88=EB=8B=A4. =EC=98=88=EC=95=BD=ED=95=9C =ED=98=B8=ED=
+=85=94=EC=9D=B4=EB=82=98 =EC=88=99=EC=86=8C=EC=97=90 =EC=B2=B4=ED=81=AC=EC=
+=9D=B8=ED=95=98=EC=A7=80 =EC=95=8A=EC=9D=84 =EA=B2=BD=EC=9A=B0 =EB=85=B8=EC=
+=87=BC(No-Show)=EB=A1=9C =EA=B0=84=EC=A3=BC=EB=90=98=EB=A9=B0, =EC=98=88=EC=
+=95=BD =EC=9A=94=EA=B8=88=EC=9D=98 100%=EA=B0=80 =EC=B7=A8=EC=86=8C =EC=9A=
+=94=EA=B8=88=EC=9C=BC=EB=A1=9C =EB=B6=80=EA=B3=BC=EB=90=A9=EB=8B=88=EB=8B=
+=A4(=ED=98=B8=ED=85=94 =EC=A0=95=EC=B1=85).
+                                    </td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </center>
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <table class=3D"table_tile_wrapper" style=3D"margin: 16px auto 0;max-wi=
+dth: 650px;width: 100%;"
+           align=3D"center">
+        <tr>
+            <td
+                     id=3D"price-breakdown-panel"=20
+                    class=3D"tile" bgcolor=3D"white"
+                    style=3D"border-top: ;border-radius: 8px;padding-bottom=
+: 24px;border-left:1px solid #c1cbe0;border-right:1px solid #c1cbe0;border-=
+bottom:1px solid #c1cbe0;">
+        <table border=3D0 cellspacing=3D0 align=3D"center" cellpadding=3D0 =
+width=3D"100%">
+            <tr>
+        <td style=3D"margin:0;padding: 24px 24px 0;text-align: left"
+                 id=3D"price-breakdown-panel-title"=20
+               =20
+        >
+    <h2 style=3D"font-weight: bold; font-size: 18px;">=EA=B3=A0=EA=B0=9D=EB=
+=8B=98=EC=9D=98 =EC=98=88=EC=95=BD=EC=9D=B4 =ED=99=95=EC=A0=95=EB=90=98=EC=
+=97=88=EA=B3=A0 =EC=9A=94=EA=B8=88=EB=8F=84 =EA=B2=B0=EC=A0=9C=EB=90=98=EC=
+=97=88=EC=8A=B5=EB=8B=88=EB=8B=A4.</h2>
+        </td>
+            </tr>
+            <tr>
+                <table width=3D"100%" cellpadding=3D"0" cellspacing=3D"0" s=
+tyle=3D"padding: 0;margin: 0;">
+        <tr id=3D"pricebreakdown-table">
+            <td colspan=3D"3"
+                style=3D"width:50%;word-wrap: break-word; hyphens: auto; po=
+sition:relative;padding: 16px 18px 10px 24px; color: #252c38; line-height: =
+25px; vertical-align: top; font-weight: normal;"
+                id=3D"base-price-title">
+                =EA=B0=9D=EC=8B=A4 1=EA=B0=9C x 1=EB=B0=95
+            </td>
+
+            <td colspan=3D"3"
+                style=3D"width:50%;white-space: nowrap; position:relative;p=
+adding: 16px 18px 10px 0; line-height: 25px; color:  #252c38; vertical-alig=
+n: top; text-align: right; font-weight: normal"
+                id=3D"base-price-value">
+                KRW 25,969
+            </td>
+        </tr>
+<tr style=3D"border-collapse:collapse;">
+    <td align=3D"left" style=3D"padding:0 24px 0 24px;margin:0" colspan=3D"=
+6">
+        <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" style=3D"=
+border-collapse:collapse;border-spacing:0px;">
+            <tr style=3D"border-collapse:collapse;">
+                <td width=3D"100%" valign=3D"top" align=3D"center" style=3D=
+"padding:0;margin:0;">
+                    <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse:collapse;border-spacing:0px;">
+                        <tr style=3D"border-collapse:collapse;">
+                            <td align=3D"center" style=3D"padding:0;margin:=
+0">
+                                <table border=3D"0" width=3D"100%" height=
+=3D"100%" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse:coll=
+apse;border-spacing:0px;">
+                                    <tr style=3D"border-collapse:collapse;"=
+>
+                                        <td style=3D"padding:0;Margin:0px 0=
+px 0px 0px;border-bottom:1px solid #c1cbe0;background:none;height:1px;width=
+:100%;margin:0px;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+        <tr id=3D"pricebreakdown-table">
+            <td colspan=3D"3"
+                style=3D"width:50%;word-wrap: break-word; hyphens: auto; po=
+sition:relative;padding: 16px 18px 10px 24px; color: #252c38; line-height: =
+25px; vertical-align: top; font-weight: normal;"
+                id=3D"tax-and-fee-title">
+                =EC=84=B8=EA=B8=88 =EB=B0=8F =EB=B4=89=EC=82=AC=EB=A3=8C
+            </td>
+
+            <td colspan=3D"3"
+                style=3D"width:50%;white-space: nowrap; position:relative;p=
+adding: 16px 18px 10px 0; line-height: 25px; color:  #252c38; vertical-alig=
+n: top; text-align: right; font-weight: normal"
+                id=3D"tax-and-fee-value">
+                KRW 2,753
+            </td>
+        </tr>
+<tr style=3D"border-collapse:collapse;">
+    <td align=3D"left" style=3D"padding:0 24px 0 24px;margin:0" colspan=3D"=
+6">
+        <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" style=3D"=
+border-collapse:collapse;border-spacing:0px;">
+            <tr style=3D"border-collapse:collapse;">
+                <td width=3D"100%" valign=3D"top" align=3D"center" style=3D=
+"padding:0;margin:0;">
+                    <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse:collapse;border-spacing:0px;">
+                        <tr style=3D"border-collapse:collapse;">
+                            <td align=3D"center" style=3D"padding:0;margin:=
+0">
+                                <table border=3D"0" width=3D"100%" height=
+=3D"100%" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse:coll=
+apse;border-spacing:0px;">
+                                    <tr style=3D"border-collapse:collapse;"=
+>
+                                        <td style=3D"padding:0;Margin:0px 0=
+px 0px 0px;border-bottom:1px solid #c1cbe0;background:none;height:1px;width=
+:100%;margin:0px;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+        <tr id=3D"pricebreakdown-table">
+            <td colspan=3D"3"
+                style=3D"width:50%;word-wrap: break-word; hyphens: auto; po=
+sition:relative;padding: 16px 18px 10px 24px; color: #252c38; line-height: =
+25px; vertical-align: top; font-weight: normal;"
+                id=3D"discount-title">
+                =EC=95=84=EA=B3=A0=EB=8B=A4 =EC=95=B1 3=EB=B2=88=EC=A7=B8 =
+=EC=98=88=EC=95=BD =ED=95=A0=EC=9D=B8 =EC=BF=A0=ED=8F=B0 2.7119704607364215=
+%
+            </td>
+
+            <td colspan=3D"3"
+                style=3D"width:50%;white-space: nowrap; position:relative;p=
+adding: 16px 18px 10px 0; line-height: 25px; color:  #252c38; vertical-alig=
+n: top; text-align: right; font-weight: normal"
+                id=3D"discount-value">
+                KRW -703
+            </td>
+        </tr>
+<tr style=3D"border-collapse:collapse;">
+    <td align=3D"left" style=3D"padding:0 24px 0 24px;margin:0" colspan=3D"=
+6">
+        <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" style=3D"=
+border-collapse:collapse;border-spacing:0px;">
+            <tr style=3D"border-collapse:collapse;">
+                <td width=3D"100%" valign=3D"top" align=3D"center" style=3D=
+"padding:0;margin:0;">
+                    <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse:collapse;border-spacing:0px;">
+                        <tr style=3D"border-collapse:collapse;">
+                            <td align=3D"center" style=3D"padding:0;margin:=
+0">
+                                <table border=3D"0" width=3D"100%" height=
+=3D"100%" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse:coll=
+apse;border-spacing:0px;">
+                                    <tr style=3D"border-collapse:collapse;"=
+>
+                                        <td style=3D"padding:0;Margin:0px 0=
+px 0px 0px;border-bottom:1px solid #c1cbe0;background:none;height:1px;width=
+:100%;margin:0px;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+        <tr id=3D"pricebreakdown-table">
+            <td colspan=3D"3"
+                style=3D"width:50%;word-wrap: break-word; hyphens: auto; po=
+sition:relative;padding: 16px 18px 10px 24px; color: #252c38; line-height: =
+25px; vertical-align: top; font-weight: bold;"
+                id=3D"total-price-title">
+                =EC=B4=9D =EA=B8=88=EC=95=A1
+            </td>
+
+            <td colspan=3D"3"
+                style=3D"width:50%;white-space: nowrap; position:relative;p=
+adding: 16px 18px 10px 0; line-height: 25px; color:  #252c38; vertical-alig=
+n: top; text-align: right; font-weight: bold"
+                id=3D"total-price-value">
+                KRW 28,020
+            </td>
+        </tr>
+
+<tr style=3D"border-collapse:collapse;">
+    <td align=3D"left" style=3D"padding:0 24px 0 24px;margin:0" colspan=3D"=
+6">
+        <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0" style=3D"=
+border-collapse:collapse;border-spacing:0px;">
+            <tr style=3D"border-collapse:collapse;">
+                <td width=3D"100%" valign=3D"top" align=3D"center" style=3D=
+"padding:0;margin:0;">
+                    <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse:collapse;border-spacing:0px;">
+                        <tr style=3D"border-collapse:collapse;">
+                            <td align=3D"center" style=3D"padding:0;margin:=
+0">
+                                <table border=3D"0" width=3D"100%" height=
+=3D"100%" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-collapse:coll=
+apse;border-spacing:0px;">
+                                    <tr style=3D"border-collapse:collapse;"=
+>
+                                        <td style=3D"padding:0;Margin:0px 0=
+px 0px 0px;border-bottom:1px solid #c1cbe0;background:none;height:1px;width=
+:100%;margin:0px;">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+                            <tr>
+                                <td colspan=3D"6"
+                                    style=3D"width: 160px; padding: 0px 18p=
+x 10px 24px; color: #4a5466; line-height: 25px; vertical-align: top; font-s=
+ize: 12px;"
+                                    id=3D"footnote-0">
+                                    <br><br><strong>=EB=8F=84=EC=8B=9C=EC=
+=84=B8 =EA=B4=80=EB=A0=A8 =EC=95=88=EB=82=B4</strong><br><br>=ED=98=84=EC=
+=A7=80 =EC=84=B8=EA=B8=88 =EA=B7=9C=EC=A0=95=EC=97=90 =EB=94=B0=EB=9D=BC =
+=EC=88=99=EB=B0=95 =EC=8B=9C=EC=84=A4 =EC=9D=B4=EC=9A=A9 =EC=8B=9C =EA=B0=
+=9D=EC=8B=A4 =EC=9A=94=EA=B8=88=EC=97=90 =EA=B8=B0=EB=B0=98=ED=95=B4 =EB=8F=
+=84=EC=8B=9C=EC=84=B8=EA=B0=80 =EB=B6=80=EA=B3=BC=EB=90=A0 =EC=88=98 =EC=9E=
+=88=EC=8A=B5=EB=8B=88=EB=8B=A4. =ED=95=B4=EB=8B=B9 =EC=84=B8=EA=B8=88=EC=9D=
+=80 =EC=B2=B4=ED=81=AC=EC=9D=B8 =EC=8B=9C =EC=88=99=EC=86=8C=EB=A1=9C =EC=
+=A7=81=EC=A0=91 =EC=A7=80=EB=B6=88=ED=95=98=EC=8B=9C=EA=B8=B0 =EB=B0=94=EB=
+=9E=8D=EB=8B=88=EB=8B=A4.
+                                </td>
+                            </tr>
+
+                        <tr>
+                            <td colspan=3D"6"
+                                style=3D"padding: 0px 18px 10px 0; line-hei=
+ght: 25px; vertical-align: top;text-align: right;white-space: nowrap; posit=
+ion:relative;color: #252c38;"
+                                id=3D"best-price-guarantee-panel">
+                                <a href=3D"https://www.agoda.com/info/agoda=
+-policies.html#1"
+                                   style=3D"Margin:0;font-size:14px;font-fa=
+mily:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:21=
+px;color:#2067da; text-decoration: none;">
+                                    <img src=3D"https://img.agoda.net/image=
+s/emailmarketing/spwl_agodatheme/mmb_price_guarantee_checkmark.png"
+                                         alt=3D""
+                                         style=3D"display:inline-block;bord=
+er:0;outline:none;text-decoration:none;"
+                                         width=3D"15">
+                                    <strong id=3D"best-price-guarantee-text=
+">
+                                        =EC=95=84=EA=B3=A0=EB=8B=A4 =EB=B3=
+=B4=EC=9E=A5=EC=A0=9C
+                                    </strong>
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr id=3D"payment-creditcard-panel">
+                            <td colspan=3D"3"
+                                style=3D"width: 300px; padding: 16px 18px 1=
+0px 24px; color: #4a5466; line-height: 25px; vertical-align: top;white-spac=
+e: nowrap; position:relative;">
+                                <img src=3D"https://cdn6.agoda.net/images/e=
+mail/booking-confirmation/default/credit-card-icon.png"
+                                     width=3D"16" height=3D"13" role=3D"img=
+" alt=3D"credit card icon"
+                                     style=3D"vertical-align:middle"
+                                     aria-label=3D"credit card icon">
+                                <span id=3D"payment-creditcard-text">=EC=8B=
+=A0=EC=9A=A9=EC=B9=B4=EB=93=9C=EB=A1=9C =EA=B2=B0=EC=A0=9C =EC=99=84=EB=A3=
+=8C</span>
+                            </td>
+                            <td colspan=3D"3"
+                                style=3D"padding: 16px 18px 10px 24px; line=
+-height: 25px; color: #252c38; vertical-align: top; text-align: right; whit=
+e-space: nowrap; position:relative;">
+                                <strong id=3D"payment-creditcard-detail">xx=
+xx-xxxx-xxxx-4190</strong>
+                            </td>
+                        </tr>
+
+                </table>
+            </tr>
+        </table>
+            </td>
+        </tr>
+    </table>
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+
+        <center>
+            <table class=3D"table_tile_wrapper" style=3D"margin: 16px auto =
+0;max-width: 650px;width: 100%;">
+                <tr>
+                    <td class=3D"tile mobile_padding" bgcolor=3D"white"
+                        style=3D"padding-bottom: 24px;border-radius: 8px;bo=
+rder:1px solid #c1cbe0;">
+                        <table id=3D"self-service-info-id" border=3D0 cells=
+pacing=3D0 cellpadding=3D0 align=3D"center"
+                               style=3D"width: 100%;">
+                            <tbody>
+                            <tr>
+                                <td colspan=3D"3" style=3D"height: 24px; li=
+ne-height: 24px;margin:0;padding:0"> &nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan=3D"3" style=3D"Margin:0;padding=
+: 0 24px;">
+                                    <h2 style=3D"display: inline-block;font=
+-size: 20px;font-weight: bold;">
+                                        =EC=98=88=EC=95=BD =EA=B4=80=EB=A6=
+=AC=ED=95=98=EA=B8=B0
+                                    </h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan=3D"3" style=3D"height: 16px; li=
+ne-height: 16px;margin:0;padding:0"> &nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan=3D"3" style=3D"Margin:0;padding=
+: 0 24px;">
+                                    <p style=3D"margin: 0;padding: 0; font-=
+size: 14px;">
+                                        =EC=95=84=EA=B3=A0=EB=8B=A4=EC=9D=
+=98 =ED=8E=B8=EB=A6=AC=ED=95=9C =EC=85=80=ED=94=84=EC=84=9C=EB=B9=84=EC=8A=
+=A4 =EC=98=88=EC=95=BD =EA=B4=80=EB=A6=AC =EA=B8=B0=EB=8A=A5=EC=9D=84 =EC=
+=9D=B4=EC=9A=A9=ED=95=B4 =EC=96=B8=EC=A0=9C=EB=93=A0=EC=A7=80 =EC=98=88=EC=
+=95=BD =ED=99=95=EC=A0=95=EC=84=9C =EB=8B=A4=EC=8B=9C =EB=B0=9B=EA=B8=B0, =
+=EC=98=81=EC=88=98=EC=A6=9D =EB=B0=9B=EA=B8=B0, =ED=8A=B9=EB=B3=84 =EC=9A=
+=94=EC=B2=AD=ED=95=98=EA=B8=B0, =EB=8C=80=ED=91=9C =ED=88=AC=EC=88=99=EA=B0=
+=9D=EB=AA=85 =EB=B3=80=EA=B2=BD=ED=95=98=EA=B8=B0, =EC=98=88=EC=95=BD =EC=
+=B7=A8=EC=86=8C =EB=B0=8F =EC=88=99=EB=B0=95 =EB=82=A0=EC=A7=9C =EB=B3=80=
+=EA=B2=BD=ED=95=98=EA=B8=B0=EA=B0=80 =EA=B0=80=EB=8A=A5=ED=95=A9=EB=8B=88=
+=EB=8B=A4.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan=3D"3" style=3D"height:16px;line=
+-height:16px;margin:0;padding:0">
+                                    &nbsp;
+                                </td>
+                            </tr>
+                            <!--[if mso]>
+                            <tr>
+                                <td>
+                                    <table width=3D"100%" cellspacing=3D"36=
+px">
+                            <![endif]-->
+                                <tr class=3D"card_item_list_container">
+                                            <!--[if mso]>
+                                        <td class=3D"card_item_block_first"=
+ bgcolor=3D"#eef4fe">
+                                        <![endif]-->
+                                            <!--[if !mso]><!-->
+                                            <td class=3D"card_item_block_fi=
+rst"
+                                                style=3D" width: 215px;padd=
+ing-left: 16px;padding-right: 8px;">
+                                            <!--<![endif]-->
+
+    <table class=3D"card_item"
+           id=3D"cardItemTableId_ShareBookingConfirmation"
+           align=3D"center"
+           style=3D"padding:16px;margin:8px 0;vertical-align:top;background=
+-color:#eef4fe;border-radius: 16px;position: relative;width: 100%;height: 1=
+84px;"
+           cellspacing=3D0 cellpadding=3D0>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0;">
+                <img id=3D"imgcardItemTableId_ShareBookingConfirmation" rol=
+e=3D"img" src=3D"https://img.agoda.net/images/emailmarketing/spwl_agodathem=
+e/mmb_ic_email.png"
+                     alt=3D"share booking confirmation icon" aria-label=3D"=
+share booking confirmation icon" width=3D"43" height=3D"43"/>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0; padding-top:8=
+px;vertical-align:top;">
+                <a id=3D"link-cardItemTableId_ShareBookingConfirmation" hre=
+f=3D"https://agoda.onelink.me/1640755593?pid=3Dredirect&c=3DCONFIRMATION_EM=
+AIL_ONELINK&af_dp=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5=
+RPtQA%3d%3d&deep_link_value=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19Si=
+liyJJ1yAm5RPtQA%3d%3d&af_sub1=3DEXP-ID-AM-7093-B&af_sub3=3Dbebf6434-a5d7-42=
+ce-805f-3715787ae814&af_sub4=3DHotel&af_force_deeplink=3Dtrue&af_web_dp=3Dh=
+ttps%3a%2f%2fwww.agoda.com%2faccount%2feditbooking.html%3fbookingId%3dzPG19=
+SiliyJJ1yAm5RPtQA%3d%3d%26&init=3Dsendvoucher"
+                   style=3D"Margin:0;color:#1751ae;text-decoration:none">
+                    =EC=98=88=EC=95=BD =ED=99=95=EC=A0=95=EC=84=9C =EB=8B=
+=A4=EC=8B=9C =EB=B0=9B=EA=B8=B0
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;Margin:0;padding-top: 4=
+px;">
+                <span class=3D"card_item_desc"
+                      style=3D"margin:0;padding:0;color:#24262C;font-size:1=
+4px;word-break:break-word;width: 156px;">
+                    =EC=9E=90=EC=8B=A0 =EB=98=90=EB=8A=94 =EB=8B=A4=EB=A5=
+=B8 =EC=82=AC=EB=9E=8C=EC=97=90=EA=B2=8C =EC=98=88=EC=95=BD =ED=99=95=EC=A0=
+=95=EC=84=9C=EB=A5=BC =EB=B3=B4=EB=82=BC =EC=88=98 =EC=9E=88=EC=8A=B5=EB=8B=
+=88=EB=8B=A4
+                </span>
+            </td>
+        </tr>
+    </table>
+                                        </td>
+                                            <!--[if mso]>
+                                        <td class=3D"card_item_block" bgcol=
+or=3D"#eef4fe">
+                                        <![endif]-->
+                                            <!--[if !mso]><!-->
+                                            <td class=3D"card_item_block" s=
+tyle=3D"width: 215px;">
+                                            <!--<![endif]-->
+
+    <table class=3D"card_item"
+           id=3D"cardItemTableId_SendReceipt"
+           align=3D"center"
+           style=3D"padding:16px;margin:8px 0;vertical-align:top;background=
+-color:#eef4fe;border-radius: 16px;position: relative;width: 100%;height: 1=
+84px;"
+           cellspacing=3D0 cellpadding=3D0>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0;">
+                <img id=3D"imgcardItemTableId_SendReceipt" role=3D"img" src=
+=3D"https://img.agoda.net/images/emailmarketing/spwl_agodatheme/mmb_ic_send=
+_receipt.png"
+                     alt=3D"send receipt icon" aria-label=3D"send receipt i=
+con" width=3D"43" height=3D"43"/>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0; padding-top:8=
+px;vertical-align:top;">
+                <a id=3D"link-cardItemTableId_SendReceipt" href=3D"https://=
+agoda.onelink.me/1640755593?pid=3Dredirect&c=3DCONFIRMATION_EMAIL_ONELINK&a=
+f_dp=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&d=
+eep_link_value=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPt=
+QA%3d%3d&af_sub1=3DEXP-ID-AM-7093-B&af_sub3=3Dbebf6434-a5d7-42ce-805f-37157=
+87ae814&af_sub4=3DHotel&af_force_deeplink=3Dtrue&af_web_dp=3Dhttps%3a%2f%2f=
+www.agoda.com%2faccount%2feditbooking.html%3fbookingId%3dzPG19SiliyJJ1yAm5R=
+PtQA%3d%3d%26&init=3Dsendreceipt"
+                   style=3D"Margin:0;color:#1751ae;text-decoration:none">
+                    =EC=98=81=EC=88=98=EC=A6=9D =EB=B0=9B=EA=B8=B0
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;Margin:0;padding-top: 4=
+px;">
+                <span class=3D"card_item_desc"
+                      style=3D"margin:0;padding:0;color:#24262C;font-size:1=
+4px;word-break:break-word;width: 156px;">
+                    =EC=97=85=EB=AC=B4=EC=9A=A9=EC=9C=BC=EB=A1=9C =ED=95=84=
+=EC=9A=94=ED=95=9C =EC=98=81=EC=88=98=EC=A6=9D=EC=9D=84 =EB=B0=9B=EC=9D=84 =
+=EC=88=98 =EC=9E=88=EC=8A=B5=EB=8B=88=EB=8B=A4
+                </span>
+            </td>
+        </tr>
+    </table>
+                                        </td>
+                                            <!--[if mso]>
+                                        <td class=3D"card_item_block_last" =
+bgcolor=3D"#eef4fe">
+                                        <![endif]-->
+                                            <!--[if !mso]><!-->
+                                            <td class=3D"card_item_block_la=
+st" style=3D"width: 215px;padding-right: 16px;padding-left: 8px;">
+                                            <!--<![endif]-->
+
+    <table class=3D"card_item"
+           id=3D"cardItemTableId_MmbSpecialRequest"
+           align=3D"center"
+           style=3D"padding:16px;margin:8px 0;vertical-align:top;background=
+-color:#eef4fe;border-radius: 16px;position: relative;width: 100%;height: 1=
+84px;"
+           cellspacing=3D0 cellpadding=3D0>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0;">
+                <img id=3D"imgcardItemTableId_MmbSpecialRequest" role=3D"im=
+g" src=3D"https://img.agoda.net/images/emailmarketing/spwl_agodatheme/mmb_i=
+c_special_request.png"
+                     alt=3D"special request icon" aria-label=3D"special req=
+uest icon" width=3D"43" height=3D"43"/>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0; padding-top:8=
+px;vertical-align:top;">
+                <a id=3D"link-cardItemTableId_MmbSpecialRequest" href=3D"ht=
+tps://agoda.onelink.me/1640755593?pid=3Dredirect&c=3DCONFIRMATION_EMAIL_ONE=
+LINK&af_dp=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3=
+d%3d&deep_link_value=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1y=
+Am5RPtQA%3d%3d&af_sub1=3DEXP-ID-AM-7093-B&af_sub3=3Dbebf6434-a5d7-42ce-805f=
+-3715787ae814&af_sub4=3DHotel&af_force_deeplink=3Dtrue&af_web_dp=3Dhttps%3a=
+%2f%2fwww.agoda.com%2faccount%2feditbooking.html%3fbookingId%3dzPG19SiliyJJ=
+1yAm5RPtQA%3d%3d%26&init=3Dsendspecialrequest"
+                   style=3D"Margin:0;color:#1751ae;text-decoration:none">
+                    =ED=8A=B9=EB=B3=84 =EC=9A=94=EC=B2=AD=ED=95=98=EA=B8=B0
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;Margin:0;padding-top: 4=
+px;">
+                <span class=3D"card_item_desc"
+                      style=3D"margin:0;padding:0;color:#24262C;font-size:1=
+4px;word-break:break-word;width: 156px;">
+                    =EC=88=99=EC=86=8C=EC=97=90 =EA=B0=84=EC=9D=B4=EC=B9=A8=
+=EB=8C=80, =EC=A1=B0=EC=8B=9D =EC=9D=B4=EC=9A=A9 =EB=98=90=EB=8A=94 =ED=8E=
+=B8=EC=9D=98 =EC=9A=A9=ED=92=88/=EC=84=9C=EB=B9=84=EC=8A=A4 =EC=B6=94=EA=B0=
+=80=EB=A5=BC =EC=9A=94=EC=B2=AD=ED=95=A0 =EC=88=98 =EC=9E=88=EC=8A=B5=EB=8B=
+=88=EB=8B=A4
+                </span>
+            </td>
+        </tr>
+    </table>
+                                        </td>
+                                </tr>
+                                <tr class=3D"card_item_list_container">
+                                            <!--[if mso]>
+                                        <td class=3D"card_item_block_first"=
+ bgcolor=3D"#eef4fe">
+                                        <![endif]-->
+                                            <!--[if !mso]><!-->
+                                            <td class=3D"card_item_block_fi=
+rst"
+                                                style=3D" width: 215px;padd=
+ing-left: 16px;padding-right: 8px;">
+                                            <!--<![endif]-->
+
+    <table class=3D"card_item"
+           id=3D"cardItemTableId_MmbCancelBooking"
+           align=3D"center"
+           style=3D"padding:16px;margin:8px 0;vertical-align:top;background=
+-color:#eef4fe;border-radius: 16px;position: relative;width: 100%;height: 1=
+84px;"
+           cellspacing=3D0 cellpadding=3D0>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0;">
+                <img id=3D"imgcardItemTableId_MmbCancelBooking" role=3D"img=
+" src=3D"https://img.agoda.net/images/emailmarketing/spwl_agodatheme/mmb_ic=
+_cancel_booking.png"
+                     alt=3D"cancel booking icon" aria-label=3D"cancel booki=
+ng icon" width=3D"43" height=3D"43"/>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0; padding-top:8=
+px;vertical-align:top;">
+                <a id=3D"link-cardItemTableId_MmbCancelBooking" href=3D"htt=
+ps://agoda.onelink.me/1640755593?pid=3Dredirect&c=3DCONFIRMATION_EMAIL_ONEL=
+INK&af_dp=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d=
+%3d&deep_link_value=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yA=
+m5RPtQA%3d%3d&af_sub1=3DEXP-ID-AM-7093-B&af_sub3=3Dbebf6434-a5d7-42ce-805f-=
+3715787ae814&af_sub4=3DHotel&af_force_deeplink=3Dtrue&af_web_dp=3Dhttps%3a%=
+2f%2fwww.agoda.com%2faccount%2feditbooking.html%3fbookingId%3dzPG19SiliyJJ1=
+yAm5RPtQA%3d%3d%26&init=3Dcancellation"
+                   style=3D"Margin:0;color:#1751ae;text-decoration:none">
+                    =EC=98=88=EC=95=BD =EC=B7=A8=EC=86=8C=ED=95=98=EA=B8=B0
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;Margin:0;padding-top: 4=
+px;">
+                <span class=3D"card_item_desc"
+                      style=3D"margin:0;padding:0;color:#24262C;font-size:1=
+4px;word-break:break-word;width: 156px;">
+                    =EC=89=BD=EA=B3=A0 =EA=B0=84=ED=8E=B8=ED=95=98=EA=B2=8C=
+ =EC=98=A8=EB=9D=BC=EC=9D=B8=EC=9C=BC=EB=A1=9C =EC=98=88=EC=95=BD=EC=9D=84 =
+=EC=B7=A8=EC=86=8C=ED=95=A0 =EC=88=98 =EC=9E=88=EC=8A=B5=EB=8B=88=EB=8B=A4
+                </span>
+            </td>
+        </tr>
+    </table>
+                                        </td>
+                                            <!--[if mso]>
+                                        <td class=3D"card_item_block" bgcol=
+or=3D"#eef4fe">
+                                        <![endif]-->
+                                            <!--[if !mso]><!-->
+                                            <td class=3D"card_item_block" s=
+tyle=3D"width: 215px;">
+                                            <!--<![endif]-->
+
+    <table class=3D"card_item"
+           id=3D"cardItemTableId_ChangeDates"
+           align=3D"center"
+           style=3D"padding:16px;margin:8px 0;vertical-align:top;background=
+-color:#eef4fe;border-radius: 16px;position: relative;width: 100%;height: 1=
+84px;"
+           cellspacing=3D0 cellpadding=3D0>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0;">
+                <img id=3D"imgcardItemTableId_ChangeDates" role=3D"img" src=
+=3D"https://img.agoda.net/images/emailmarketing/spwl_agodatheme/mmb_ic_cale=
+ndar.png"
+                     alt=3D"change dates icon" aria-label=3D"change dates i=
+con" width=3D"43" height=3D"43"/>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0; padding-top:8=
+px;vertical-align:top;">
+                <a id=3D"link-cardItemTableId_ChangeDates" href=3D"https://=
+agoda.onelink.me/1640755593?pid=3Dredirect&c=3DCONFIRMATION_EMAIL_ONELINK&a=
+f_dp=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&d=
+eep_link_value=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPt=
+QA%3d%3d&af_sub1=3DEXP-ID-AM-7093-B&af_sub3=3Dbebf6434-a5d7-42ce-805f-37157=
+87ae814&af_sub4=3DHotel&af_force_deeplink=3Dtrue&af_web_dp=3Dhttps%3a%2f%2f=
+www.agoda.com%2faccount%2feditbooking.html%3fbookingId%3dzPG19SiliyJJ1yAm5R=
+PtQA%3d%3d%26&init=3Damenddates"
+                   style=3D"Margin:0;color:#1751ae;text-decoration:none">
+                    =EC=88=99=EB=B0=95 =EB=82=A0=EC=A7=9C =EB=B3=80=EA=B2=
+=BD=ED=95=98=EA=B8=B0
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;Margin:0;padding-top: 4=
+px;">
+                <span class=3D"card_item_desc"
+                      style=3D"margin:0;padding:0;color:#24262C;font-size:1=
+4px;word-break:break-word;width: 156px;">
+                    =EC=88=99=EB=B0=95 =EB=82=A0=EC=A7=9C=EB=A5=BC =EB=B3=
+=80=EA=B2=BD=ED=95=A0 =EC=88=98 =EC=9E=88=EC=8A=B5=EB=8B=88=EB=8B=A4
+                </span>
+            </td>
+        </tr>
+    </table>
+                                        </td>
+                                            <!--[if mso]>
+                                        <td class=3D"card_item_block_last" =
+bgcolor=3D"#eef4fe">
+                                        <![endif]-->
+                                            <!--[if !mso]><!-->
+                                            <td class=3D"card_item_block_la=
+st" style=3D"width: 215px;padding-right: 16px;padding-left: 8px;">
+                                            <!--<![endif]-->
+
+    <table class=3D"card_item"
+           id=3D"cardItemTableId_ManageGuest"
+           align=3D"center"
+           style=3D"padding:16px;margin:8px 0;vertical-align:top;background=
+-color:#eef4fe;border-radius: 16px;position: relative;width: 100%;height: 1=
+84px;"
+           cellspacing=3D0 cellpadding=3D0>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0;">
+                <img id=3D"imgcardItemTableId_ManageGuest" role=3D"img" src=
+=3D"https://img.agoda.net/images/emailmarketing/spwl_agodatheme/mmb_ic_mana=
+ge_guest.png"
+                     alt=3D"manage guest icon" aria-label=3D"manage guest i=
+con" width=3D"43" height=3D"43"/>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;margin:0; padding-top:8=
+px;vertical-align:top;">
+                <a id=3D"link-cardItemTableId_ManageGuest" href=3D"https://=
+agoda.onelink.me/1640755593?pid=3Dredirect&c=3DCONFIRMATION_EMAIL_ONELINK&a=
+f_dp=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&d=
+eep_link_value=3Dagoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPt=
+QA%3d%3d&af_sub1=3DEXP-ID-AM-7093-B&af_sub3=3Dbebf6434-a5d7-42ce-805f-37157=
+87ae814&af_sub4=3DHotel&af_force_deeplink=3Dtrue&af_web_dp=3Dhttps%3a%2f%2f=
+www.agoda.com%2faccount%2feditbooking.html%3fbookingId%3dzPG19SiliyJJ1yAm5R=
+PtQA%3d%3d%26&init=3Damendguests"
+                   style=3D"Margin:0;color:#1751ae;text-decoration:none">
+                    =ED=88=AC=EC=88=99=EA=B0=9D =EC=A0=95=EB=B3=B4 =EA=B4=
+=80=EB=A6=AC=ED=95=98=EA=B8=B0
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td align=3D"center" style=3D"padding:0;Margin:0;padding-top: 4=
+px;">
+                <span class=3D"card_item_desc"
+                      style=3D"margin:0;padding:0;color:#24262C;font-size:1=
+4px;word-break:break-word;width: 156px;">
+                    =EB=8C=80=ED=91=9C =ED=88=AC=EC=88=99=EA=B0=9D =EC=9D=
+=B4=EB=A6=84=EC=9D=84 =EB=B3=80=EA=B2=BD=ED=95=A0 =EC=88=98 =EC=9E=88=EC=8A=
+=B5=EB=8B=88=EB=8B=A4
+                </span>
+            </td>
+        </tr>
+    </table>
+                                        </td>
+                                </tr>
+                            <!--[if mso]>
+                            </table>
+                            </td>
+                            </tr>
+                            <![endif]-->
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </center>
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <table class=3D"table_tile_wrapper" style=3D"margin: 16px auto 0;max-wi=
+dth: 650px;width: 100%;"
+           align=3D"center">
+        <tr>
+            <td
+                     id=3D"customer-information-section"=20
+                    class=3D"tile" bgcolor=3D"white"
+                    style=3D"border-top: ;border-radius: 8px;padding-bottom=
+: 24px;border-left:1px solid #c1cbe0;border-right:1px solid #c1cbe0;border-=
+bottom:1px solid #c1cbe0;">
+        <table border=3D0 cellspacing=3D0 align=3D"center" cellpadding=3D0 =
+width=3D"100%">
+            <tr>
+        <td style=3D"margin:0;padding: 24px 24px 0;text-align: left"
+                 id=3D"customer-information-section-title"=20
+               =20
+        >
+    <h2 style=3D"font-weight: bold; font-size: 18px;">=EB=8D=94 =EA=B6=81=
+=EA=B8=88=ED=95=9C =EC=82=AC=ED=95=AD=EC=9D=B4 =EC=9E=88=EC=9C=BC=EC=8B=9C=
+=EA=B1=B0=EB=82=98 =EB=8F=84=EC=9B=80=EC=9D=B4 =ED=95=84=EC=9A=94=ED=95=98=
+=EC=8B=A0=EA=B0=80=EC=9A=94?</h2>
+        </td>
+            </tr>
+                <tr>
+                    <td id=3D"customer-information-text-0"
+                        style=3D"margin: 0;padding: 16px 24px 0;font-size:1=
+4px;">
+                        =EC=98=88=EC=95=BD=EA=B3=BC =EA=B4=80=EB=A0=A8=ED=
+=95=B4 =EC=83=81=EB=8B=B4=EC=9D=B4 =ED=95=84=EC=9A=94=ED=95=98=EC=8B=A0 =EA=
+=B2=BD=EC=9A=B0 =EC=98=88=EC=95=BD =EB=B2=88=ED=98=B8(<strong> 1546592100 <=
+/strong>)=EB=A5=BC =EC=A4=80=EB=B9=84=ED=95=B4 =EC=96=B8=EC=A0=9C=EB=93=A0=
+=EC=A7=80 =EA=B3=A0=EA=B0=9D=EC=84=BC=ED=84=B0=EB=A1=9C =EC=97=B0=EB=9D=BD=
+=ED=95=B4 =EC=A3=BC=EC=8B=9C=EA=B8=B0 =EB=B0=94=EB=9E=8D=EB=8B=88=EB=8B=A4.
+                    </td>
+                </tr>
+                <tr>
+                    <td id=3D"customer-information-text-1"
+                        style=3D"margin: 0;padding: 16px 24px 0;font-size:1=
+4px;">
+                        =EC=98=88=EC=95=BD =EA=B4=80=EB=A0=A8 =EA=B6=81=EA=
+=B8=88=ED=95=9C =EC=82=AC=ED=95=AD=EC=9D=80 '=EC=9E=90=EC=A3=BC =EB=AC=BB=
+=EB=8A=94 =EC=A7=88=EB=AC=B8(FAQ)'=EC=97=90=EC=84=9C =EB=A8=BC=EC=A0=80 =ED=
+=99=95=EC=9D=B8=ED=95=B4 =EC=A3=BC=EC=8B=9C=EA=B8=B0 =EB=B0=94=EB=9E=8D=EB=
+=8B=88=EB=8B=A4
+                    </td>
+                </tr>
+                <tr>
+                    <td id=3D"td-customer-information-contact"
+                        style=3D"margin: 0;padding: 16px 24px 0 24px;">
+    <table align=3D"center" cellpadding=3D"0" cellspacing=3D"0" style=3D"wi=
+dth: 100%">
+        <tr>
+            <td>
+                <table align=3D"center" cellpadding=3D"0" cellspacing=3D"0"=
+ style=3D"width: 100%">
+                    <tr>
+                        <td style=3D"height: 8px; line-height: 8px; margin:=
+0; padding:0"> &nbsp;</td>
+                    </tr>
+                    <tr style=3D"background-color: #ffffff;">
+                        <td align=3D"center"
+                            style=3D"margin:0; width:248px;padding:12px;bor=
+der: 1px #2067da solid;border-radius: 999px;background-color: ;"
+                            id=3D"a-customer-information-contact-href">
+                            <table>
+                                <tr>
+                                    <td style=3D"padding-left: 0" align=3D"=
+center">
+                                        <a
+                                                id=3D"link-a-customer-infor=
+mation-contact-href"
+                                                style=3D"margin:0;
+                                                        padding:0;
+                                                        text-align: center;
+                                                        display: inline;
+                                                        text-decoration: no=
+ne;
+                                                        color: #2067da;
+                                                        font-size: ;
+                                                        white-space: nowrap=
+;"
+                                                href=3D"https://www.agoda.c=
+om/info/contact.html"
+                                                target=3D"_blank"
+                                        >
+                                            =EC=9E=90=EC=A3=BC =EB=AC=BB=EB=
+=8A=94 =EC=A7=88=EB=AC=B8(FAQ)=EA=B3=BC =EB=8B=B5=EB=B3=80 =ED=99=95=EC=9D=
+=B8=ED=95=98=EA=B8=B0
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+                    </td>
+                </tr>
+        </table>
+            </td>
+        </tr>
+    </table>
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <table class=3D"table_tile_wrapper" style=3D"margin: 16px auto 0;max-wi=
+dth: 650px;width: 100%;"
+           align=3D"center">
+        <tr>
+            <td
+                     id=3D"important_notes"=20
+                    class=3D"tile" bgcolor=3D"white"
+                    style=3D"border-top: ;border-radius: 8px;padding-bottom=
+: 24px;border-left:1px solid #c1cbe0;border-right:1px solid #c1cbe0;border-=
+bottom:1px solid #c1cbe0;">
+        <table border=3D0 cellspacing=3D0 align=3D"center" cellpadding=3D0 =
+width=3D"100%">
+            <tr>
+        <td style=3D"margin:0;padding: 24px 24px 0;text-align: left"
+                 id=3D"important_notes-title"=20
+                colspan=3D"2"=20
+        >
+    <h2 style=3D"font-weight: bold; font-size: 18px;">=EC=A3=BC=EC=9A=94 =
+=EA=B3=B5=EC=A7=80=EC=82=AC=ED=95=AD</h2>
+        </td>
+            </tr>
+            <tr>
+                <td style=3D"line-height:16px;">
+                    <ul style=3D"padding: 16px 24px 0 39px;">
+                            <li id=3D"important_notes_0" style=3D"color: #2=
+52c38; line-height: 25px; vertical-align: top;">
+                                <font color=3D'#E03126'>=EC=A4=91=EC=9A=94 =
+=EC=95=88=EB=82=B4:</font> =EA=B3=A0=EA=B0=9D=EB=8B=98=EC=9D=98 =EA=B0=9C=
+=EC=9D=B8 =EC=A0=95=EB=B3=B4 =EB=B0=8F =EA=B2=B0=EC=A0=9C =EC=A0=95=EB=B3=
+=B4 =EB=B3=B4=ED=98=B8=EB=A5=BC =EC=9C=84=ED=95=98=EC=97=AC =EC=95=84=EA=B3=
+=A0=EB=8B=A4 =ED=94=8C=EB=9E=AB=ED=8F=BC =EC=99=B8=EB=B6=80=EC=9D=98 =EB=B9=
+=84=EA=B3=B5=EC=8B=9D=EC=A0=81=EC=9D=B8 =EC=97=B0=EB=9D=BD =EC=B1=84=EB=84=
+=90=EC=9D=84 =ED=86=B5=ED=95=B4 =EC=A0=84=ED=99=94=EB=A5=BC =ED=95=98=EA=B1=
+=B0=EB=82=98 =EB=A9=94=EC=8B=9C=EC=A7=80=EB=A5=BC =EB=B3=B4=EB=82=B4=EB=8A=
+=94 =EC=82=AC=EB=9E=8C=EC=97=90=EA=B2=8C =EA=B0=9C=EC=9D=B8 =EC=A0=95=EB=B3=
+=B4 =EB=98=90=EB=8A=94 =EA=B2=B0=EC=A0=9C =EC=A0=95=EB=B3=B4=EB=A5=BC =EC=
+=95=8C=EB=A0=A4=EC=A3=BC=EC=8B=9C=EA=B1=B0=EB=82=98 =EC=9E=90=EA=B8=88=EC=
+=9D=84 =EC=9D=B4=EC=B2=B4=ED=95=98=EC=A7=80 =EB=A7=88=EC=8B=9C=EA=B8=B0 =EB=
+=B0=94=EB=9E=8D=EB=8B=88=EB=8B=A4. =EC=9D=98=EC=8B=AC=EC=8A=A4=EB=9F=BD=EA=
+=B1=B0=EB=82=98 =EC=82=AC=EA=B8=B0 =ED=96=89=EC=9C=84=EA=B0=80 =EC=9E=88=EB=
+=8A=94 =EA=B2=BD=EC=9A=B0 =EA=B2=BD=EC=9A=B0 =EA=B3=A0=EA=B0=9D =EC=84=BC=
+=ED=84=B0=EB=A1=9C =EC=A0=9C=EB=B3=B4=ED=95=B4 =EC=A3=BC=EC=8B=9C=EA=B3=A0 =
+=EC=99=B8=EB=B6=80=EB=A1=9C=EB=B6=80=ED=84=B0=EC=9D=98 =EC=9D=98=EC=8B=AC=
+=EC=8A=A4=EB=9F=AC=EC=9A=B4 =EC=97=B0=EB=9D=BD(=EC=A0=84=ED=99=94, =EC=9D=
+=B4=EB=A9=94=EC=9D=BC, =EB=AC=B8=EC=9E=90 =EB=A9=94=EC=8B=9C=EC=A7=80 =EB=
+=93=B1)=EC=9D=B4 =EC=9E=88=EB=8A=94 =EA=B2=BD=EC=9A=B0 =EC=9D=91=EB=8B=B5=
+=ED=95=98=EC=8B=9C=EA=B8=B0 =EC=A0=84=EC=97=90 =ED=95=AD=EC=83=81 =EC=95=84=
+=EA=B3=A0=EB=8B=A4=EB=A1=9C =ED=99=95=EC=9D=B8=ED=95=B4 =EC=A3=BC=EC=8B=9C=
+=EA=B8=B0 =EB=B0=94=EB=9E=8D=EB=8B=88=EB=8B=A4.
+                            </li>
+                            <li id=3D"important_notes_1" style=3D"color: #2=
+52c38; line-height: 25px; vertical-align: top;">
+                                <font color=3D'#C22700'>=EC=A4=91=EC=9A=94 =
+=EC=95=8C=EB=A6=BC:</font> =EC=B2=B4=ED=81=AC=EC=9D=B8 =EC=8B=9C =EC=82=AC=
+=EC=A7=84=EC=9D=B4 =EC=9E=88=EB=8A=94 =EC=9C=A0=ED=9A=A8=ED=95=9C =EC=8B=A0=
+=EB=B6=84=EC=A6=9D =EB=B0=8F =EC=98=88=EC=95=BD=EC=97=90 =EC=82=AC=EC=9A=A9=
+=EB=90=9C =EC=8B=A0=EC=9A=A9=EC=B9=B4=EB=93=9C=EB=A5=BC =EB=B0=98=EB=93=9C=
+=EC=8B=9C =EC=A0=9C=EC=8B=9C=ED=95=B4=EC=95=BC =ED=95=A9=EB=8B=88=EB=8B=A4.=
+ =EC=B9=B4=EB=93=9C =EC=86=8C=EC=9C=A0=EC=A3=BC=EC=9D=98 =EC=9D=B4=EB=A6=84=
+=EA=B3=BC =EC=8B=A0=EB=B6=84=EC=A6=9D=EC=83=81=EC=9D=98 =EC=9D=B4=EB=A6=84=
+=EC=9D=B4 =EC=9D=BC=EC=B9=98=ED=95=B4=EC=95=BC =ED=95=98=EB=A9=B0 =EA=B7=B8=
+=EB=A0=87=EC=A7=80 =EC=95=8A=EC=9D=84 =EA=B2=BD=EC=9A=B0 =EC=88=99=EC=86=8C=
+=EC=97=90=EC=84=9C =EC=B6=94=EA=B0=80 =EC=9A=94=EA=B8=88=EC=9D=84 =EC=9A=94=
+=EA=B5=AC=ED=95=98=EA=B1=B0=EB=82=98 =EC=98=88=EC=95=BD=EC=9D=B4 =EC=9D=B4=
+=ED=96=89=EB=90=98=EC=A7=80 =EC=95=8A=EC=9D=84 =EC=88=98 =EC=9E=88=EC=8A=B5=
+=EB=8B=88=EB=8B=A4. =EC=A0=9C 3=EC=9E=90 =EC=98=88=EC=95=BD=EC=97=90 =EB=8C=
+=80=ED=95=B4 =EC=B6=94=EA=B0=80 =EC=84=9C=EB=A5=98=EB=A5=BC =EC=A0=9C=EC=B6=
+=9C=ED=95=9C =EA=B2=BD=EC=9A=B0 =EB=98=90=EB=8A=94 =EB=8B=A4=EB=A5=B8 =EA=
+=B2=B0=EC=A0=9C =EB=B0=A9=EB=B2=95=EC=9D=84 =ED=86=B5=ED=95=B4 =EA=B8=88=EC=
+=95=A1=EC=9D=84 =EC=A7=80=EB=B6=88=ED=95=98=EC=8B=A0 =EA=B2=BD=EC=9A=B0 =EC=
+=83=81=EA=B8=B0 =EB=82=B4=EC=9A=A9=EC=9D=84 =EB=AC=B4=EC=8B=9C=ED=95=B4 =EC=
+=A3=BC=EC=8B=9C=EA=B8=B0 =EB=B0=94=EB=9E=8D=EB=8B=88=EB=8B=A4.
+                            </li>
+                            <li id=3D"important_notes_2" style=3D"color: #2=
+52c38; line-height: 25px; vertical-align: top;">
+                                =EB=AA=A8=EB=93=A0 =EA=B0=9D=EC=8B=A4=EC=9D=
+=80 =EC=B2=B4=ED=81=AC=EC=9D=B8 =EB=8B=B9=EC=9D=BC=EC=97=90=EB=A7=8C =EB=B3=
+=B4=EC=9E=A5=EB=90=A9=EB=8B=88=EB=8B=A4. =EB=85=B8=EC=87=BC(no-show)=EC=9D=
+=98 =EA=B2=BD=EC=9A=B0 =EC=98=88=EC=95=BD=EC=9D=B4 =EC=B7=A8=EC=86=8C=EB=90=
+=98=EB=A9=B0 =ED=99=95=EC=A0=95 =EC=9D=B4=EB=A9=94=EC=9D=BC=EA=B3=BC =EC=98=
+=88=EC=95=BD =EC=8B=9C =EB=AA=85=EC=8B=9C=EB=90=9C =EC=B7=A8=EC=86=8C/=EB=
+=85=B8=EC=87=BC =EC=A0=95=EC=B1=85=EC=97=90 =EB=94=B0=EB=9D=BC =EC=B2=98=EB=
+=A6=AC=EB=90=A9=EB=8B=88=EB=8B=A4.
+                            </li>
+                            <li id=3D"important_notes_3" style=3D"color: #2=
+52c38; line-height: 25px; vertical-align: top;">
+                                =EC=9D=B4 =EC=98=88=EC=95=BD=EC=9D=98 =EC=
+=B4=9D =EA=B2=B0=EC=A0=9C =EC=9A=94=EA=B8=88=EC=97=90=EB=8A=94 =EB=AF=B8=EB=
+=8B=88=EB=B0=94 =EC=82=AC=EC=9A=A9, =EC=A0=84=ED=99=94 =EC=9A=94=EA=B8=88, =
+=EC=84=B8=ED=83=81 =EC=84=9C=EB=B9=84=EC=8A=A4 =EB=93=B1=EC=9D=80 =ED=8F=AC=
+=ED=95=A8=EB=90=98=EC=96=B4 =EC=9E=88=EC=A7=80 =EC=95=8A=EC=9C=BC=EB=A9=B0 =
+=EC=B6=94=EA=B0=80=EB=A1=9C =EB=B0=9C=EC=83=9D=ED=95=98=EB=8A=94 =EB=B9=84=
+=EC=9A=A9=EC=9D=80 =EC=88=99=EC=86=8C=EC=97=90 =EC=A7=81=EC=A0=91 =EC=A7=80=
+=EB=B6=88=ED=95=98=EC=8B=9C=EA=B8=B0 =EB=B0=94=EB=9E=8D=EB=8B=88=EB=8B=A4.
+                            </li>
+                            <li id=3D"important_notes_4" style=3D"color: #2=
+52c38; line-height: 25px; vertical-align: top;">
+                                =EC=A1=B0=EC=8B=9D=EC=9D=B4 =ED=8F=AC=ED=95=
+=A8=EB=90=9C =EA=B0=9D=EC=8B=A4=EC=9D=84 =EC=98=88=EC=95=BD=ED=95=9C =EA=B2=
+=BD=EC=9A=B0, =EC=9D=BC=EB=B6=80 =EC=88=99=EC=86=8C=EC=97=90=EC=84=9C =EB=
+=8F=99=EB=B0=98 =EC=95=84=EB=8F=99=EC=9D=98 =EC=A1=B0=EC=8B=9D =EC=9A=94=EA=
+=B8=88=EC=9D=84 =EB=B3=84=EB=8F=84=EB=A1=9C =EC=B2=AD=EA=B5=AC=ED=95=A0 =EC=
+=88=98=EB=8F=84 =EC=9E=88=EC=8A=B5=EB=8B=88=EB=8B=A4. =EC=9D=B4=EC=97=90 =
+=ED=95=B4=EB=8B=B9=EB=90=98=EB=8A=94 =EA=B2=BD=EC=9A=B0 =EC=88=99=EC=86=8C=
+=EC=97=90 =EC=A7=81=EC=A0=91 =EC=A7=80=EB=B6=88=ED=95=98=EC=8B=9C=EA=B8=B0 =
+=EB=B0=94=EB=9E=8D=EB=8B=88=EB=8B=A4. =EC=9E=90=EC=84=B8=ED=95=9C =EC=82=AC=
+=ED=95=AD=EC=9D=80 =EC=B2=B4=ED=81=AC=EC=9D=B8 =EC=8B=9C =EC=88=99=EC=86=8C=
+=EC=97=90 =EB=AC=B8=EC=9D=98=ED=95=98=EC=8B=9C=EA=B8=B0 =EB=B0=94=EB=9E=8D=
+=EB=8B=88=EB=8B=A4.
+                            </li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+            </td>
+        </tr>
+    </table>
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <!--[if mso]>
+            <tr>
+               <td height=3D"16" style=3D"font-size:30px; line-height:30px;=
+">&nbsp;</td>
+           </tr>
+    <![endif]-->
+    <table class=3D"table_tile_wrapper" style=3D"margin: 16px auto 0;max-wi=
+dth: 650px;width: 100%;"
+           align=3D"center">
+        <tr>
+            <td
+                     id=3D"download_agoda_app"=20
+                    class=3D"tile" bgcolor=3D"white"
+                    style=3D"border-top: ;border-radius: 8px;padding-bottom=
+: 24px;border-left:1px solid #c1cbe0;border-right:1px solid #c1cbe0;border-=
+bottom:1px solid #c1cbe0;">
+        <table border=3D0 cellspacing=3D0 align=3D"center" cellpadding=3D0 =
+width=3D"100%">
+            <tr>
+        <td style=3D"margin:0;padding: 24px 24px 0;text-align: left"
+                 id=3D"download_agoda_app-title"=20
+               =20
+        >
+    <h2 style=3D"font-weight: bold; font-size: 18px;">=EC=95=84=EA=B3=A0=EB=
+=8B=A4 =EC=95=B1=EC=9C=BC=EB=A1=9C =EB=8D=94 =EA=B0=84=ED=8E=B8=ED=95=98=EA=
+=B2=8C =EC=98=88=EC=95=BD=ED=95=98=EC=84=B8=EC=9A=94!</h2>
+        </td>
+            </tr>
+            <tr>
+                <td style=3D"margin: 0;padding: 16px 24px 0;">
+                    <table>
+                        <tr>
+                            <td width=3D"100%" style=3D"margin:0;padding: 0=
+;padding-right: 16px;">
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td style=3D"padding-bottom: 8px;">
+                                            <table border=3D"0" cellspacing=
+=3D"0" cellpadding=3D"0">
+                                                <tbody>
+                                                <tr>
+                                                    <td width=3D"16"
+                                                        style=3D"vertical-a=
+lign: top;padding-right: 8px;">
+                                                        <img src=3D"https:/=
+/cdn6.agoda.net/images/email/booking-confirmation/default/check.png"
+                                                             alt=3D"check i=
+con" width=3D"16">
+                                                    </td>
+                                                    <td style=3D"vertical-a=
+lign: top;">
+                                                        <p style=3D"margin:=
+ 0;padding: 0;font-style: normal;font-weight: 400;line-height: normal;">=EB=
+=8D=94 =ED=81=B0 =ED=95=A0=EC=9D=B8 =EB=B0=8F =ED=8A=B9=EA=B0=80 =EC=83=81=
+=ED=92=88=EC=9D=84 =EB=A7=8C=EB=82=98=EB=B3=B4=EC=84=B8=EC=9A=94</p>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table border=3D"0" cellspacing=
+=3D"0" cellpadding=3D"0">
+                                                <tbody>
+                                                <tr>
+                                                    <td width=3D"16"
+                                                        style=3D"vertical-a=
+lign: top;padding-right: 8px;">
+                                                        <img src=3D"https:/=
+/cdn6.agoda.net/images/email/booking-confirmation/default/check.png"
+                                                             alt=3D"check i=
+con" width=3D"16">
+                                                    </td>
+                                                    <td style=3D"vertical-a=
+lign: top;">
+                                                        <p style=3D"margin:=
+ 0;padding: 0;font-style: normal;font-weight: 400;line-height: normal;">- =
+=EC=96=B8=EC=A0=9C =EC=96=B4=EB=94=94=EC=84=9C=EB=82=98 =EA=B0=80=EB=8A=A5=
+=ED=95=9C =EC=98=88=EC=95=BD =EA=B4=80=EB=A6=AC</p>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                        <tr>
+                                            <td id=3D"download_agoda_app_ba=
+dge"
+                                                style=3D"margin:0;padding:0=
+;padding-top:16px">
+                                                <table>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td colspan=3D"2">
+                                                        <td style=3D"width:=
+ 135px; height: 40px; margin-right: 16px;">
+                                                            <a id=3D"appSto=
+reLink" target=3D"_blank"
+                                                               href=3D"http=
+s://agoda.onelink.me/1640755593?af_dp=3Dagoda%3A%2F%2Fmmb?bookingToken=3Dso=
+metoken&deep_link_value=3Dagoda%3A%2F%2Fmmb&af_click_lookback=3D1d&pid=3DRe=
+direct&c=3DEmailQRCode&af_siteid=3D1746555&site_id=3D1746555&af_sub5=3D1746=
+555&af_force_deeplink=3Dtrue"
+                                                               style=3D"fon=
+t-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;font-size:=
+18px;text-decoration:underline;color:#2067da;  display: inline-block; width=
+: 145px; height: 43px;">
+                                                                <img id=3D"=
+appStoreImageUrl"
+                                                                     src=3D=
+"https://cdn6.agoda.net/images/email/booking-confirmation/default/app-store=
+-badge.png"
+                                                                     alt=3D=
+"Download on the App Store"
+                                                                     style=
+=3D"border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicub=
+ic;"
+                                                                     width=
+=3D"135" height=3D"40">
+                                                            </a>
+                                                        </td>
+                                                        </td>
+                                                        <td colspan=3D"2">
+                                                        <td style=3D"width:=
+ 135px; height: 40px;">
+                                                            <a id=3D"playSt=
+oreLink" target=3D"_blank"
+                                                               href=3D"http=
+s://agoda.onelink.me/1640755593?af_dp=3Dagoda%3A%2F%2Fmmb?bookingToken=3Dso=
+metoken&deep_link_value=3Dagoda%3A%2F%2Fmmb&af_click_lookback=3D1d&pid=3DRe=
+direct&c=3DEmailQRCode&af_siteid=3D1746555&site_id=3D1746555&af_sub5=3D1746=
+555&af_force_deeplink=3Dtrue"
+                                                               style=3D"fon=
+t-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;font-size:=
+18px;text-decoration:underline;color:#2067da;  display: inline-block; width=
+: 145px; height: 43px;">
+                                                                <img id=3D"=
+playStoreImageUrl"
+                                                                     src=3D=
+"https://cdn6.agoda.net/images/email/booking-confirmation/default/google-pl=
+ay-badge.png"
+                                                                     alt=3D=
+"Get it on Google Play"
+                                                                     style=
+=3D"border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicub=
+ic;"
+                                                                     width=
+=3D"135" height=3D"40">
+                                                            </a>
+                                                        </td>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td id=3D"download_agoda_app_qr_code" class=3D"=
+download_app_qr"
+                                style=3D"margin: 0;padding: 0;">
+                            <td style=3D"width: 104px; height: 104px">
+                                <a id=3D"downloadAppQrCodeLink" target=3D"_=
+blank"
+                                   href=3D"https://agoda.onelink.me/1640755=
+593?af_dp=3Dagoda%3A%2F%2Fmmb?bookingToken=3Dsometoken&deep_link_value=3Dag=
+oda%3A%2F%2Fmmb&af_click_lookback=3D1d&pid=3DRedirect&c=3DEmailQRCode&af_si=
+teid=3D1746555&site_id=3D1746555&af_sub5=3D1746555&af_force_deeplink=3Dtrue=
+"
+                                   style=3D"font-family:helvetica, 'helveti=
+ca neue', arial, verdana, sans-serif;font-size:18px;text-decoration:underli=
+ne;color:#2067da; display: inline-block; width: 104px; height: 104px">
+                                    <img id=3D"downloadAppQrCodeImageUrl"
+                                         src=3D"https://cdn6.agoda.net/imag=
+es/email/booking-confirmation/default/download-app-qr-code-global.png" alt=
+=3D"Agoda App QR Code"
+                                         style=3D"display:block;border:0;ou=
+tline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"
+                                         width=3D"104" height=3D"104">
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+            </td>
+        </tr>
+    </table>
+    <center>
+        <table class=3D"transparentTile">
+            <tbody>
+                <tr style=3D"text-align: center;">
+                    <td style=3D"color:#5e6b82;font-size:12px;line-height:1=
+9px;padding-top:36px;">
+                            <p style=3D"margin:0;padding-top: 8px;" id=3D"f=
+ooterText_0">=EB=B3=B8 =EB=A9=94=EC=9D=BC=EC=9D=80 =ED=99=95=EC=9D=B8=EC=9A=
+=A9=EC=9C=BC=EB=A1=9C =EB=B0=9C=EC=86=A1=EB=90=98=EC=97=88=EC=8A=B5=EB=8B=
+=88=EB=8B=A4. =EB=B3=B8 =EB=A9=94=EC=9D=BC=EC=97=90 =ED=9A=8C=EC=8B=A0=ED=
+=95=98=EC=A7=80 =EB=A7=88=EC=8B=9C=EA=B8=B0 =EB=B0=94=EB=9E=8D=EB=8B=88=EB=
+=8B=A4.</p>
+                            <p style=3D"margin:0;padding-top: 8px;" id=3D"f=
+ooterText_1">=EC=95=84=EA=B3=A0=EB=8B=A4=EC=97=90=EC=84=9C=EB=8A=94 =E3=83=
+=9B=E3=82=B9=E3=83=86=E3=83=ABPAQ=E5=BE=B3=E5=B3=B6 (HOSTEL PAQ tokushima)=
+=EC=97=90 =EA=B3=A0=EA=B0=9D=EB=8B=98=EC=9D=98 =EC=98=88=EC=95=BD =EA=B4=80=
+=EB=A0=A8 =EC=82=AC=ED=95=AD=EC=9D=84 =EC=A0=84=EB=8B=AC=ED=95=98=EC=98=80=
+=EC=8A=B5=EB=8B=88=EB=8B=A4. =EC=A6=90=EA=B1=B0=EC=9A=B4 =EC=97=AC=ED=96=89=
+ =ED=95=98=EC=8B=9C=EA=B8=B8 =EB=B0=94=EB=9E=8D=EB=8B=88=EB=8B=A4.</p>
+                    </td>
+                </tr>
+                <tr style=3D"border-collapse:collapse;">
+                    <td align=3D"center" style=3D"padding:12px 0 0 0;margin=
+:0 auto;max-width: 650px;">
+                        <table width=3D"100%" cellspacing=3D"0" cellpadding=
+=3D"0"
+                               style=3D"border-collapse:collapse;border-spa=
+cing:0px;width: 100%;max-width: 650px;margin:0 auto;">
+                            <tr style=3D"border-collapse:collapse;">
+                                <td width=3D"100%" valign=3D"top" align=3D"=
+center" style=3D"padding:0;margin:0;">
+                                    <table width=3D"100%" cellspacing=3D"0"=
+ cellpadding=3D"0"
+                                           style=3D"border-collapse:collaps=
+e;border-spacing:0px;">
+                                        <tr style=3D"border-collapse:collap=
+se;">
+                                            <td align=3D"center" style=3D"p=
+adding:0;margin:0">
+                                                <table border=3D"0" width=
+=3D"100%" height=3D"100%" cellpadding=3D"0" cellspacing=3D"0"
+                                                       style=3D"border-coll=
+apse:collapse;border-spacing:0px;">
+                                                    <tr style=3D"border-col=
+lapse:collapse;">
+                                                        <td style=3D"paddin=
+g:0;Margin:0px 0px 0px 0px;border-bottom:2px solid #c1cbe0;border-bottom:2p=
+x solid #C1CBE0;background:none;height:1px;width:100%;margin:0px;">
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr style=3D"text-align: center;">
+                    <td style=3D"color:#5e6b82;font-size:12px;line-height:1=
+9px;padding-top: 12px;">
+                            <p style=3D"margin:0; padding-bottom: 10px;" id=
+=3D"emailFootNote_0">=EC=9D=B4=EB=A9=94=EC=9D=BC =EB=B0=9C=EC=86=A1=EC=B2=
+=98: Agoda International Japan KK, 8th Floor, Ebisu South One, 1-7-8 Ebisu,=
+ Minami, Shibuya-ku, Tokyo</p>
+                            <p style=3D"margin:0; padding-bottom: 10px;" id=
+=3D"emailFootNote_1"><b>=EC=9D=BC=EB=B0=98 =EC=A0=95=EB=B3=B4:</b></p>
+                            <p style=3D"margin:0; padding-bottom: 10px;" id=
+=3D"emailFootNote_2">1. Agoda International Japan KK('AIJP')=EB=8A=94 Agoda=
+ Company Pte. Ltd. =EB=B0=8F Agoda International USA LLC=EB=A5=BC =ED=8F=AC=
+=ED=95=A8=ED=95=98=EB=90=98 =EC=9D=B4=EC=97=90 =EA=B5=AD=ED=95=9C=EB=90=98=
+=EC=A7=80 =EC=95=8A=EB=8A=94 =EB=AA=A8=EB=93=A0 =EC=95=84=EA=B3=A0=EB=8B=A4=
+ =EB=B2=95=EC=9D=B8=EC=9D=84 =EB=8C=80=EC=8B=A0=ED=95=98=EC=97=AC =EB=B3=B8=
+ =EA=B1=B0=EB=9E=98 =EB=98=90=EB=8A=94 =EC=9D=B4=EC=99=80 =EA=B4=80=EB=A0=
+=A8=EB=90=9C =EA=B1=B0=EB=9E=98=EC=97=90 =EB=8C=80=ED=95=B4 =EB=8C=80=EB=A6=
+=AC=EC=9D=B8 =EC=97=AD=ED=95=A0=EC=9D=84 =ED=95=98=EC=A7=80 =EC=95=8A=EC=9C=
+=BC=EB=A9=B0 =EA=B3=84=EC=95=BD=EC=9D=84 =EC=B2=B4=EA=B2=B0=ED=95=98=EC=A7=
+=80 =EC=95=8A=EC=8A=B5=EB=8B=88=EB=8B=A4.</br> 2. AIJP=EB=8A=94 =EB=8B=A8=
+=EC=A7=80 =EC=88=99=EB=B0=95 =EC=8B=9C=EC=84=A4 =EC=98=88=EC=95=BD=EC=97=90=
+ =EB=8C=80=ED=95=9C =EB=8F=84=EC=9B=80=EC=9D=84 =EC=A0=9C=EA=B3=B5=ED=95=98=
+=EB=A9=B0, =EC=9D=B4=EC=97=90 =EB=8C=80=ED=95=B4 =EC=88=98=EC=88=98=EB=A3=
+=8C =EB=98=90=EB=8A=94 =EB=A7=88=EC=A7=84=EC=9D=84 =EB=B6=80=EA=B3=BC=ED=95=
+=98=EC=A7=80 =EC=95=8A=EC=8A=B5=EB=8B=88=EB=8B=A4. =EC=98=88=EC=95=BD =EA=
+=B2=BD=ED=97=98=EC=9D=84 =ED=96=A5=EC=83=81=EC=8B=9C=ED=82=A4=EA=B8=B0 =EC=
+=9C=84=ED=95=B4 AIJP=EB=8A=94 =ED=8A=B9=EC=A0=95 =EC=84=9C=EB=B9=84=EC=8A=
+=A4=EB=A5=BC =EC=A0=9C=EA=B3=B5=ED=95=A0 =EC=88=98 =EC=9E=88=EC=9C=BC=EB=A9=
+=B0, =EA=B3=A0=EA=B0=9D=EC=9D=B4 =EC=84=A0=ED=83=9D=ED=95=9C =EA=B2=BD=EC=
+=9A=B0 =EB=B3=84=EB=8F=84=EC=9D=98 =EC=9A=94=EA=B8=88=EC=9D=B4 =EB=B6=80=EA=
+=B3=BC=EB=90=A0 =EC=88=98 =EC=9E=88=EC=8A=B5=EB=8B=88=EB=8B=A4.</br> 3. AIJ=
+P=EB=8A=94 =EB=8B=A8=EC=A7=80 =EC=98=88=EC=95=BD=EC=9D=84 =EC=A7=80=EC=9B=
+=90=ED=95=98=EB=A9=B0, =EA=B0=9D=EC=8B=A4 =EB=93=B1 =EC=88=99=EB=B0=95 =EC=
+=8B=9C=EC=84=A4 =EC=9E=90=EC=B2=B4=EB=8A=94 =EC=97=AC=ED=96=89 =EC=A0=9C=EA=
+=B3=B5=EC=97=85=EC=B2=B4 =EB=98=90=EB=8A=94 =EC=88=99=EC=86=8C=EC=97=90=EC=
+=84=9C =EC=A7=81=EC=A0=91 =EC=A0=9C=EA=B3=B5=ED=95=A9=EB=8B=88=EB=8B=A4.</p=
+>
+                    </td>
+                </tr>
+            <tr style=3D"text-align: center;">
+                <td style=3D"padding:36px 0px;margin:0;">
+                    <img style=3D"height: 40px;" height=3D"40" src=3D"https=
+://img.agoda.net/images/emailmarketing/spwl_agodatheme/company_logo_footer.=
+png"
+                         role=3D"img" alt=3D"Agoda Logo" aria-label=3D"Agod=
+a Logo" lang=3D"en">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </center>
+
+
+</div>
+<img src=3D"https://click.transactional.agoda.com/wf/open?upn=3Du001.-2B9Zl=
+clDpgLtOKUM797Z21yF-2BBLMTYKW3Pu3KJso-2BoJtjffAnCBUbKdmUzBzaVNptLSuh4OSfALb=
+p992l8ins-2Fg3YW3omR4h7MsLpIqYXD9lkU-2BN94tpH8M8m19YnpH-2BILiJ3hBq9Soe78wDZ=
+F4iyS2xfFyxZqkfJUSk2-2FoOgLNsYvPsp7kdYMiy6gqpIioUCURd-2BAAN2pXrIOmll3XRsjM0=
+uWlf9e1Wcz6DS7z8aZ-2B-2F4aqRHAAAW13naKQd2wKkmW92fFiZAn2pw950ySTkP0ZGHe73-2B=
+JOZDj64UJDKdsuNbgLPzrLc5IVZ-2BC0lj1phAkf4KWbg-2BQrX0tGAxTdGgK2xAGYlvF4No4yl=
+CoiiMTSTpIATkbDFISgX826LSBesgg8MhaV1d-2FaWvru7MVATGy6NduKAUHSy1JtJLh5s-2F8N=
+iLAOKiAIdZjpOe9wTYujewAEqH1ct4BPPQvogSjVmWsCmGC40qR9qCrfbLCf8cVUEHAhQeF4mpC=
+FaDyzLMmYHdyAZyuKDzclWfMekUZDK4gB46pIpBKSi6oMgJtwDwcHZdm43ZuVJleXzjAdYB-2FO=
+mfxYKa-2FKVuKZR3NLsOThttnrOzxdSHc-2FMCBzw-2FRM44PBt-2BTraCPP6opmPOwLF4g0tfr=
+mdq-2BzF6Asjwanst1yWZwreR8M6WOzUhZiBs2yQ5qnWpR1cpjhe7qbOGgtVDW9cHNJLd0hpbKP=
+CMw5qUfsxsnh1bPQMWpVNvbB5hcSJPcI4k9igboKK0zkHxSZ5S5WjNpcGG03HqhN-2Bk7poFUvE=
+ykYvoj1Pxq9Kjd45lA-2BVSSjkFnsYJmD7iFyfp1rZpZKbVxgmtNj1lLgbdDsDx3kOUk3wen3Vo=
+qkdpHJ0-2BY-2FLtUVEqL6qtyjq3m4Z-2FykeDjGRSewO8r5FqHdbZGz2txAvFWwyMcWFl3JRra=
+UiyY0xqlwqTi-2Fs71xOjZPner1oh4iU10i-2BnzksUKIFT-2FES8oDikNew7X8iG-2BjvZo78m=
+xP9LjbxYCJpUIukqiwWCDoC8LZEMVhbqNvXF4CpG3VAVEOoa4H4dYciJsg-2F8nanS2MCxUhZu8=
+3aF-2FgbUxBo23gm7bxVfQQc0Q2Vu80LaZx-2Bbt-2FBWHO6SN3qtqL63mdsthTbIaY5lLzzFws=
+Nd3Ll210WSxnEYnxXFEDel0C3yzYqQffMydCZAs2Eqxw3yQ4YRi6n3usGEaXlT7Z41zAdBOE-2F=
+Qt-2Buv5qrm8Oh0i6xcjrlWrqhAVc3fX4o4n7otymsh-2BPWF7COlpET-2FPIG-2Fd3BuGR6PAp=
+oDxahLf6sUeYuKJacpWG0OxLM1NoiQs1sLINWabFhwBzhJHJ50006Xf71r-2FrakbZ-2BEjYqFT=
+Mehvq7pzhcQgDltEPFsBZFYBAsoQeAgBCicZRUcMvQp9HzeyZgTZT-2BRod28-2B-2FefhGhls4=
+PTi0GpPAULGgu6grhhjNZqCRH4gMBfAqjSjDsAfoG4O0QEwR4oOFh33ZXQmTbysz8Qj-2FssE6N=
+XVfu3JbdrL7gaje3bGufIP-2F9vgSHINgczKWVykCR9kXQbVRmQVUQSLqpGSlwPpP10FmzyCYuw=
+Ci-2BDqHExuv9TaLBMIYGzBwdDKUnH0S8TcnUl8f8hYtUAreA0b14L8YA7GoDS2jqQg2useY-2F=
+z1Wr91SJguYiMI-2BWIWXJukOg2wMNcNjRE2Qi3eKLvtYY8ridd1Gy5CunOnvpCo6R5W-2B4pa1=
+3d8sKxcTyMkMZR01iNT5gnqMHVUp7jqiZGcFnFKvzjcYfYFRXBE9Hz8VNWtA9a4Fs74MvTqInPM=
+DPa812onLuSSKrsiIjgkccEg0nUalpK2-2BYm-2FsoWD5TE5h7bf31rGrBNlc27nA7st3AW6HTi=
+eLzWgWVRTtcWPCRFidNA0TN-2BKLrtsTwRqb-2Bi8-2BK63nNPaufvyMu5FCkBjfncxFbfmVxgT=
+ulKJMnJ9rpU2s2nwROdZmBguRlN0xn2AxyzLhjejKCLka9SQiqASMFn-2B2knogxX-2F-2FwoQx=
+PUhZQ1skcd4d-2F13a2riDfCsXS5SKRkGYuM1XiGKgiwflg0WAJqpsyODBk7CexlRG25gqq-2FF=
+JHS3zLeJs48QKKCaRbXr5GlUt601mNrBg0cbkTcpJSi-2F-2FSh-2FiVQqbMIXDL5mLzVBH412R=
+0LT7iQwOu2DZGly-2Fz5c2Dc-2BWOpmeMmepYqYdoqqEVqgXxzZ0vFpHCwM9gGrvxmfVkw4tAbZ=
+-2FH0K3ibn-2BbIaHEVI1Tk7Y8BnCk6QdmdZD6W3UvJAJZHegHj0L-2FAnefErMRlJ5VGEmjlcM=
+1xhPRDhwWwHlND1JzDUQIxbfc89rPuY5wPaGx7U2SYnCDD7PTANs3gFuateQHVng7yAAWKZbh1x=
+H4V2RZAWQbEqDAXGmrCj9y-2F8V-2FeCDp5Kq-2FCTrZrFRRleYuXxuEwy-2B90PsdrA2vylj2B=
+1otSr-2FuhXkx56NMx6Yx4cNAM8Oik0hyVjLq3LC0TUWJ7tqmU7j30h8KPbJPmDEdO2BMKQF9UT=
+qxoa8J2w6VehMHPAHAh2XqIUcD93JcR51xFjg4AM-2F21cTmnOamZTFmjqlAmzRV0UeEzlDJoqN=
+ZuWWQvLZbgcTl71qVaIEQox77FToMuZP1sxoyffaZVL6V5pf3Rmjls1sIPduauekM56z7I8il8q=
+DKPI8XZZ7-2F9aYkby9t2kMbTNBf4y-2FOnE5pn217zE9nhwQjA9BlAKxpW1AwnD6CPmdrJnRBH=
+EeEiPgzOABPgYKIvbtHOPIfEyZ7ZQZULLJSsrBWN-2FbjtDIwd94Zn72NZFJsA-2BZRuqKTA00n=
+6JHha3GpBfUMpLnmNChCHLgadrw4r8ld64gr5gD9ykDqTrKUCynr6FfnV-2FL-2BC6DQaTXc5nr=
+s45iAVDPEDmXymTzvHp9LaVibaE8eTttXbSmTLccefWsggp7D2q6H3rV2m74pY5yJJo6A3f8Jhj=
+dJDnjnbqz9-2BPU212hXm2RlwA2T3thiJXltCx5zLQi-2FIdWmkKbJ6-2FO7CNyvtNtDwTeCL2k=
+Dw4nnnIiDBYYxib9nIHBGzO2p-2BC7Zp3vhHlMZMQ6UH07nZxrf0VGynbBryJbASdB58-2FbXIl=
+2r53QhIgQrw3D3qLfwzJ8TmH0V1GoSIYLD0kJ1bcpNmjGHQSBky-2FYdFRoDBYfvPGfAhEGHv9M=
+93jMX0VxHw57bNftag4O5NbMMJQnVOuQ2WoZe1xNEGzmaR-2Fg-2Bs52ngv461u-2Bl-2BG6qz8=
+WfKGOEHLwYyX0-2BGUPZf-2Bn75ysh4bI4yT3cL1Dek1oe9mS-2FplXumOCP2i8VsPInIqI98LC=
+eRDfJaZqn8nki15AbJtbKJpQ-2FLXSDardVXBWRfdLjqO3l2OGFIdPPtYhLIBzu7augB1MQEVf6=
+A4LfoN79R1EbBx1vJjJkMFOdE4y-2BkzLkNktOkZXa1VyQzESaEe6RJWToQ2Fj0LTC9m3F3eI2c=
+M8HpmThP96tjpP-2BTyX-2F-2B7LRbppqj0t7IcRWJGWVGGk0xsSzqcAkZ-2B6MRfAmUC47b5zs=
+LbM2a9hlGDjbTe8Etv5eiOB2h63T8Dd6Es5MAEKPGPoN-2BtM1sLTZzXPEeN54IfCiLubBqT-2F=
+7dm4aMWHw-3D" alt=3D"" width=3D"1" height=3D"1" border=3D"0" style=3D"heigh=
+t:1px !important;width:1px !important;border-width:0 !important;margin-top:=
+0 !important;margin-bottom:0 !important;margin-right:0 !important;margin-le=
+ft:0 !important;padding-top:0 !important;padding-bottom:0 !important;paddin=
+g-right:0 !important;padding-left:0 !important;"/></body>
+</Html>
+--ba4d080eb9a3b8f1d1e563d5da25fac968468c6d90db0ec2fc1617b875aa
+Content-Disposition: attachment; filename="Confirmation_for_Booking_ID_#_1546592100.pdf"
+Content-Transfer-Encoding: base64
+Content-Type: application/pdf; name="Confirmation_for_Booking_ID_#_1546592100.pdf"
+
+
+--ba4d080eb9a3b8f1d1e563d5da25fac968468c6d90db0ec2fc1617b875aa--

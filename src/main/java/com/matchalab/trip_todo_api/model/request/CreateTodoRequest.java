@@ -15,5 +15,5 @@ public class CreateTodoRequest {
     private String type;
 
     @Nullable
-    private Long presetId;
+    private String stockId;
 }

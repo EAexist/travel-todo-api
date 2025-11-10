@@ -11,13 +11,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringJUnitConfig(classes = {}, initializers = ConfigDataApplicationContextInitializer.class)
 // @TestPropertySource(properties = {
 // "spring.config.location=classpath:application-dev.yml" })
-@ActiveProfiles("local")
+@ActiveProfiles({ "local", "local-init-data" })
 public class PostgresqlDBConfigTest {
 
     @Value("${spring.datasource.url}")

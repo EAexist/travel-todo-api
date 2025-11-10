@@ -1,5 +1,6 @@
 package com.matchalab.trip_todo_api.utils;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -7,15 +8,13 @@ import java.io.IOException;
 import java.net.URI;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 
-import org.springframework.core.io.ByteArrayResource;
+import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Utils {
@@ -49,10 +48,20 @@ public class Utils {
     public static String asJsonString(final Object obj) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JsonNullableModule());
             final String jsonContent = mapper.writeValueAsString(obj);
             return jsonContent;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String timeStringToIsoDateTimeString(String timeString, String dateOnlyIsoString) {
+        return (timeString != null
+                && timeString.length() == 5
+                && dateOnlyIsoString != null)
+                        ? String.format("%sT%s", dateOnlyIsoString,
+                                timeString)
+                        : timeString;
     }
 }

@@ -1,0 +1,92 @@
+{
+    "JP": {
+        "AdapterType": "Type A",
+        "Voltage": "100V",
+        "Shape": "납작한 평행 2핀",
+        "Notes": "전압이 낮으므로 기기가 프리볼트(100V-240V)인지 반드시 확인하고, 아니면 변압기 필요."
+    },
+    "US": {
+        "AdapterType": "Type A/B",
+        "Voltage": "110V~120V",
+        "Shape": "납작한 평행 2핀 또는 접지 포함 3핀",
+        "Notes": "전압이 낮으므로 기기가 프리볼트(100V-240V)인지 반드시 확인."
+    },
+    "DE": {
+        "AdapterType": "",
+        "Voltage": "230V",
+        "Shape": "원형 2핀 (C/F형)",
+        "Notes": "한국과 전압 및 플러그 모양이 거의 같아 대부분 어댑터 불필요."
+    },
+    "FR": {
+        "AdapterType": "",
+        "Voltage": "230V",
+        "Shape": "원형 2핀 (C/E형)",
+        "Notes": "C형은 호환 가능하며, 전압이 같아 충전 시 문제 없음."
+    },
+    "GB": {
+        "AdapterType": "Type G",
+        "Voltage": "230V",
+        "Shape": "직사각형 3핀",
+        "Notes": "플러그 모양이 완전히 다르므로 G형 어댑터 필수."
+    },
+    "TH": {
+        "AdapterType": "Type A/B",
+        "Voltage": "220V",
+        "Shape": "A/B/C형 혼용",
+        "Notes": "전압은 같으나 콘센트 종류가 다양하므로, A/B 변환 어댑터를 함께 가져가는 것이 안전."
+    },
+    "VN": {
+        "AdapterType": "",
+        "Voltage": "220V",
+        "Shape": "A/C형 혼용",
+        "Notes": "전압이 같고 C형이 호환되지만, A형 겸용 콘센트라 헐거울 수 있음."
+    },
+    "AU": {
+        "AdapterType": "Type I",
+        "Voltage": "230V",
+        "Shape": "비스듬한 V자형 3핀",
+        "Notes": "독특한 모양이므로 I형 어댑터 필수."
+    },
+    "CN": {
+        "AdapterType": "Type A/I",
+        "Voltage": "220V",
+        "Shape": "A/C/I형 혼용",
+        "Notes": "전압은 같으나 콘센트가 다양함. 특히 I형과 A형 변환 어댑터 권장."
+    },
+    "TW": {
+        "AdapterType": "Type A/B",
+        "Voltage": "110V",
+        "Shape": "납작한 평행 2핀 또는 접지 포함 3핀",
+        "Notes": "전압이 낮으므로 기기가 프리볼트(100V-240V)인지 반드시 확인하고, 아니면 변압기 필요."
+    },
+    "PH": {
+        "AdapterType": "Type A/B",
+        "Voltage": "220V",
+        "Shape": "A/B/C형 혼용 (주로 11자형 A/B)",
+        "Notes": "전압은 같으나 11자형 콘센트(A/B)가 많으므로 변환 어댑터 필수."
+    },
+    "CA": {
+        "AdapterType": "Type A/B",
+        "Voltage": "120V",
+        "Shape": "납작한 평행 2핀 또는 접지 포함 3핀",
+        "Notes": "전압이 낮으므로 기기가 프리볼트(100V-240V)인지 반드시 확인하고, 아니면 변압기 필요."
+    },
+    "TR": {
+        "AdapterType": "",
+        "Voltage": "220V~230V",
+        "Shape": "원형 2핀 (C/F형)",
+        "Notes": "한국과 전압 및 플러그 모양이 같아 어댑터 불필요."
+    },
+    "MY": {
+        "AdapterType": "Type G",
+        "Voltage": "240V",
+        "Shape": "직사각형 3핀",
+        "Notes": "영국과 같은 G형 플러그를 사용하므로 G형 어댑터 필수."
+    },
+    "IT": {
+        "AdapterType": "Type L",
+        "Voltage": "230V",
+        "Shape": "C/F/L형 혼용",
+        "Notes": "C/F형은 호환되지만, L형 콘센트(3개 둥근 핀)가 있을 수 있어 멀티 어댑터 권장."
+    }
+}
