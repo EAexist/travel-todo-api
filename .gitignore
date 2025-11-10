@@ -25,6 +25,7 @@ pgdata/
 src/main/resources/certs
 src/main/resources/static/local
 src/main/resources/templates
+src/main/resources/application-local.yml
 src/main/resources/application-aws.yml
 src/main/resources/application-render.yml
 *.pem
