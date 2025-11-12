@@ -1,3 +1,5 @@
+# https://spring.io/guides/gs/spring-boot-docker
+
 version: 0.2
 
 phases:
