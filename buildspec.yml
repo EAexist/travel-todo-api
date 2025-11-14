@@ -2,8 +2,9 @@
 
 version: 0.2
 
-variables:
-  BOOTBUILDIMAGE_PATH: docker.io/library
+env:
+  variables:
+    BOOTBUILDIMAGE_PATH: "docker.io/library"
 
 phases:
   pre_build:
