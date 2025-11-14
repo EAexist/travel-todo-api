@@ -19,10 +19,11 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - echo Running Gradle build to generate JAR file
-      - ./gradlew clean build -x test --no-daemon
+      - echo Running Spring Boot Cloud Native Buildpacks(CNB) task.
+      - ./gradlew bootBuildImage -x test --no-daemon
       - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:$BUILD_TAG .
+      - mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
+      - docker build --build-arg DEPENDENCY=build/dependency -t $REPOSITORY_URI:$BUILD_TAG .
       - docker tag $REPOSITORY_URI:$BUILD_TAG $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:

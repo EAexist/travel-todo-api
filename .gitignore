@@ -20,6 +20,7 @@ bin/
 
 # Docker
 pgdata/
+Dockerfile
 
 # Sensitive information
 src/main/resources/certs

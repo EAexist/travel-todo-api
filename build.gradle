@@ -23,18 +23,18 @@ configurations {
 repositories {
 	mavenCentral()
 }
-sourceSets {
-    main {
-        java {
-            srcDir "${project.buildDir}/generated/sources/annotationProcessor/java"
-        }
-    }
-    test {
-        java {
-            srcDirs "${project.buildDir}/generated/sources/annotationProcessor/java"
-        }
-    }
-}
+// sourceSets {
+//     main {
+//         java {
+//             srcDir "${project.buildDir}/generated/sources/annotationProcessor/java"
+//         }
+//     }
+//     test {
+//         java {
+//             srcDirs "${project.buildDir}/generated/sources/annotationProcessor/java"
+//         }
+//     }
+// }
 
 dependencyManagement {
     imports {
@@ -104,6 +104,11 @@ dependencies {
 }
 tasks.named('test') {	
 	useJUnitPlatform()
+}
+
+tasks.named('bootBuildImage') {
+    imagePlatform = 'linux/amd64'
+    // image.builder.platforms.set(['linux/amd64']) 
 }
 
 // tasks.withType(JavaCompile).configureEach {

@@ -1,1 +1,0 @@
-docker compose up -d && gradle clean bootRun -x test --args='--spring.profiles.active=local'
