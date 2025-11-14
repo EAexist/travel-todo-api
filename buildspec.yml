@@ -2,6 +2,9 @@
 
 version: 0.2
 
+variables:
+  BOOTBUILDIMAGE_PATH: docker.io/library
+
 phases:
   pre_build:
     commands:
@@ -12,16 +15,22 @@ phases:
       # Updated
       - ECR_REGISTRY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY_URI
+      - chmod +x ./gradlew
       - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
-      - chmod +x ./gradlew
+      - echo "Dynamically determining default CNB image name..."
+      - PROJECT_VERSION=$(./gradlew properties --no-daemon | grep "^version:" | awk '{print $2}')
+      - ARTIFACT_NAME=$(./gradlew properties --no-daemon | grep "^name:" | awk '{print $2}')
+      - DEFAULT_SOURCE_IMAGE=$BOOTBUILDIMAGE_PATH/$ARTIFACT_NAME:$PROJECT_VERSION
+      - echo "Determined Default CNB Tag":" $DEFAULT_SOURCE_IMAGE"
   build:
     commands:
       - echo "Build started on `date`"
       - echo "Running Spring Boot Cloud Native Buildpacks(CNB) task. Building the Docker image..."
       - ./gradlew bootBuildImage -x test --no-daemon
-      - docker tag $REPOSITORY_URI:$BUILD_TAG $REPOSITORY_URI:$IMAGE_TAG
+      - docker tag $DEFAULT_SOURCE_IMAGE $REPOSITORY_URI:$IMAGE_TAG
+      - docker tag $DEFAULT_SOURCE_IMAGE $REPOSITORY_URI:$BUILD_TAG
   post_build:
     commands:
       - echo "Build completed on `date`"
