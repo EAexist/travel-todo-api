@@ -5,7 +5,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
+      - echo "Logging in to Amazon ECR..."
       - aws --version
       # Deprecated
       # - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
@@ -18,20 +18,17 @@ phases:
       - chmod +x ./gradlew
   build:
     commands:
-      - echo Build started on `date`
-      - echo Running Spring Boot Cloud Native Buildpacks(CNB) task.
+      - echo "Build started on `date`"
+      - echo "Running Spring Boot Cloud Native Buildpacks(CNB) task. Building the Docker image..."
       - ./gradlew bootBuildImage -x test --no-daemon
-      - echo Building the Docker image...
-      - mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
-      - docker build --build-arg DEPENDENCY=build/dependency -t $REPOSITORY_URI:$BUILD_TAG .
       - docker tag $REPOSITORY_URI:$BUILD_TAG $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
-      - echo Build completed on `date`
-      - echo Pushing the Docker images...
+      - echo "Build completed on `date`"
+      - echo "Pushing the Docker images..."
       - docker push $REPOSITORY_URI:$BUILD_TAG
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Writing image definitions file...
+      - echo "Writing image definitions file..."
       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
 artifacts:
