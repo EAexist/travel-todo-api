@@ -31,7 +31,6 @@ phases:
       - echo "Running Spring Boot Cloud Native Buildpacks(CNB) task. Building the Docker image..."
       - ./gradlew bootBuildImage -x test --no-daemon
       - docker tag $DEFAULT_SOURCE_IMAGE $REPOSITORY_URI:$IMAGE_TAG
-      - docker tag $DEFAULT_SOURCE_IMAGE $REPOSITORY_URI:$BUILD_TAG
   post_build:
     commands:
       - echo "Build completed on `date`"
