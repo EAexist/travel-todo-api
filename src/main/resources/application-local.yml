@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${RDS_ENDPOINT}
+    url: jdbc:postgresql://${RDS_ENDPOINT}:5432/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   jpa:
