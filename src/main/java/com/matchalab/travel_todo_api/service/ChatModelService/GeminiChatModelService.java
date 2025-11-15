@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Profile({ "prod" })
+@Profile({ "!development" })
 public class GeminiChatModelService implements ChatModelService {
 
     private final VertexAiGeminiChatModel chatModel = new VertexAiGeminiChatModel(new VertexAI(),

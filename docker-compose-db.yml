@@ -5,7 +5,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - "POSTGRES_DB=travel-todo-db"
+      - "POSTGRES_DB=travel_todo_db"
       - "POSTGRES_USER=guest"
       - "POSTGRES_PASSWORD=hello_guest"
     volumes:

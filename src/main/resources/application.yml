@@ -26,7 +26,8 @@ spring:
     gcp:
       project-id: travel-checklist-461608
       credentials:
-        location: classpath:/certs/gc-service-account-key.json
+        location: ${GCP_CREDENTIALS_LOCATION}
+        # location: classpath:/certs/gc-service-account-key.json
 logging:
   level:
     org:

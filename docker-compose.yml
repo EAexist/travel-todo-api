@@ -6,6 +6,8 @@ services:
       - "808:8080"
     environment:
       - "SPRING_PROFILES_ACTIVE=local"
-      - "RDS_ENDPOINT=jdbc:postgresql://db:5432/travel-todo-db"
+      - "DB_ENDPOINT=db"
+      - "DB_NAME=travel_todo_db"
       - "DB_USER=guest"
       - "DB_PASSWORD=hello_guest"
+      - "GCP_CREDENTIALS_LOCATION=classpath:/certs/gc-service-account-key.json"

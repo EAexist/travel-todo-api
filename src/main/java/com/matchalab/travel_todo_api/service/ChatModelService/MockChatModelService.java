@@ -13,9 +13,9 @@ import com.matchalab.travel_todo_api.model.genAI.ExtractFlightBookingChatResultD
 import com.matchalab.travel_todo_api.model.genAI.ExtractFlightTicketChatResultDTO;
 import com.matchalab.travel_todo_api.model.genAI.ExtractGeneralReservationChatResultDTO;
 import com.matchalab.travel_todo_api.model.genAI.ExtractReservationChatResultDTO;
+import com.matchalab.travel_todo_api.model.genAI.ExtractReservationChatResultDTO.ExtractReservationChatResultDTOBuilder;
 import com.matchalab.travel_todo_api.model.genAI.FlightRouteWithoutAirline;
 import com.matchalab.travel_todo_api.model.genAI.RecommendedFlightChatResult;
-import com.matchalab.travel_todo_api.model.genAI.ExtractReservationChatResultDTO.ExtractReservationChatResultDTOBuilder;
 import com.matchalab.travel_todo_api.service.HtmlParserService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Profile({ "local", "local-init-data" })
+@Profile({ "development" })
 public class MockChatModelService implements ChatModelService {
 
     @Autowired
