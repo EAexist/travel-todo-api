@@ -1,4 +1,6 @@
 spring:
+  flyway:
+    enabled: true
   datasource:
     driver-class-name: org.postgresql.Driver
   security:

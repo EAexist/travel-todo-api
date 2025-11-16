@@ -93,6 +93,12 @@ dependencies {
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-jdbc'
 
+    // https://mvnrepository.com/artifact/org.flywaydb/flyway-core
+    implementation "org.flywaydb:flyway-core:11.17.0"
+    
+    // https://mvnrepository.com/artifact/org.flywaydb/flyway-database-postgresql
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.17.0")
+
     /* Test */
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core:3.27.2'
@@ -102,6 +108,7 @@ dependencies {
     // testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     
 }
+
 tasks.named('test') {	
 	useJUnitPlatform()
 }
@@ -110,6 +117,8 @@ tasks.named('bootBuildImage') {
     imagePlatform = 'linux/amd64'
     // image.builder.platforms.set(['linux/amd64']) 
 }
+
+
 
 // tasks.withType(JavaCompile).configureEach {
 //     if (name.contains("Test")) {
