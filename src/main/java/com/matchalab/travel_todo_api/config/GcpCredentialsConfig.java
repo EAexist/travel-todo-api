@@ -31,7 +31,7 @@ public class GcpCredentialsConfig {
 
                 // 3. GOOGLE_APPLICATION_CREDENTIALS 시스템 속성 설정
                 // 이는 JVM 레벨에서 ADC가 키 파일을 찾도록 합니다.
-                System.setProperty("GCP_CREDENTIALS_LOCATION", tempFile.getAbsolutePath());
+                System.setProperty("GOOGLE_APPLICATION_CREDENTIALS", tempFile.getAbsolutePath());
 
                 // 4. (선택 사항) 애플리케이션 종료 시 임시 파일 삭제 예약
                 tempFile.deleteOnExit();
