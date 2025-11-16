@@ -76,7 +76,7 @@ dependencies {
 
     /* Google */    
     implementation 'com.google.cloud:spring-cloud-gcp-starter-vision'
-    implementation 'org.springframework.ai:spring-ai-starter-model-vertex-ai-gemini:1.0.0'
+    implementation 'org.springframework.ai:spring-ai-starter-model-vertex-ai-gemini:1.1.0'
 
     implementation "com.opencsv:opencsv:5.12.0"
     implementation "com.amadeus:amadeus-java:10.0.0"

@@ -28,12 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 @Profile({ "!development" })
 public class GeminiChatModelService implements ChatModelService {
 
-    private final VertexAiGeminiChatModel chatModel = new VertexAiGeminiChatModel(new VertexAI(),
-            VertexAiGeminiChatOptions.builder().model("gemini-2.0-flash-lite").build(),
-            ToolCallingManager.builder().build(),
-            new RetryTemplate(), null);
+    // private final VertexAiGeminiChatModel chatModel = new VertexAiGeminiChatModel(new VertexAI(),
+    //         VertexAiGeminiChatOptions.builder().model("gemini-2.0-flash-lite").build(),
+    //         ToolCallingManager.builder().build(),
+    //         new RetryTemplate(), null);
 
-    // private final ChatModel chatModel;
+    private final VertexAiGeminiChatModel chatModel;
 
     @Override
     public ExtractReservationChatResultDTO extractReservationFromText(String confirmationText) {

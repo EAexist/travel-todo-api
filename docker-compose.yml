@@ -10,4 +10,6 @@ services:
       - "DB_NAME=travel_todo_db"
       - "DB_USER=guest"
       - "DB_PASSWORD=hello_guest"
-      - "GCP_CREDENTIALS_LOCATION=classpath:/certs/gc-service-account-key.json"
+      - "GOOGLE_APPLICATION_CREDENTIALS=/etc/gcp/gc-service-account-key.json"
+    volumes:
+      - ./src/main/resources/certs/gc-service-account-key.json:/etc/gcp/gc-service-account-key.json:ro
