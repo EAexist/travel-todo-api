@@ -17,7 +17,7 @@ spring:
       ai:
         gemini:
           project-id: travel-checklist-461608
-          credentials-uri: classpath:/certs/application_default_credentials.json
+          #   credentials-uri: classpath:/certs/application_default_credentials.json
           location: us-west1
           chat:
             options:
