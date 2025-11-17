@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -33,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@Profile({ "!local", "local-init-data" })
+// @Profile({ "!local", "local-init-data" })
 public class DataLoader implements CommandLineRunner {
     @Autowired
     private TodoPresetRepository todoPresetRepository;
@@ -81,11 +80,12 @@ public class DataLoader implements CommandLineRunner {
 
     private void initializeTodoPreset() {
 
-        todoPresetRepository.saveAll(
-                List.of(TodoPreset.builder().type(TodoPresetType.DEFAULT).build(),
-                        TodoPreset.builder().type(TodoPresetType.DOMESTIC).build(),
-                        TodoPreset.builder().type(TodoPresetType.FOREIGN).build(),
-                        TodoPreset.builder().type(TodoPresetType.JAPAN).build()));
+        for (TodoPresetType todoPresetType : TodoPresetType.values()) {
+            log.info(String.format("Inserting todoPresetType: %s", todoPresetType));
+            if (!todoPresetRepository.existsByType(todoPresetType)) {
+                todoPresetRepository.save(TodoPreset.builder().type(todoPresetType).build());
+            }
+        }
     }
 
     // private void initializeTodoPreset() {
