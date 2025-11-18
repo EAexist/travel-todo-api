@@ -93,6 +93,9 @@ dependencies {
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-jdbc'
 
+    // https://mvnrepository.com/artifact/com.giffing.bucket4j.spring.boot.starter/bucket4j-spring-boot-starter
+    implementation("com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:0.13.0")
+
     // https://mvnrepository.com/artifact/org.flywaydb/flyway-core
     implementation "org.flywaydb:flyway-core:11.17.0"
     

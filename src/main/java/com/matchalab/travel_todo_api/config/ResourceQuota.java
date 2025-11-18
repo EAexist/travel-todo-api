@@ -3,8 +3,6 @@ package com.matchalab.travel_todo_api.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import com.matchalab.travel_todo_api.DTO.ResourceQuotaFetchDTO;
-
 import lombok.Getter;
 import lombok.Setter;
 
