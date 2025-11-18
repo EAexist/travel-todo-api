@@ -63,8 +63,9 @@ bucket4j:
   enabled: true
   filters:
     - cache-name: create-reservation-from-text-api-call-quota-cache
-      url: ^/trip/[^/]+/reservation/analysis/text$
+      url: ^/trip/[^/]+/reservation/analysis/text.*
       filter-method: servlet
+      filter-order: 1
       rate-limits:
         # @TODO: use user account id as cache key (Current approach: ip address as cache key)
         - cache-key: "getRemoteAddr()"
@@ -73,6 +74,6 @@ bucket4j:
               time: 30
               unit: days
               refill-speed: interval
-          execute-predicates:
-            - "METHOD=GET"
-            - "METHOD=POST"
+        #   execute-predicates:
+        #     - METHOD=GET
+        #     - METHOD=POST

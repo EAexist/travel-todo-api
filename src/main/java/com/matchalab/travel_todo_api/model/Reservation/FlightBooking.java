@@ -38,4 +38,13 @@ public class FlightBooking extends Flight {
     int numberOfPassenger;
 
     String passengerName;
+
+    public FlightBooking(FlightBooking flightBooking) {
+        super(flightBooking.getFlightNumber(), flightBooking.getDepartureDateTimeIsoString());
+        // this.todo = flightBooking.getTodo();
+        this.departureAirport = flightBooking.getDepartureAirport();
+        this.arrivalAirport = flightBooking.getArrivalAirport();
+        this.numberOfPassenger = flightBooking.getNumberOfPassenger();
+        this.passengerName = flightBooking.getPassengerName();
+    }
 }

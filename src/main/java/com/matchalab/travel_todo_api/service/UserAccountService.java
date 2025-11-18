@@ -83,6 +83,7 @@ public class UserAccountService {
                 .orElseThrow(() -> new NotFoundException(userAccount.getId()));
     }
 
+    @Transactional()
     public TripDTO getActiveTrip(UUID userAccountId) {
 
         UUID activeTripId = userAccountRepository.findById(userAccountId)

@@ -36,7 +36,22 @@ server:
 app:
   cors:
     allowed-origins: https://localhost,https://trip-todo.vercel.app,https://trip-todo-matchalab-matchalab-project.vercel.app
-
+# bucket4j:
+#   filters:
+#     - cache-name: create-reservation-from-text-api-call-quota-cache
+#       url: ^/trip/[^/]+/reservation/analysis/text.*
+#       filter-method: servlet
+#       filter-order: 1
+#       rate-limits:
+#         - cache-key: "'TEST_KEY_STATIC'"
+#           bandwidths:
+#             - capacity: 2
+#               time: 30
+#               unit: days
+#               refill-speed: interval
+#   execute-predicates:
+#     - METHOD=GET
+#     - METHOD=POST
 ---
 spring:
   config:

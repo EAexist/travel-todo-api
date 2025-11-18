@@ -36,4 +36,12 @@ public class FlightTicket extends Flight {
 
     String passengerName;
     // String qrCodeFilePath;
+
+    public FlightTicket(FlightTicket flightTicket) {
+        super(flightTicket.getFlightNumber(), flightTicket.getDepartureDateTimeIsoString());
+        // this.todo = flightTicket.getTodo();
+        this.departureAirport = flightTicket.getDepartureAirport();
+        this.arrivalAirport = flightTicket.getArrivalAirport();
+        this.passengerName = flightTicket.getPassengerName();
+    }
 }

@@ -13,8 +13,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +29,8 @@ import lombok.Setter;
 public class Accomodation {
 
     @Id
-    private UUID id;
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(name = "trip_id")
@@ -56,16 +55,17 @@ public class Accomodation {
     private List<Link> links = new ArrayList<Link>();
 
     public Accomodation(Accomodation accomodation) {
+        this();
         this.title = accomodation.getTitle();
         // this.trip = accomodation.getTrip();
         this.roomTitle = accomodation.getRoomTitle();
+        this.checkoutTimeIsoString = accomodation.getCheckoutTimeIsoString();
         this.numberOfClient = accomodation.getNumberOfClient();
         this.clientName = accomodation.getClientName();
         this.checkinDateIsoString = accomodation.getCheckinDateIsoString();
         this.checkoutDateIsoString = accomodation.getCheckoutDateIsoString();
         this.checkinStartTimeIsoString = accomodation.getCheckinStartTimeIsoString();
         this.checkinEndTimeIsoString = accomodation.getCheckinEndTimeIsoString();
-        this.checkoutTimeIsoString = accomodation.getCheckoutTimeIsoString();
         this.location = accomodation.getLocation();
         this.category = accomodation.getCategory();
         this.links = accomodation.getLinks();

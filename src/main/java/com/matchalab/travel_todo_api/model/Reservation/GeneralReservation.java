@@ -1,6 +1,5 @@
 package com.matchalab.travel_todo_api.model.Reservation;
 
-import java.util.List;
 import java.util.UUID;
 
 import jakarta.annotation.Nullable;
@@ -33,4 +32,12 @@ public class GeneralReservation {
     // private List<String> clientNames;
     @Nullable
     private String dateTimeIsoString;
+
+    public GeneralReservation(GeneralReservation generalReservation) {
+        this();
+        this.title = generalReservation.getTitle();
+        this.numberOfClient = generalReservation.getNumberOfClient();
+        this.clientName = generalReservation.getClientName();
+        this.dateTimeIsoString = generalReservation.getDateTimeIsoString();
+    }
 }

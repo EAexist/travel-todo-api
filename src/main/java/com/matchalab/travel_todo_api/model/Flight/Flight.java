@@ -2,11 +2,7 @@ package com.matchalab.travel_todo_api.model.Flight;
 
 import java.util.UUID;
 
-import com.matchalab.travel_todo_api.generator.GeneratedOrCustomUUID;
-
 import io.micrometer.common.lang.NonNull;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
@@ -36,4 +32,9 @@ public class Flight {
     // Airport arrivalAirport;
 
     String departureDateTimeIsoString;
+
+    public Flight(String flightNumber, String departureDateTimeIsoString) {
+        this.flightNumber = flightNumber;
+        this.departureDateTimeIsoString = departureDateTimeIsoString;
+    }
 }
