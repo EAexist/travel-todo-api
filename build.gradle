@@ -98,9 +98,22 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.flywaydb/flyway-core
     implementation "org.flywaydb:flyway-core:11.17.0"
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    /* Cache */
+    implementation "org.springframework.boot:spring-boot-starter-cache"
     
+    // https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
+
+    // https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/jcache
+    implementation("com.github.ben-manes.caffeine:jcache:3.2.3")
+
     // https://mvnrepository.com/artifact/org.flywaydb/flyway-database-postgresql
     runtimeOnly("org.flywaydb:flyway-database-postgresql:11.17.0")
+
+
 
     /* Test */
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

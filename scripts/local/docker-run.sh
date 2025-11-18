@@ -3,6 +3,8 @@
 DB_COMPOSE_FILE="docker-compose-db.yml"
 APP_COMPOSE_FILE="docker-compose.yml"
 
+./gradlew bootBuildImage -x test && \
+
 # --- 1. Clean up old conflicting containers first ---
 echo "Stopping existing containers..."
 docker compose -f "$DB_COMPOSE_FILE" -f "$APP_COMPOSE_FILE" stop

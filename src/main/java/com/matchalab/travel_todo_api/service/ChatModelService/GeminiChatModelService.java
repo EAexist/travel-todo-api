@@ -6,15 +6,11 @@ import java.util.Map;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.converter.BeanOutputConverter;
-import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
-import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatOptions;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 
-import com.google.cloud.vertexai.VertexAI;
 import com.matchalab.travel_todo_api.model.Flight.FlightRoute;
 import com.matchalab.travel_todo_api.model.genAI.ExtractReservationChatResultDTO;
 import com.matchalab.travel_todo_api.model.genAI.RecommendedFlightChatResult;
@@ -28,10 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 @Profile({ "!development" })
 public class GeminiChatModelService implements ChatModelService {
 
-    // private final VertexAiGeminiChatModel chatModel = new VertexAiGeminiChatModel(new VertexAI(),
-    //         VertexAiGeminiChatOptions.builder().model("gemini-2.0-flash-lite").build(),
-    //         ToolCallingManager.builder().build(),
-    //         new RetryTemplate(), null);
+    // private final VertexAiGeminiChatModel chatModel = new
+    // VertexAiGeminiChatModel(new VertexAI(),
+    // VertexAiGeminiChatOptions.builder().model("gemini-2.0-flash-lite").build(),
+    // ToolCallingManager.builder().build(),
+    // new RetryTemplate(), null);
 
     private final VertexAiGeminiChatModel chatModel;
 

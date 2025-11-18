@@ -31,6 +31,13 @@ spring:
     #   credentials:
     # location: ${GCP_CREDENTIALS_LOCATION}
     # location: classpath:/certs/gc-service-account-key.json
+  cache:
+    jcache:
+      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+    cache-names:
+      - create-reservation-from-text-api-call-quota-cache
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=30d
 logging:
   level:
     org:
@@ -50,3 +57,22 @@ app:
     web-client-id: 428235231680-9nkmdpjmnp35484s3unlpm6nnf4g05t4.apps.googleusercontent.com
   cors:
     allowed-origins: ""
+
+# @TODO: use redis, not caffeine.
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: create-reservation-from-text-api-call-quota-cache
+      url: ^/trip/[^/]+/reservation/analysis/text$
+      filter-method: servlet
+      rate-limits:
+        # @TODO: use user account id as cache key (Current approach: ip address as cache key)
+        - cache-key: "getRemoteAddr()"
+          bandwidths:
+            - capacity: 2
+              time: 30
+              unit: days
+              refill-speed: interval
+          execute-predicates:
+            - "METHOD=GET"
+            - "METHOD=POST"

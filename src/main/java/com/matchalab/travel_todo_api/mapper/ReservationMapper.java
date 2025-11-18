@@ -128,7 +128,8 @@ public abstract class ReservationMapper {
         return GeneralReservation.builder()
                 .title(dto.reservationTitle())
                 .numberOfClient(dto.numberOfClient())
-                .clientName(dto.clientNames().size() > 0 ? dto.clientNames().getFirst() : null)
+                .clientName((dto.clientNames() != null) && dto.clientNames().size() > 0 ? dto.clientNames().getFirst()
+                        : null)
                 .dateTimeIsoString(dto.reservationDateTimeIsoString())
                 .build();
     }
