@@ -33,3 +33,6 @@ src/main/resources/application-render.yml
 test-local.sh
 
 src/main/java/com/matchalab/travel_todo_api/.deprecated/
+
+sql/
+sql/*

@@ -11,7 +11,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
+// @Component
 @RequiredArgsConstructor
 // @Profile({ "!local", "local-init-data" })
 public class DataLoader implements CommandLineRunner {
@@ -64,15 +63,6 @@ public class DataLoader implements CommandLineRunner {
             initializeTodoPreset();
             log.info("[DataLoader] Saved TodoPresets");
 
-            // List<Airport> airports = new ArrayList<Airport>();
-            // airports = readCsv();
-            // airportRepository.saveAll(airports);
-            // log.info("Saved: airports");
-
-            // List<Airline> airlines = new ArrayList<Airline>();
-            // airlines = readCsv_airline();
-            // airlineRepository.saveAll(airlines);
-
         } catch (DataIntegrityViolationException ignore) {
             ignore.printStackTrace();
         }
@@ -87,27 +77,6 @@ public class DataLoader implements CommandLineRunner {
             }
         }
     }
-
-    // private void initializeTodoPreset() {
-    // List<StockTodoContent> stockTodoContent =
-    // stockTodoContentRepository.saveAll(readStockTodoContentJson());
-    // log.info("Saved: stockTodoContent");
-
-    // TodoPreset defaultTodoPreset =
-    // todoPresetRepository.save(TodoPreset.builder().title("기본").build());
-    // log.info("Saved: defaultTodoPreset");
-
-    // defaultTodoPreset.getTodoPresetStockTodoContents().addAll(stockTodoContent.stream().map(content
-    // -> {
-    // return
-    // TodoPresetStockTodoContent.builder().todoPreset(defaultTodoPreset).stockTodoContent(content)
-    // .isFlaggedToAdd(true).build();
-    // }).toList());
-    // log.info("Set: defaultTodoPreset.todoPresetStockTodoContent");
-
-    // todoPresetRepository.save(defaultTodoPreset);
-    // log.info("Saved: TodoPresetStockTodoContent");
-    // }
 
     private List<Airport> readCsv() {
         String filePath = "classpath:/static/airports_sample.csv";

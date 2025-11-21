@@ -1,0 +1,5 @@
+cd db_migration
+python generate_airline_migration.py
+python generate_airport_migration.py
+python generate_stock_todo_content_migration.py
+python generate_todo_preset_stock_todo_content_migration.py
