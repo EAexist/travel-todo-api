@@ -1,14 +1,15 @@
 services:
-  database:
-    image: postgres:latest
-    container_name: db
+  travel-todo-api:
+    image: travel-todo-api:0.0.1-SNAPSHOT
+    container_name: travel-todo-api-container
     ports:
-      - "5432:5432"
+      - "808:8080"
     environment:
-      - "POSTGRES_DB=trip-todo"
-      - "POSTGRES_USER=guest"
-      - "POSTGRES_PASSWORD=hello_guest"
+      - "SPRING_PROFILES_ACTIVE=local"
+      - "DB_ENDPOINT=db"
+      - "DB_NAME=travel_todo_db"
+      - "DB_USER=guest"
+      - "DB_PASSWORD=hello_guest"
+      - "GOOGLE_APPLICATION_CREDENTIALS=/etc/gcp/gc-service-account-key.json"
     volumes:
-      - pgdata:/var/lib/postgresql/data
-volumes:
-  pgdata: # Define the named volume
+      - ./src/main/resources/certs/gc-service-account-key.json:/etc/gcp/gc-service-account-key.json:ro

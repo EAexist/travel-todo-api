@@ -10,7 +10,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(22)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -23,18 +23,18 @@ configurations {
 repositories {
 	mavenCentral()
 }
-sourceSets {
-    main {
-        java {
-            srcDir "${project.buildDir}/generated/sources/annotationProcessor/java"
-        }
-    }
-    test {
-        java {
-            srcDirs "${project.buildDir}/generated/sources/annotationProcessor/java"
-        }
-    }
-}
+// sourceSets {
+//     main {
+//         java {
+//             srcDir "${project.buildDir}/generated/sources/annotationProcessor/java"
+//         }
+//     }
+//     test {
+//         java {
+//             srcDirs "${project.buildDir}/generated/sources/annotationProcessor/java"
+//         }
+//     }
+// }
 
 dependencyManagement {
     imports {
@@ -76,7 +76,7 @@ dependencies {
 
     /* Google */    
     implementation 'com.google.cloud:spring-cloud-gcp-starter-vision'
-    implementation 'org.springframework.ai:spring-ai-starter-model-vertex-ai-gemini:1.0.0'
+    implementation 'org.springframework.ai:spring-ai-starter-model-vertex-ai-gemini:1.1.0'
 
     implementation "com.opencsv:opencsv:5.12.0"
     implementation "com.amadeus:amadeus-java:10.0.0"
@@ -93,6 +93,28 @@ dependencies {
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-jdbc'
 
+    // https://mvnrepository.com/artifact/com.giffing.bucket4j.spring.boot.starter/bucket4j-spring-boot-starter
+    implementation("com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:0.13.0")
+
+    // https://mvnrepository.com/artifact/org.flywaydb/flyway-core
+    implementation "org.flywaydb:flyway-core:11.17.0"
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    /* Cache */
+    implementation "org.springframework.boot:spring-boot-starter-cache"
+    
+    // https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
+
+    // https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/jcache
+    implementation("com.github.ben-manes.caffeine:jcache:3.2.3")
+
+    // https://mvnrepository.com/artifact/org.flywaydb/flyway-database-postgresql
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.17.0")
+
+
+
     /* Test */
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core:3.27.2'
@@ -102,9 +124,17 @@ dependencies {
     // testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     
 }
+
 tasks.named('test') {	
 	useJUnitPlatform()
 }
+
+tasks.named('bootBuildImage') {
+    imagePlatform = 'linux/amd64'
+    // image.builder.platforms.set(['linux/amd64']) 
+}
+
+
 
 // tasks.withType(JavaCompile).configureEach {
 //     if (name.contains("Test")) {

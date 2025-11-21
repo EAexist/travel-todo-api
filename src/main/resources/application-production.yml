@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${RDS_ENDPOINT}:5432/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+app:
+  cors:
+    allowed-origins: https://travel-todo-demo.vercel.app,https://travel-todo-git-staging-matchalab-project.vercel.app

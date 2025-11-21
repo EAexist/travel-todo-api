@@ -6,7 +6,6 @@
 
 # Gradle
 .gradle/
-gradle/
 build/
 bin/
 
@@ -21,11 +20,19 @@ bin/
 
 # Docker
 pgdata/
+Dockerfile
 
 # Sensitive information
-src/main/resources/*
-!src/main/resources/static
+src/main/resources/certs
+src/main/resources/static/local
+src/main/resources/templates
+src/main/resources/application-local.yml
+src/main/resources/application-aws.yml
+src/main/resources/application-render.yml
 *.pem
 test-local.sh
 
-src/main/java/com/matchalab/trip_todo_api/.deprecated/
+src/main/java/com/matchalab/travel_todo_api/.deprecated/
+
+sql/
+sql/*

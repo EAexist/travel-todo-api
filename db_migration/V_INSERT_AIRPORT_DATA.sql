@@ -1,0 +1,135 @@
+-- Flyway migration generated from data/airports_sample.csv.
+-- NOTE: CSV columns (airportName, cityName, iso2DigitNationCode, iataCode) mapped to target columns.
+
+-- 1. Create a temporary staging table
+CREATE TEMP TABLE staging_airport (
+    iata_code VARCHAR(3),
+    airport_name TEXT,
+    city_name TEXT,
+    iso2Digit_nation_code VARCHAR(2)
+);
+
+-- 2. START: Pure SQL Data Inserted from CSV
+INSERT INTO staging_airport (iata_code, airport_name, city_name, iso2Digit_nation_code) VALUES
+('AGJ', '아구니 공항', '아구니', 'JP'),
+('AXT', '아키타 공항', '아키타', 'JP'),
+('AXJ', '아마쿠사 비행장', '아마쿠사', 'JP'),
+('ASJ', '아마미 공항', '아마미', 'JP'),
+('AOJ', '아오모리 공항', '아오모리', 'JP'),
+('AKJ', '아사히카와 공항', '아사히카와', 'JP'),
+('CJJ', '청주국제공항', '청주', 'KR'),
+('NGO', '주부 국제공항', '나고야', 'JP'),
+('TAE', '대구국제공항', '대구', 'KR'),
+('FUJ', '후쿠에 공항', '후쿠에', 'JP'),
+('FUK', '후쿠오카 공항', '후쿠오카', 'JP'),
+('FKS', '후쿠시마 공항', '후쿠시마', 'JP'),
+('PUS', '김해국제공항', '부산', 'KR'),
+('GMP', '김포국제공항', '서울', 'KR'),
+('KUV', '군산 공항', '군산', 'KR'),
+('KWJ', '광주공항', '광주', 'KR'),
+('HAC', '하치조지마 공항', '하치조지마', 'JP'),
+('HKD', '하코다테 공항', '하코다테', 'JP'),
+('HNA', '하나마키 공항', '하나마키', 'JP'),
+('HND', '하네다 공항', '도쿄', 'JP'),
+('HIJ', '히로시마 공항', '히로시마', 'JP'),
+('IBR', '이바라키공항', '이바라키', 'JP'),
+('IKI', '이키 공항', '이키', 'JP'),
+('ICN', '인천국제공항', '서울', 'KR'),
+('IWJ', '이와미 공항', '이와미', 'JP'),
+('IWO', '이오지마 공군기지', '이오지마', 'JP'),
+('IZO', '이즈모 공항', '이즈모', 'JP'),
+('CJU', '제주국제공항', '제주', 'KR'),
+('DNA', '가데나 기지', '카데나', 'JP'),
+('KOJ', '가고시마 공항', '가고시마', 'JP'),
+('KIX', '간사이 국제공항', '오사카', 'JP'),
+('KKX', '기카이 공항', '키카이', 'JP'),
+('KTD', '기타다이토 공항', '키타다이토', 'JP'),
+('KKJ', '기타큐슈 공항', '기타큐슈', 'JP'),
+('UKB', '고베 공항', '오사카', 'JP'),
+('KCZ', '고치 료마 공항', '코치', 'JP'),
+('KMQ', '고마쓰 공항', '고마츠', 'JP'),
+('KMJ', '구마모토 공항', '구마모토', 'JP'),
+('UEO', '구메지마 공항', '쿠메지마', 'JP'),
+('KUH', '구시로 공항', '구시로', 'JP'),
+('IWK', '해병대 비행장 이와쿠니', '이와쿠니', 'JP'),
+('MMJ', '마츠모토 공항', '마츠모토', 'JP'),
+('MYJ', '마쓰야마 공항', '마츠야마', 'JP'),
+('MMB', '메만베쓰 공항', '메만베츠', 'JP'),
+('YGJ', '미호 요나고 공항', '요나고', 'JP'),
+('MMD', '미나미다이토 공항', '미나미다이토', 'JP'),
+('MSJ', '미사와공항', '미사와', 'JP'),
+('MYE', '미야케지마 공항', '미야케지마', 'JP'),
+('MMY', '미야코 공항', '미야코지마', 'JP'),
+('KMI', '미야자키 공항', '미야자키', 'JP'),
+('MBE', '몬베쓰 공항', '몬베츠', 'JP'),
+('MWX', '무안 국제공항', '무안', 'KR'),
+('NGS', '나가사키 공항', '나가사키', 'JP'),
+('NKM', '나고야 비행장', '나고야', 'JP'),
+('OKA', '나하 공항', '오키나와', 'JP'),
+('SHB', '나카시베쓰 공항', '나카시베츠', 'JP'),
+('SHM', '난키 시라하마 공항', '시라하마', 'JP'),
+('NRT', '나리타 국제공항', '도쿄', 'JP'),
+('CTS', '신치토세 공항', '삿포로', 'JP'),
+('ISG', '신이시가키 공항', '이시가키', 'JP'),
+('TNE', '신다네가시마 공항', '다네가시마', 'JP'),
+('KIJ', '니가타 공항', '니가타', 'JP'),
+('NTQ', '노토 공항', '와지마', 'JP'),
+('ONJ', '오다테 노시로 공항', '오다테노시로', 'JP'),
+('OIT', '오이타 공항', '오이타', 'JP'),
+('OKD', '오카다마 공항', '삿포로', 'JP'),
+('OKJ', '오카야마 공항', '오카야마', 'JP'),
+('OKI', '오키 공항', '오키 섬', 'JP'),
+('OKE', '오키노에라부 공항', '오키노에라부지마', 'JP'),
+('OIR', '오쿠시리 공항', '오쿠시리', 'JP'),
+('ITM', '오사카 국제공항', '오사카', 'JP'),
+('OIM', '오시마 공항', '오시마', 'JP'),
+('KPO', '포항공항', '포항', 'KR'),
+('RIS', '리시리 공항', '리시리', 'JP'),
+('HIN', '사천공항', '진주', 'KR'),
+('SDS', '사도공항', '사도', 'JP'),
+('HSG', '사가공항', '사거', 'JP'),
+('SDJ', '센다이 공항', '센다이', 'JP'),
+('SHI', '시모지시마 공항', '시모지시마', 'JP'),
+('FSZ', '시즈오카 공항', '시즈오카', 'JP'),
+('SYO', '쇼나이 공항', '쇼나이', 'JP'),
+('TJH', '다지마 공항', '도요오카', 'JP'),
+('TAK', '다카마쓰 공항', '다카마츠', 'JP'),
+('TRA', '타라마 공항', '타라마', 'JP'),
+('OBO', '도카치 오비히로 공항', '오비히로', 'JP'),
+('TKN', '도쿠노시마 공항', '도쿠노시마', 'JP'),
+('TKS', '도쿠시마 공항', '도쿠시마', 'JP'),
+('TTJ', '돗토리 공항', '돗토리', 'JP'),
+('TOY', '도야마 공항', '도야마', 'JP'),
+('TSJ', '쓰시마 공항', '쓰시마', 'JP'),
+('USN', '울산공항', '울산', 'KR'),
+('WKJ', '왓카나이 공항', '왓카나이', 'JP'),
+('WJU', '원주공항', '원주', 'KR'),
+('KUM', '야쿠시마 공항', '야쿠시마', 'JP'),
+('GAJ', '야마가타 공항', '야마가타', 'JP'),
+('UBJ', '야마구치 우베 공항', '우베', 'JP'),
+('YNY', '양양국제공항', '양양', 'KR'),
+('YEC', '예천 공군기지', '예천', 'KR'),
+('RSU', '여수/순천공항', '여수/순처', 'KR'),
+('OGN', '요나구니 공항', '요나구니', 'JP'),
+('RNJ', '요론 공항', '요론지마', 'JP');
+
+-- 2. END: Pure SQL Data Inserted from CSV
+
+-- 3. Perform the Upsert (INSERT OR UPDATE) from staging to the target table
+INSERT INTO airport (iata_code, airport_name, city_name, iso2digit_nation_code)
+SELECT 
+    s.iata_code, 
+    s.airport_name, 
+    s.city_name, 
+    s.iso2Digit_nation_code
+FROM staging_airport s
+ON CONFLICT (iata_code) 
+DO UPDATE SET
+    airport_name = EXCLUDED.airport_name,
+    city_name = EXCLUDED.city_name,
+    iso2Digit_nation_code = EXCLUDED.iso2Digit_nation_code;
+
+-- 4. Clean up the temporary staging table
+DROP TABLE staging_airport;
+
+-- Note: The \q command is unnecessary and removed for Flyway compatibility.
