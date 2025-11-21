@@ -15,6 +15,7 @@ spring:
     # show_sql: true
 logging:
   level:
+    # root: DEBUG
     org:
       hibernate:
         sql: DEBUG
@@ -35,7 +36,7 @@ server:
     key-alias: springboot
 app:
   cors:
-    allowed-origins: https://localhost,https://trip-todo.vercel.app,https://trip-todo-matchalab-matchalab-project.vercel.app
+    allowed-origins: https://localhost
 # bucket4j:
 #   filters:
 #     - cache-name: create-reservation-from-text-api-call-quota-cache

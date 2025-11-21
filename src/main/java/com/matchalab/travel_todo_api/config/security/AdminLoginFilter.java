@@ -60,7 +60,7 @@ public class AdminLoginFilter extends OncePerRequestFilter {
                 GoogleIdToken verifiedIdToken = verifyGoogleIdToken(idToken);
 
                 if (verifiedIdToken == null) {
-                    log.warn("Failed to verify google id token");
+                    log.error("verifyGoogleIdToken returns null");
                     response.setStatus(HttpStatus.BAD_REQUEST.value());
                     return;
                 }
@@ -108,8 +108,12 @@ public class AdminLoginFilter extends OncePerRequestFilter {
                     .build();
             return googleIdTokenVerifier.verify(idToken);
         } catch (GeneralSecurityException e) {
+            log.error("Failed to verify google id token");
+            e.printStackTrace();
             return null;
         } catch (IOException e) {
+            log.error("Failed to verify google id token");
+            e.printStackTrace();
             return null;
         }
     }
