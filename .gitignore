@@ -32,8 +32,17 @@ src/main/resources/application-aws.yml
 src/main/resources/application-render.yml
 *.pem
 test-local.sh
+*.crt
+*.key
 
-src/main/java/com/matchalab/travel_todo_api/.deprecated/
+.env*
 
+# Deprecated
+.deprecated
+
+# Scripts
+.local
+
+# Sqls
 sql/
 sql/*
