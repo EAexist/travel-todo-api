@@ -1,54 +1,45 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
-<a id="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-
-
 <!-- PROJECT LOGO -->
+<br />
 <div align="center">
-<h3 align="center">TRIP TODO API</h3>
+  <a href="https://github.com/EAexist/travel-todo-api">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+  <h3 align="center">Travel Todo API</h3>
+
   <p align="center">
-    API Server for TRIP TODO, a mobile todolist application that assists you with planning a trip 
+    API Server supporting Expo Mobile App
+    <br />
+    <br />
+    <a href="https://travel-todo-git-staging-matchalab-project.vercel.app">View Demo</a>
   </p>
 </div>
-
-
-
-<!-- TABLE OF CONTENTS -->
-
 
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-  TRIP TODO is a mobile todolist application that assists you with planning a trip. This repository builds API server for TRIP TODO. Built with spring boot, java.
+This API Server supports Subscription Killer service. 
+
+* **RESTful API**
+
+  Designed in RESTful structure and follows HTTP response protocol.
+  
+* **Built with Test-Driven Development**
+
+  Developed using a TDD approach, achieving high code coverage and ensuring system reliability.
 
 ### Built With
 
 * [![Spring][Spring]][Spring-url]
 * [![Java][Java]][Java-url]
-  
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
+<a href="https://travel-todo-git-staging-matchalab-project.vercel.app">View Demo</a>
+<!-- 
 ### Prerequisites
 
 * Get Google Cloud Platform Info
@@ -120,16 +111,7 @@
    bash local.sh
    ```
 6. Your server will run in `http://localhost:5000` or on other port if 5000 is occupied. Check the console output for detailed information about the running server.  
-   
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-We do not approve any code contribution to this repository. However, we welcome any feedbacks and suggestions. If you have a suggestion that would make this better, please feel free to contact us by hyeon.expression@gmail.com. Thanks.  
-
-
+    -->
 
 
 <!-- LICENSE -->
@@ -138,17 +120,12 @@ We do not approve any code contribution to this repository. However, we welcome 
 Distributed under the project_license. See `LICENSE.txt` for more information.  
 
 
-
-
 <!-- CONTACT -->
 ## Contact
 
-EAexist: hyeon.expression@gmail.com
-
+Pyohyeon: hyeon.expression@gmail.com
 
 Project Link: [https://github.com/EAexist/trip-todo-api](https://github.com/EAexist/trip-todo-api)
-
-
 
 
 <!-- ACKNOWLEDGMENTS -->
