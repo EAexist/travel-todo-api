@@ -1,9 +1,9 @@
 package com.matchalab.travel_todo_api.mapper;
 
+import com.matchalab.travel_todo_api.model.Flight.Airport;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import com.amadeus.Airport;
 import com.matchalab.travel_todo_api.DTO.AirportDTO;
 
 import lombok.extern.slf4j.Slf4j;
