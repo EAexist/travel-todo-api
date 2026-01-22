@@ -16,6 +16,16 @@
 </div>
 
 
+<!-- ABOUT THE APP -->
+## About The App
+
+Don't worry forgetting your passport expiracy. 
+
+Don't be dig through emails at the hotel desk while clutching three suitcases.
+
+Whether it's a passport, a portable charger, and bookings for all the museums, parks, hotels, and airbnbns, let travel todo track all them for you at once. All you have to do is enjoy the planning. 
+
+
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
@@ -131,12 +141,9 @@ Project Link: [https://github.com/EAexist/trip-todo-api](https://github.com/EAex
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Google Cloud Vision API](https://cloud.google.com/vision/docs)
-* [Gemini Developer API](https://ai.google.dev/gemini-api/docs)
-* [Spring VertexAI Gemini Chat](https://docs.spring.io/spring-ai/reference/api/chat/vertexai-gemini-chat.html)
+* [Google Gemini API](https://aistudio.google.com/welcome)
 * [Amadeus](https://developers.amadeus.com/)
 * [Best-README-Template](https://github.com/EAexist/Best-README-Template)
-
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
