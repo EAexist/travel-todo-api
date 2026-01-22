@@ -17,6 +17,7 @@ bin/
 *.classpath
 *.prefs
 .vscode/
+.idea/
 
 # Docker
 pgdata/
