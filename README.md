@@ -128,7 +128,9 @@ This API Server supports Subscription Killer service.
 ## License
 
 Copyright (c) 2026 Hyeon Pyo. All rights reserved.
+
 No permission is granted for commercial use, distribution, or modification without explicit consent.
+
 
 <!-- CONTACT -->
 ## Contact
