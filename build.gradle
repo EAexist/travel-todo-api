@@ -71,15 +71,11 @@ dependencies {
     
     /* OAuth2.0 */
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    
     implementation"com.google.api-client:google-api-client:2.8.0"
 
-    /* Google */    
-    implementation 'com.google.cloud:spring-cloud-gcp-starter-vision'
+    /* Google */
     implementation 'org.springframework.ai:spring-ai-starter-model-vertex-ai-gemini:1.1.0'
-
     implementation "com.opencsv:opencsv:5.12.0"
-    implementation "com.amadeus:amadeus-java:10.0.0"
 
     /* Jsoup */
     implementation "org.jsoup:jsoup:1.21.2"

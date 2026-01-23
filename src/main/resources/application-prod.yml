@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+  ai:
+    vertex:
+      ai:
+        gemini:
+          project-id: ${GOOGLE_CLOUD_PROJECT}
+          location: us-west1
+          chat:
+            options:
+              model: gemini-2.0-flash-lite
+server:
+  port: ${PORT:8080}

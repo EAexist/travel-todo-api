@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Profile({ "development" })
+@Profile({ "!prod" })
 public class MockChatModelService implements ChatModelService {
 
     @Autowired

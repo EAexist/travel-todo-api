@@ -15,19 +15,9 @@ spring:
   session:
     jdbc:
       initialize-schema: always
-  ai:
-    vertex:
-      ai:
-        gemini:
-          project-id: travel-checklist-461608
-          #   credentials-uri: classpath:/certs/application_default_credentials.json
-          location: us-west1
-          chat:
-            options:
-              model: gemini-2.0-flash-lite
   cloud:
     gcp:
-      project-id: travel-checklist-461608
+      project-id: ${SPRING_AI_VERTEX_AI_GEMINI_PROJECT_ID}
     #   credentials:
     # location: ${GCP_CREDENTIALS_LOCATION}
     # location: classpath:/certs/gc-service-account-key.json
@@ -50,13 +40,6 @@ app:
     max-destinations: 4
     max-todos: 64
     max-reservations: 64
-  security:
-    admin-emails: hyeon.expression@gmail.com
-  google:
-    client-id: 428235231680-j847tt5013n612lk39j8rjp6gih61fsd.apps.googleusercontent.com
-    web-client-id: 428235231680-9nkmdpjmnp35484s3unlpm6nnf4g05t4.apps.googleusercontent.com
-  cors:
-    allowed-origins: ""
 
 # @TODO: use redis, not caffeine.
 bucket4j:
