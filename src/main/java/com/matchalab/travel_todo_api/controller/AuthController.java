@@ -69,35 +69,19 @@ public class AuthController {
     /**
      * Provide the details of an Trip with the given id.
      */
-    @PostMapping(value = "/google", params = "idToken")
-    public ResponseEntity<UserAccountDTO> googleLoginWithIdToken(@RequestParam String idToken)
-            throws GeneralSecurityException, IOException {
-        try {
-            GoogleIdTokenVerifier googleIdTokenVerifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
-                    new GsonFactory())
-                    .setAudience(Collections.singletonList(googleClientId))
-                    .build();
-            GoogleIdToken verifiedIdToken = googleIdTokenVerifier.verify(idToken);
-
-            if (verifiedIdToken != null) {
-                GoogleIdToken.Payload payload = verifiedIdToken.getPayload();
-                return googleLogin(GoogleProfile.builder().id(payload.getSubject()).email(payload.getEmail()).build());
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        } catch (HttpClientErrorException e) {
-            throw e;
-        }
+    @PostMapping(value = "/google")
+    public ResponseEntity<UserAccountDTO> googleLoginWithIdToken(Authentication auth){
+        // @TODO Extract User Info from auth
+        return googleLogin(GoogleProfile.builder().build());
     }
 
     /**
      * Provide the details of an Trip with the given id.
      */
     @PostMapping("/kakao")
-    public ResponseEntity<UserAccountDTO> kakaoLogin(@RequestBody String idToken,
+    public ResponseEntity<UserAccountDTO> kakaoLogin(Authentication auth,
             @RequestBody KakaoProfile kakaoProfile) {
         try {
-
             Boolean isCreated = true;
             Optional<UserAccount> userOptional = userAccountRepository.findByKakaoId(kakaoProfile.id());
 
@@ -106,7 +90,7 @@ public class AuthController {
             }
 
             UserAccount userAccount = userOptional
-                    .orElse(userAccountRepository.save(new UserAccount(idToken, kakaoProfile)));
+                    .orElse(userAccountRepository.save(new UserAccount(auth.getName(), kakaoProfile)));
 
             UserAccountDTO userAccountDTO = userAccountMapper
                     .mapToUserAccountDTO(userAccountService.createInitialEmptyTrip(userAccount));
@@ -141,11 +125,10 @@ public class AuthController {
     /**
      * Provide the details of an Trip with the given id.
      */
-    @PostMapping(value = "/admin", params = "idToken")
-    public ResponseEntity<UserAccountDTO> adminGoogleLoginWithIdToken(@RequestParam String idToken,
+    @PostMapping(value = "/admin")
+    public ResponseEntity<UserAccountDTO> adminGoogleLoginWithIdToken(
             HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
-        if (authentication != null && authentication.isAuthenticated()) {
             String username = authentication.getName();
             UUID userId = UUID.fromString(username);
             UserAccount userAccount = userAccountRepository.findById(userId)
@@ -153,11 +136,6 @@ public class AuthController {
 
             return ResponseEntity.ok()
                     .body(userAccountMapper.mapToUserAccountDTO(userAccount));
-        }
-
-        else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
     }
 
     private ResponseEntity<UserAccountDTO> googleLogin(GoogleProfile googleUserDTO) {
@@ -201,7 +179,7 @@ public class AuthController {
     /**
      * Provide the details of an Trip with the given id.
      */
-    @PostMapping(value = "/google")
+//    @PostMapping(value = "/google")
     public ResponseEntity<UserAccountDTO> _googleLogin(@RequestBody GoogleProfile googleUserDTO) {
         try {
 

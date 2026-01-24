@@ -35,6 +35,7 @@ public class AdminLoginFilter extends OncePerRequestFilter {
 
     private final UserAccountService userAccountService;
     private final UserDetailsService userDetailsService;
+    private final GoogleIdTokenVerifier verifier;
 
     private final String adminAuthPath;
 
@@ -56,7 +57,7 @@ public class AdminLoginFilter extends OncePerRequestFilter {
                 && request.getMethod().equals("POST")) {
 
             try {
-                String idToken = request.getParameter("idToken");
+                String idToken = extractToken(request);
                 GoogleIdToken verifiedIdToken = verifyGoogleIdToken(idToken);
 
                 if (verifiedIdToken == null) {
@@ -100,21 +101,17 @@ public class AdminLoginFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    protected GoogleIdToken verifyGoogleIdToken(String idToken) {
+    private GoogleIdToken verifyGoogleIdToken(String idToken) {
         try {
-            GoogleIdTokenVerifier googleIdTokenVerifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
-                    new GsonFactory())
-                    .setAudience(Collections.singletonList(googleWebClientId))
-                    .build();
-            return googleIdTokenVerifier.verify(idToken);
-        } catch (GeneralSecurityException e) {
+            return verifier.verify(idToken);
+        } catch (Exception e) {
             log.error("Failed to verify google id token");
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            log.error("Failed to verify google id token");
-            e.printStackTrace();
+            log.error(e.getMessage());
             return null;
         }
+    }
+    private String extractToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        return (bearerToken != null && bearerToken.startsWith("Bearer ")) ? bearerToken.substring(7) : null;
     }
 }

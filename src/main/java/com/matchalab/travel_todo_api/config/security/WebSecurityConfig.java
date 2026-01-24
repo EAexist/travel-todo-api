@@ -1,10 +1,14 @@
 package com.matchalab.travel_todo_api.config.security;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -140,12 +144,22 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public GoogleIdTokenVerifier googleIdTokenVerifier(
+            @Value("${app.google.web-client-id}") String webClientId) {
+        return new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singletonList(webClientId))
+                .build();
+    }
+
+    @Bean
     AdminLoginFilter adminLoginFilter(
             UserAccountService userAccountService,
-            UserDetailsService userDetailsService) {
+            UserDetailsService userDetailsService,
+            GoogleIdTokenVerifier verifier) {
         return new AdminLoginFilter(
                 userAccountService,
                 userDetailsService,
+                verifier,
                 ADMIN_AUTH_PATH);
     }
 }
