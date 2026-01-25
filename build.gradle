@@ -120,8 +120,36 @@ dependencies {
     
 }
 
-tasks.named('test') {	
+test {
 	useJUnitPlatform()
+}
+
+tasks.register('buildLambdaWebAdapterZip', Zip) {
+//    dependsOn 'generateGitProperties'
+
+    into('lib') {
+        from tasks.jar
+        from configurations.runtimeClasspath
+    }
+
+    from('run.sh') {
+        into '/'
+        filePermissions {
+            user {
+                read = true
+                write = true
+                execute = true
+            }
+            group {
+                read = true
+                execute = true
+            }
+            other {
+                read = true
+                execute = true
+            }
+        }
+    }
 }
 
 tasks.named('bootBuildImage') {

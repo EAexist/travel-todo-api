@@ -1,0 +1,1 @@
+exec java -cp "lib/*" com.matchalab.travel_todo_api.TravelTodoApiApplication
