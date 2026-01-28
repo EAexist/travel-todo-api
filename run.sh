@@ -1,1 +1,2 @@
-exec java -cp "lib/*" com.matchalab.travel_todo_api.TravelTodoApiApplication
+#!/bin/bash
+exec java -jar app.jar --server.port=8080

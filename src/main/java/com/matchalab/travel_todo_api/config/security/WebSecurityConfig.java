@@ -9,8 +9,10 @@ import javax.sql.DataSource;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -33,9 +35,10 @@ import com.matchalab.travel_todo_api.service.UserAccountService;
 
 @Configuration
 @EnableWebSecurity
+@ConfigurationProperties(prefix = "app.cors")
 public class WebSecurityConfig {
 
-    @Value("#{'${app.cors.allowed-origins}'.split(',')}")
+    @Setter
     private List<String> allowedOrigins;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.kakao.issuer-uri}")
@@ -94,9 +97,9 @@ public class WebSecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowCredentials(true);
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("Location"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"));
+        configuration.setExposedHeaders(List.of("Location"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -114,8 +117,9 @@ public class WebSecurityConfig {
                 .addFilterAt(anonymousUserLoginFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(adminLoginFilter, AnonymousUserLoginFilter.class)
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/actuator/health/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/proxy/place/autocomplete/json").permitAll()
+//                        .requestMatchers("/proxy/place/autocomplete/json").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .maximumSessions(1))
