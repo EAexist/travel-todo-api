@@ -11,6 +11,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.UUID;
 
+import com.matchalab.travel_todo_api.exception.NotFoundException;
+import com.matchalab.travel_todo_api.model.Destination;
+import com.matchalab.travel_todo_api.model.Icon;
+import com.matchalab.travel_todo_api.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -102,7 +106,7 @@ public class TodoControllerIntegrationTest {
                 new Destination(destination_osaka)));
 
         savedTrip = new Trip();
-        savedTrip.setDestinations(savedDestinations);
+        savedTrip.addDestinations(savedDestinations);
 
         StockTodoContent stockTodoContent_currency = stockTodoContentRepository
                 .findByTitle("환전")
@@ -120,7 +124,7 @@ public class TodoControllerIntegrationTest {
     void createTodo_Given_ValidTripIdAndCustomTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
 
         UUID tripId = savedTrip.getId();
-        TodoDTO todoDTO = TodoFactory.createValidCustomTodoDTO("new-reservation");
+        TodoDTO todoDTO = TodoFactory.createValidCustomTodoDTO();
 
         ResultActions result = mockMvc.perform(post(String.format("/trip/%s/todo", tripId))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -234,7 +238,7 @@ public class TodoControllerIntegrationTest {
 
         TodoDTO patchTodoDTO = TodoDTO.builder().orderKey(4).note("새로운 노트")
                 .completeDateIsoString("2025-02-23T00:00:00.001Z")
-                .content(TodoContentDTO.builder().isStock(false).category("goods").type("goods")
+                .content(TodoContentDTO.builder().isStock(false).category(null).type("goods")
                         .title("새로운 할 일 이름").icon(
                                 new Icon("🎁"))
                         .build())

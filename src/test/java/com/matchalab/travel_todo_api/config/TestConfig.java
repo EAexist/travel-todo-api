@@ -3,6 +3,7 @@ package com.matchalab.travel_todo_api.config;
 import java.util.List;
 import java.util.UUID;
 
+import com.matchalab.travel_todo_api.enums.TodoCategory;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
@@ -160,8 +161,7 @@ public class TestConfig {
 
     @Bean
     Todo stockTodo() {
-        Todo todo = Todo.builder().note("환전은 미리미리 할 것").stockTodoContent(stockTodoContent).build();
-        return todo;
+        return Todo.builder().note("환전은 미리미리 할 것").stockTodoContent(stockTodoContent).build();
     }
 
     @Bean
@@ -172,7 +172,7 @@ public class TestConfig {
                 .note("환전은 미리미리 할 것")
                 .completeDateIsoString(null)
                 .content(TodoContentDTO.builder().id(UUID.nameUUIDFromBytes("stockTodoContent-currency".getBytes()))
-                        .isStock(true).category("foreign").type(
+                        .isStock(true).category(TodoCategory.FOREIGN).type(
                                 "currency")
                         .title("환전").icon(new Icon("💱")).build())
                 .build();
@@ -180,17 +180,16 @@ public class TestConfig {
 
     StockTodoContent stockTodoContent = StockTodoContent.builder()
             .id(UUID.nameUUIDFromBytes("stockTodoContent-currency".getBytes()))
-            .isStock(true).category("foreign")
+            .category(TodoCategory.FOREIGN)
             .type("currency").title("환전").icon(new Icon("💱")).build();
 
     @Bean
     Todo customTodo() {
-        Todo todo = Todo.builder().id(UUID.nameUUIDFromBytes("customTodoContent-camera".getBytes()))
+        return Todo.builder().id(UUID.nameUUIDFromBytes("customTodoContent-camera".getBytes()))
                 .orderKey(1).note(
                         "카메라 필름 챙겼는지 확인할 것")
                 // .completeDateIsoString("2025-02-23T00:00:00.001Z")
                 .customTodoContent(customTodoContent).build();
-        return todo;
     }
 
     @Bean
@@ -205,13 +204,12 @@ public class TestConfig {
     }
 
     CustomTodoContent customTodoContent = CustomTodoContent.builder()
-            .id(UUID.nameUUIDFromBytes("customTodoContent-camera".getBytes()))
-            .isStock(false).category("goods")
+            .id(UUID.nameUUIDFromBytes("customTodoContent-camera".getBytes())).category(TodoCategory.ELECTRONICS)
             .type("goods").title("필름카메라").icon(new Icon("📸")).build();
 
     TodoContentDTO customTodoContentDTO = TodoContentDTO.builder()
             .id(customTodoContent.getId())
-            .isStock(false).category("goods")
+            .isStock(false).category(TodoCategory.ELECTRONICS)
             .type("goods")
             .title("필름카메라").icon(new Icon("📸")).build();
 
@@ -227,14 +225,18 @@ public class TestConfig {
 
     @Bean
     Trip tripHydrated() {
-        return Trip.builder().id(trip().getId()).title(
+
+        Trip _trip = Trip.builder().id(trip().getId()).title(
                 "Vaundy 보러 가는 도쿠시마 여행").startDateIsoString(
                         "2025-02-20T00:00:00.001Z")
                 .endDateIsoString(
                         "2025-02-25T00:00:00.001Z")
-                .destination(List.of(destinations()))
                 .todolist(List.of(new Todo[] { stockTodo(), customTodo() }))
                 .build();
+
+        _trip.addDestinations(List.of(destinations()));
+
+        return _trip;
     }
 
     @Bean
@@ -245,7 +247,7 @@ public class TestConfig {
                 .title("Vaundy 보러 가는 도쿠시마 여행")
                 .startDateIsoString("2025-02-20T00:00:00.001Z")
                 .endDateIsoString("2025-02-25T00:00:00.001Z")
-                .destination(List.of(destinationDTOs()))
+                .destinations(List.of(destinationDTOs()))
                 .todolist(List.of(new TodoDTO[] { stockTodoDTO(), customTodoDTO() }))
                 .build();
     }
@@ -257,7 +259,7 @@ public class TestConfig {
                 .title(trip().getTitle())
                 .startDateIsoString(trip().getStartDateIsoString())
                 .endDateIsoString(trip().getEndDateIsoString())
-                .destination(List.of(destination_tokushima().getTitle(), destination_kyoto().getTitle()))
+                .destinationTitles(List.of(destination_tokushima().getTitle(), destination_kyoto().getTitle()))
                 .build();
     }
 }

@@ -1,5 +1,5 @@
 package com.matchalab.travel_todo_api.config;
-// package com.matchalab.trip_todo_api.config;
+// package com.matchalab.travel_todo_api.config;
 
 // import org.springframework.boot.test.context.TestConfiguration;
 // import org.springframework.context.annotation.Bean;

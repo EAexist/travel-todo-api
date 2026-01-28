@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
+import com.matchalab.travel_todo_api.DTO.TodoPatchDTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -21,7 +22,7 @@ import com.matchalab.travel_todo_api.DTO.TodoDTO;
 import com.matchalab.travel_todo_api.config.TestConfig;
 import com.matchalab.travel_todo_api.model.Todo.Todo;
 import com.matchalab.travel_todo_api.repository.StockTodoContentRepository;
-import com.matchalab.trip_todo_api.mapper.TodoMapperImpl;
+import com.matchalab.travel_todo_api.mapper.TodoMapperImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,16 +36,22 @@ import lombok.extern.slf4j.Slf4j;
 public class TodoMapperTest {
 
     @Autowired
-    private TodoDTO stockTodoDTO;
+    private Todo stockTodo;
 
     @Autowired
-    private Todo stockTodo;
+    private Todo customTodo;
+
+    @Autowired
+    private TodoDTO stockTodoDTO;
 
     @Autowired
     private TodoDTO customTodoDTO;
 
     @Autowired
-    private Todo customTodo;
+    private TodoPatchDTO customTodoPatchDTO;
+
+    @Autowired
+    private TodoPatchDTO stockTodoPatchDTO;
 
     @MockitoBean
     private StockTodoContentRepository stockTodoContentRepository;
@@ -67,8 +74,8 @@ public class TodoMapperTest {
     @Test
     void mapToTodo_Given_stockTodoDTO_When_mapped_Then_correctTodo() {
 
-        Todo mappedTodo = todoMapper.mapToTodo(stockTodoDTO);
-        assertNotNull(stockTodoDTO);
+        Todo mappedTodo = todoMapper.mapToTodo(stockTodoPatchDTO);
+        assertNotNull(stockTodoPatchDTO);
         assertNotNull(mappedTodo);
         assertThat(mappedTodo).usingRecursiveComparison()
                 .ignoringFieldsOfTypes().ignoringFields().isEqualTo(stockTodo);
@@ -85,7 +92,7 @@ public class TodoMapperTest {
     @Test
     void mapToTodo_Given_customTodoDTO_When_mapped_Then_correctTodo() {
 
-        Todo mappedTodo = todoMapper.mapToTodo(customTodoDTO);
+        Todo mappedTodo = todoMapper.mapToTodo(customTodoPatchDTO);
         assertNotNull(customTodoDTO);
         assertNotNull(mappedTodo);
         assertThat(mappedTodo).usingRecursiveComparison()

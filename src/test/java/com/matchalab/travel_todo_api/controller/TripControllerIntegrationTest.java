@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.matchalab.travel_todo_api.exception.NotFoundException;
+import com.matchalab.travel_todo_api.model.Destination;
+import com.matchalab.travel_todo_api.model.Flight.Airport;
+import com.matchalab.travel_todo_api.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -178,10 +182,9 @@ public class TripControllerIntegrationTest {
                 new Destination(destination_osaka));
 
         savedTrip = new Trip(trip);
-        savedDestinations.stream()
+        savedDestinations
                 .forEach(dest -> {
-                    savedTrip.getDestinations().add(dest);
-                    dest.getTrips().add(savedTrip);
+                    savedTrip.addDestination(dest);
                     destinationRepository.save(dest);
                 });
 
@@ -271,13 +274,13 @@ public class TripControllerIntegrationTest {
                 new TypeReference<List<TodoPresetItemDTO>>() {
                 });
 
-        List<FlightRoute> recommendedOutboudFlight = savedTrip.getDestinations().stream()
-                .map(dest -> dest.getRecommendedOutboundFlight()).flatMap(List::stream)
-                .collect(Collectors.toList());
+        List<FlightRoute> recommendedOutboudFlight = savedTrip.getDestinationsDirectly().stream()
+                .map(Destination::getRecommendedOutboundFlight).flatMap(List::stream)
+                .toList();
 
-        List<FlightRoute> recommendedReturnFlight = savedTrip.getDestinations().stream()
-                .map(dest -> dest.getRecommendedReturnFlight()).flatMap(List::stream)
-                .collect(Collectors.toList());
+        List<FlightRoute> recommendedReturnFlight = savedTrip.getDestinationsDirectly().stream()
+                .map(Destination::getRecommendedReturnFlight).flatMap(List::stream)
+                .toList();
 
         List<TodoPresetItemDTO> stockTodoPresetItemDTOs = todoPresetRepository.findByTitle("기본")
                 .orElseThrow(() -> new NotFoundException(null)).getTodoPresetStockTodoContents().stream()
