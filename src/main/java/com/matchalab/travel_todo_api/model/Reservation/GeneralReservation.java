@@ -34,7 +34,7 @@ public class GeneralReservation {
     private String dateTimeIsoString;
 
     public GeneralReservation(GeneralReservation generalReservation) {
-        this();
+        this.id = UUID.randomUUID();
         this.title = generalReservation.getTitle();
         this.numberOfClient = generalReservation.getNumberOfClient();
         this.clientName = generalReservation.getClientName();

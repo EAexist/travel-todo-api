@@ -29,7 +29,7 @@ public class VisitJapan {
     String dateTimeIsoString;
 
     public VisitJapan(VisitJapan visitJapan) {
-        this();
+        this.id = UUID.randomUUID();
         this.dateTimeIsoString = visitJapan.getDateTimeIsoString();
     }
 }
