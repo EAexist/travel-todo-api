@@ -123,7 +123,7 @@ public class Trip {
         // TripDestination
         this.destinations = new ArrayList<>();
         for (TripDestination sourceTripDestination : sourceTrip.getDestinations()) {
-            Destination newDestination = new Destination(sourceTripDestination.getDestination());
+            Destination newDestination = sourceTripDestination.getDestination();
             TripDestination newTripDestination = new TripDestination(sourceTripDestination, this, newDestination);
             newTripDestination.setTrip(this);
             this.destinations.add(newTripDestination);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.matchalab.travel_todo_api.enums.TodoCategory;
 import com.matchalab.travel_todo_api.model.Icon;
 
@@ -19,6 +20,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TodoContentDTO {
 
     @Nullable

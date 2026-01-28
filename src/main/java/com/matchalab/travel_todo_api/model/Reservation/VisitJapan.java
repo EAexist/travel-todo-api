@@ -27,4 +27,8 @@ public class VisitJapan {
 
     @Nullable
     String dateTimeIsoString;
+
+    public VisitJapan(VisitJapan visitJapan) {
+        this.dateTimeIsoString = visitJapan.getDateTimeIsoString();
+    }
 }

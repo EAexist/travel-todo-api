@@ -74,7 +74,7 @@ public class GooglePlaceAutocompleteService {
                     GooglePlaceAutoCompleteResponse.class);
 
             if(response == null ){
-                return GooglePlaceAutoCompleteResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                return GooglePlaceAutoCompleteResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.name())
                         .build();
             }
 

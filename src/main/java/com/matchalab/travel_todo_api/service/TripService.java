@@ -144,7 +144,7 @@ public class TripService {
         return tripMapper.mapToTripDTO(trip);
     }
 
-    public TripDTO createAdminSampleTrip(UUID userId) {
+    public Trip createAdminSampleTrip(UUID userId) {
 
         if (tripRepository.findTop1ByIsSampleTrue().isPresent()) {
             return null;
@@ -160,19 +160,44 @@ public class TripService {
         }
         Trip trip = new Trip();
 
+        // Set Sample
+        trip.setIsSample(true);
+
+        userAccount.addTrip(trip);
+        userAccount = userAccountRepository.save(userAccount);
+        userAccount.setActiveTripId(userAccount.getTrips().getFirst().getId());
+        userAccount = userAccountRepository.save(userAccount);
+
+//        trip = populateAdminSampleTrip();
+
+        return userAccount.getTrips().getFirst();
+    }
+
+    public Trip populateAdminSampleTrip() {
+
+        if (tripRepository.findTop1ByIsSampleTrue().isEmpty()) {
+            return null;
+        }
+
+        Trip trip = tripRepository.findTop1ByIsSampleTrue().get();
+        UUID tripId = trip.getId();
+        List.of(DestinationDTO.builder().title("교토").region("일본 교토부").build(), DestinationDTO.builder().title("오사카").region("일본 오사카부").build()).forEach(dto ->{
+            addDestination(tripId, dto);
+        });
+
+        trip.setTitle("교토, 오사카 여행");
+
+        trip.setStartDateIsoString("2026-05-01T00:00:00");
+        trip.setEndDateIsoString("2026-05-10T00:00:00");
+
         // Link TodoPreset
-        TodoPreset preset = todoPresetRepository.findByType(TodoPresetType.DEFAULT)
+        TodoPreset preset = todoPresetRepository.findByType(TodoPresetType.JAPAN)
                 .orElseThrow(() -> new NotFoundException(null));
         trip.setTodoPreset(preset);
 
-        // Set Sample
-        trip.setIsSample(true);
-        trip = tripRepository.save(trip);
+        trip.setIsInitialized(true);
 
-        userAccount.addTrip(trip);
-        userAccountRepository.save(userAccount);
-
-        return tripMapper.mapToTripDTO(trip);
+        return tripRepository.save(trip);
     }
 
     /**

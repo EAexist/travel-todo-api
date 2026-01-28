@@ -139,6 +139,9 @@ public class Reservation implements Persistable<UUID> {
         this.generalReservation = reservation.getGeneralReservation() != null
                 ? new GeneralReservation(reservation.getGeneralReservation())
                 : null;
+        this.visitJapan = reservation.getVisitJapan() != null
+                ? new VisitJapan(reservation.getVisitJapan())
+                : null;
         // this.serverFileUri = reservation.getServerFileUri();
         // this.localAppStorageFileUri = reservation.getLocalAppStorageFileUri();
     }

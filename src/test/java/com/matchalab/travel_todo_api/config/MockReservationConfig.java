@@ -86,7 +86,7 @@ public class MockReservationConfig {
                             .departureAirport(AirportFactory.createValidAirport("ICN"))
                             .arrivalAirport(AirportFactory.createValidAirport("TKS"))
                             .numberOfPassenger(1)
-                            .passengerNames(new String[] { "PYO HYEON" })
+                            .passengerName("Hong Gildong")
                             .build());
 
     @Bean

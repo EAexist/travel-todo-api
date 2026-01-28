@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
+import com.matchalab.travel_todo_api.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -270,12 +271,12 @@ public class ReservationControllerIntegrationTest {
                 StandardCharsets.UTF_8);
 
         CreateReservationDTO createReservationDTO = CreateReservationDTO.builder()
-                .category(ReservationCategory.UNKNOWN.name())
+                .category(ReservationCategory.UNKNOWN)
                 // .category(ReservationCategory.ACCOMODATION.name())
                 .confirmationText(confirmationText).build();
 
         ResultActions result = mockMvc
-                .perform(post(String.format("/trip/%s/reservation/analysis/text", userAccountId, tripId))
+                .perform(post(String.format("/trip/%s/reservation/analysis/text", tripId))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Utils.asJsonString(createReservationDTO)))
                 .andDo(print())
