@@ -29,6 +29,7 @@ public class VisitJapan {
     String dateTimeIsoString;
 
     public VisitJapan(VisitJapan visitJapan) {
+        this();
         this.dateTimeIsoString = visitJapan.getDateTimeIsoString();
     }
 }
