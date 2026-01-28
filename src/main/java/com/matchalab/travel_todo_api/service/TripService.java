@@ -340,7 +340,7 @@ public class TripService {
                             log.info(String.format(
                                     "[addDestination] publishing new NewDestinationCreatedEvent(this, %s)",
                                     dest.getId()));
-                            eventPublisher.publishEvent(new NewDestinationCreatedEvent(this, dest.getId()));
+//                            eventPublisher.publishEvent(new NewDestinationCreatedEvent(this, dest.getId()));
                             return dest;
                         });
 
