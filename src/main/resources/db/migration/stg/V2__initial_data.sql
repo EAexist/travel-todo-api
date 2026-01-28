@@ -196,12 +196,12 @@ DROP TABLE staging_airport;
 
 -- Todo Preset
 
-INSERT INTO todo_preset (title, type) VALUES
+INSERT INTO todo_preset (id, title, type) VALUES
     -- Assuming title is nullable or empty
-    (NULL, 'DEFAULT'),
-    (NULL, 'DOMESTIC'),
-    (NULL, 'FOREIGN'),
-    (NULL, 'JAPAN')
+    (gen_random_uuid(), NULL, 'DEFAULT'),
+    (gen_random_uuid(), NULL, 'DOMESTIC'),
+    (gen_random_uuid(), NULL, 'FOREIGN'),
+    (gen_random_uuid(), NULL, 'JAPAN')
 ON CONFLICT (type) DO NOTHING;
 
 -- Flyway migration generated from data/stock_todo_content.csv.
