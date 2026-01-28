@@ -1,8 +1,10 @@
 // https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.0'
 	id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.gradleup.shadow' version '9.3.1'
 }
 
 group = 'com.matchalab'
@@ -108,7 +110,12 @@ dependencies {
     // https://mvnrepository.com/artifact/org.flywaydb/flyway-database-postgresql
     runtimeOnly("org.flywaydb:flyway-database-postgresql:11.17.0")
 
+    // AWS
+    implementation(platform("software.amazon.awssdk:bom:2.25.0"))
+    implementation("software.amazon.awssdk:ssm")
 
+    // Actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     /* Test */
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -117,38 +124,34 @@ dependencies {
     // testImplementation "org.awaitility:awaitility:4.3.0"
     // testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     // testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    
 }
 
 test {
 	useJUnitPlatform()
 }
 
-tasks.register('buildLambdaWebAdapterZip', Zip) {
-//    dependsOn 'generateGitProperties'
+shadowJar {
+    zip64 = true
+    mergeServiceFiles()
+    append 'META-INF/spring.handlers'
+    append 'META-INF/spring.schemas'
+    append 'META-INF/spring.tooling'
 
-    into('lib') {
-        from tasks.jar
-        from configurations.runtimeClasspath
+    manifest {
+        attributes(
+                'Main-Class': 'com.matchalab.travel_todo_api.TravelTodoApiApplication'
+        )
     }
+}
 
+tasks.register('buildLambdaWebAdapterZip', Zip) {
+    dependsOn 'bootJar'
+    zip64 = true
     from('run.sh') {
-        into '/'
-        filePermissions {
-            user {
-                read = true
-                write = true
-                execute = true
-            }
-            group {
-                read = true
-                execute = true
-            }
-            other {
-                read = true
-                execute = true
-            }
-        }
+        filePermissions { user { execute = true }; group { execute = true }; other { execute = true } }
+    }
+    from(tasks.bootJar) {
+        rename { 'app.jar' }
     }
 }
 
@@ -156,8 +159,6 @@ tasks.named('bootBuildImage') {
     imagePlatform = 'linux/amd64'
     // image.builder.platforms.set(['linux/amd64']) 
 }
-
-
 
 // tasks.withType(JavaCompile).configureEach {
 //     if (name.contains("Test")) {

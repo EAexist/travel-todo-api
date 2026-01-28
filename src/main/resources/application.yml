@@ -1,9 +1,24 @@
 spring:
+  profiles:
+    group:
+      dev:
+        - ssl
   flyway:
     enabled: true
     baseline-on-migrate: true
   datasource:
     driver-class-name: org.postgresql.Driver
+    hikari:
+      keepalive-time: 30000
+      max-lifetime: 600000
+      connection-test-query: SELECT 1
+      initialization-fail-timeout: 1
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
   security:
     oauth2:
       resourceserver:
@@ -17,10 +32,7 @@ spring:
       initialize-schema: always
   cloud:
     gcp:
-      project-id: ${SPRING_AI_VERTEX_AI_GEMINI_PROJECT_ID}
-    #   credentials:
-    # location: ${GCP_CREDENTIALS_LOCATION}
-    # location: classpath:/certs/gc-service-account-key.json
+      project-id: ${GOOGLE_CLOUD_PROJECT}
   cache:
     jcache:
       provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
@@ -33,6 +45,16 @@ logging:
     org:
       springframework:
         security: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true
 app:
   quota:
     max-trips: 5

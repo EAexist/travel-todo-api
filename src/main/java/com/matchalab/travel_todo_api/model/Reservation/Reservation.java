@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.domain.Persistable;
 
 import com.matchalab.travel_todo_api.enums.ReservationCategory;
@@ -67,22 +69,27 @@ public class Reservation implements Persistable<UUID> {
     private String note;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Nullable
     private VisitJapan visitJapan;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Nullable
     private Accomodation accomodation;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Nullable
     private FlightBooking flightBooking;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Nullable
     private FlightTicket flightTicket;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Nullable
     private GeneralReservation generalReservation;
 
