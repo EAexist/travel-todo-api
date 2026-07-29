@@ -4,11 +4,12 @@ import com.matchalab.travel_todo_api.DTO.TodoDTO;
 import com.matchalab.travel_todo_api.DTO.TodoPatchDTO;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@TestConfiguration
 @ComponentScan(basePackages = {
     "com.matchalab.travel_todo_api.mapper",
     "com.matchalab.travel_todo_api.DTO",

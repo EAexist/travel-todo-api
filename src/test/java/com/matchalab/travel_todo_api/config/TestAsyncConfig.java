@@ -1,12 +1,13 @@
 package com.matchalab.travel_todo_api.config;
 
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
-@Configuration
+@TestConfiguration
 public class TestAsyncConfig {
 
     @Bean
