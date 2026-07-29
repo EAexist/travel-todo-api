@@ -35,6 +35,9 @@ test-local.sh
 *.crt
 *.key
 
+# Temp files
+src/main/resources/temp
+
 .env*
 
 # Deprecated

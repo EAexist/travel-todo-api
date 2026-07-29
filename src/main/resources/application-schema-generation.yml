@@ -9,7 +9,7 @@ spring:
           schema-generation:
             scripts:
               action: create
-              create-target: src/main/resources/db/migration/staging/V1__initial_schema.sql
+              create-target: src/main/resources/temp/V1__initial_schema.sql
             create-source: metadata
   flyway:
     enabled: false
