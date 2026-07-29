@@ -187,7 +187,7 @@ public class TripControllerIntegrationTest {
 
     @Test
     @Transactional
-    void trip_Given_ValidTripId_When_RequestGet_Then_CorrectTripDTO() throws Exception {
+    void givenValidTripId_whenGetTrip_thenReturnsCorrectTripDto() throws Exception {
 
         UUID id = savedTrip.getId();
 
@@ -206,7 +206,7 @@ public class TripControllerIntegrationTest {
 
     @Test
     @Transactional
-    void createTrip_When_RequestPost_Then_CreateNewTrip() throws Exception {
+    void whenCreateTrip_thenReturnsCreated() throws Exception {
 
         ResultActions result = mockMvc.perform(post(String.format("/user/%s/trip", userAccountId)))
                 .andDo(print())
@@ -222,7 +222,7 @@ public class TripControllerIntegrationTest {
 
     @Test
     @Transactional
-    void patchTrip_Given_ValidIdAndNewContent_When_RequestPut_Then_patchTrip() throws Exception {
+    void givenValidPatchDto_whenPatchTrip_thenReturnsOk() throws Exception {
 
         TripPatchDTO tripDTOToPatch = TripPatchDTO.builder().isInitialized(false).title("새 여행 이름")
                 .startDateIsoString("2025-02-10T00:00:00.001Z").build();
@@ -254,7 +254,7 @@ public class TripControllerIntegrationTest {
 
     @Test
     @Transactional
-    void getTodoPreset_Given_PopulatedPresetDB_When_RequestGet_Then_AllPresets() throws Exception {
+    void givenPopulatedPresetDb_whenGetTodoPresets_thenReturnsAllPresets() throws Exception {
 
         log.info(String.format("[getTodoPreset_Given_PopulatedPresetDB_When_RequestGet_Then_AllPresets] %s",
                 Utils.asJsonString(stockTodoContentRepository.findAll())));
@@ -302,7 +302,7 @@ public class TripControllerIntegrationTest {
 
     @Test
     @Transactional
-    void addDestination_Given_ValidTripIdAndDestinationDTO_When_RequestPost_Then_AddDestinationToTrip()
+    void givenValidDestinationDto_whenAddDestination_thenReturnsCreated()
             throws Exception {
 
         UUID tripId = savedTrip.getId();
@@ -329,7 +329,7 @@ public class TripControllerIntegrationTest {
 
     @Test
     @Transactional
-    void addDestination_Given_AlreadyExistingDestination_Then_DoNotCreateRedundantDestination() throws Exception {
+    void givenExistingDestination_whenAddDestination_thenReturnsExistingId() throws Exception {
 
         UUID destinationId_tokushima = destinationRepository.findByiso2DigitNationCodeAndTitle("JP", "도쿠시마")
                 .orElseThrow(() -> new NotFoundException(null)).getId();

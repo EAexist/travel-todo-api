@@ -56,7 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({ TestConfig.class })
 @TestInstance(Lifecycle.PER_CLASS)
-@ActiveProfiles({ "local", "local-init-data" })
+@ActiveProfiles({ "local" })
 @EnableWebSecurity
 public class TodoControllerIntegrationTest {
 
@@ -124,7 +124,7 @@ public class TodoControllerIntegrationTest {
     }
 
     @Test
-    void createTodo_Given_ValidTripIdAndCustomTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
+    void givenValidCustomTodoDto_whenCreateTodo_thenReturnsCreated() throws Exception {
 
         UUID tripId = savedTrip.getId();
         TodoCreateDTO createDto = TodoFactory.createValidCustomTodoCreateDTO();
@@ -146,7 +146,7 @@ public class TodoControllerIntegrationTest {
     }
 
     @Test
-    void createTodo_Given_ValidTripIdAndStockTodoDTOOnlyWithId_When_RequestPost_Then_CreateTodo() throws Exception {
+    void givenValidStockTodoDtoWithOnlyId_whenCreateTodo_thenReturnsCreated() throws Exception {
 
         UUID tripId = savedTrip.getId();
         UUID todoId = UUID.nameUUIDFromBytes("todo-stock".getBytes());
@@ -178,7 +178,7 @@ public class TodoControllerIntegrationTest {
     }
 
     @Test
-    void createTodo_Given_ValidTripIdAndStockTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
+    void givenValidStockTodoDto_whenCreateTodo_thenReturnsCreated() throws Exception {
 
         UUID tripId = savedTrip.getId();
         UUID todoId = UUID.nameUUIDFromBytes("todo-stock".getBytes());
@@ -204,38 +204,8 @@ public class TodoControllerIntegrationTest {
                 .isEqualTo(createDto);
     }
 
-    // @TODO
-    // @Test
-    // void
-    // createTodo_Given_ValidTripIdAndFlightTodoDTO_When_RequestPost_Then_CreateTodo()
-    // throws Exception {
-
-    // String id = savedTrip.getId();
-
-    // ResultActions result =
-    // mockMvc.perform(post(String.format("/trip/%s/todo", userAccountId,
-    // id))
-    // .contentType(MediaType.APPLICATION_JSON)
-    // .content(
-    // Utils.asJsonString(TodoDTO.builder().type("flight")
-    // .flightRoutes(List.of(new FlightRoute(id, null, null, null),
-    // new FlightRoute(id, null, null, null)))
-    // .build())))
-    // .andDo(print())
-    // .andExpect(status().isCreated())
-    // .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-    // .andExpect(jsonPath("id")
-    // .isNotEmpty());
-
-    // TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
-    // result.andExpect(header().string("Location",
-    // String.format("http://localhost/trip/%s/todo/%s", userAccountId, id,
-    // createdTodoDTO.id())));
-    // }
-
     @Test
-    // @Transactional
-    void patchTodo_Given_NewContentAndOrderKey_When_RequestPatchCustomTodo_Then_UpdateTodo() throws Exception {
+    void givenValidCustomTodoPatchDto_whenPatchTodo_thenReturnsOk() throws Exception {
 
         UUID id = savedTrip.getId();
 
@@ -273,8 +243,7 @@ public class TodoControllerIntegrationTest {
     }
 
     @Test
-    // @Transactional
-    void patchTodo_Given_NewContentAndOrderKey_When_RequestPatchStockTodo_Then_UpdateTodo() throws Exception {
+    void givenValidStockTodoPatchDto_whenPatchTodo_thenReturnsOk() throws Exception {
 
         UUID id = savedTrip.getId();
 
