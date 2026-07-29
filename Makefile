@@ -1,5 +1,5 @@
 ifeq ($(OS),Windows_NT)
-    GRADLE := gradlew.bat
+    GRADLE := ./gradlew.bat
     ifneq (,$(wildcard .env.dev))
         include .env.dev
         export
@@ -30,7 +30,7 @@ endif
 help: ## Show this help message
 	@echo "Usage: make [target]"
 
-run-dev: ## Run the application in dev mode
+run-dev: ## Run the application in dev modeNotFoundException
 	@$(GRADLE) bootRun -x test --args='--spring.profiles.active=dev,ai'
 
 load-data: ## Load reference data
