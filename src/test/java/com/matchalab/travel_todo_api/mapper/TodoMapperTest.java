@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.matchalab.travel_todo_api.config.MapperTestConfig;
 import java.util.Optional;
 
 import com.matchalab.travel_todo_api.DTO.TodoPatchDTO;
@@ -27,10 +28,7 @@ import com.matchalab.travel_todo_api.mapper.TodoMapperImpl;
 import lombok.extern.slf4j.Slf4j;
 
 @SpringBootTest
-@Import({ TestConfig.class })
-@ContextConfiguration(classes = {
-        TodoMapperImpl.class
-})
+@Import({ TestConfig.class, MapperTestConfig.class })
 @TestInstance(Lifecycle.PER_CLASS)
 @Slf4j
 public class TodoMapperTest {

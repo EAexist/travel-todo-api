@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.matchalab.travel_todo_api.DTO.TodoCreateDTO;
+import com.matchalab.travel_todo_api.DTO.TodoPatchDTO;
 import java.util.List;
 import java.util.UUID;
 
@@ -99,76 +101,79 @@ public class TodoControllerIntegrationTest {
 
     @BeforeAll
     void setUp() {
+        destinationRepository.deleteAll();
 
         userAccountId = userAccountRepository.save(new UserAccount()).getId();
 
         List<Destination> savedDestinations = destinationRepository.saveAll(List.of(new Destination(destination_kyoto),
                 new Destination(destination_osaka)));
 
-        savedTrip = new Trip();
+        savedTrip = tripRepository.save(new Trip());
         savedTrip.addDestinations(savedDestinations);
 
         StockTodoContent stockTodoContent_currency = stockTodoContentRepository
-                .findByTitle("환전")
+                .findByType("CASH")
                 .orElseThrow(() -> new NotFoundException(null));
-        stockTodoContent_passport = stockTodoContentRepository.findByTitle("여권")
+        stockTodoContent_passport = stockTodoContentRepository.findByType("PASSPORT")
                 .orElseThrow(() -> new NotFoundException(null));
 
         savedTrip.addTodo(customTodo);
         savedTrip.addTodo(TodoFactory.createValidStockTodo("currency", stockTodoContent_currency));
         savedTrip = tripRepository.save(savedTrip);
-        log.info(String.format("[setUp] savedTrip=%s", Utils.asJsonString(tripMapper.mapToTripDTO(savedTrip))));
+//        log.info(String.format("[setUp] savedTrip=%s", Utils.asJsonString(tripMapper.mapToTripDTO(savedTrip))));
     }
 
     @Test
     void createTodo_Given_ValidTripIdAndCustomTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
 
         UUID tripId = savedTrip.getId();
-        TodoDTO todoDTO = TodoFactory.createValidCustomTodoDTO();
+        TodoCreateDTO createDto = TodoFactory.createValidCustomTodoCreateDTO();
 
         ResultActions result = mockMvc.perform(post(String.format("/trip/%s/todo", tripId))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(todoDTO)))
+                .content(Utils.asJsonString(createDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
+        TodoDTO createdDTO = TestUtils.asObject(result, TodoDTO.class);
         result.andExpect(header().string("Location",
-                String.format("http://localhost/trip/%s/todo/%s", tripId, todoDTO.id())));
+                String.format("http://localhost/trip/%s/todo/%s", tripId, createDto.id())));
 
-        assertThat(createdTodoDTO).usingRecursiveComparison()
-                .isEqualTo(todoDTO);
+        assertThat(createdDTO).usingRecursiveComparison()
+            .comparingOnlyFields("id", "orderKey", "content")
+                .isEqualTo(createDto);
     }
 
     @Test
     void createTodo_Given_ValidTripIdAndStockTodoDTOOnlyWithId_When_RequestPost_Then_CreateTodo() throws Exception {
 
         UUID tripId = savedTrip.getId();
-        UUID todoDtoId = UUID.nameUUIDFromBytes("todo-stock".getBytes());
+        UUID todoId = UUID.nameUUIDFromBytes("todo-stock".getBytes());
 
-        TodoDTO expectedTodoDTO = TodoDTO.builder().id(todoDtoId).orderKey(0)
+        TodoDTO expectedTodoDTO = TodoDTO.builder().id(todoId).orderKey(0)
                 .content(todoMapper.mapToTodoContentDTO(stockTodoContent_passport))
                 .build();
 
-        TodoDTO todoDTO = TodoDTO.builder().id(todoDtoId).orderKey(0)
+        TodoCreateDTO createDto = TodoCreateDTO.builder().id(todoId).orderKey(0)
                 .content(TodoContentDTO.builder().id(todoMapper.mapToTodoContentDTO(stockTodoContent_passport).getId())
                         .isStock(true).build())
                 .build();
 
         ResultActions result = mockMvc.perform(post(String.format("/trip/%s/todo", tripId))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(todoDTO)))
+                .content(Utils.asJsonString(createDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
+        TodoDTO createdDTO = TestUtils.asObject(result, TodoDTO.class);
 
         result.andExpect(header().string("Location",
-                String.format("http://localhost/trip/%s/todo/%s", tripId, todoDtoId)));
+                String.format("http://localhost/trip/%s/todo/%s", tripId, todoId)));
 
-        assertThat(createdTodoDTO).usingRecursiveComparison()
+        assertThat(createdDTO).usingRecursiveComparison()
+            .comparingOnlyFields("id", "orderKey", "content")
                 .isEqualTo(expectedTodoDTO);
     }
 
@@ -176,26 +181,27 @@ public class TodoControllerIntegrationTest {
     void createTodo_Given_ValidTripIdAndStockTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
 
         UUID tripId = savedTrip.getId();
-        UUID todoDtoId = UUID.nameUUIDFromBytes("todo-stock".getBytes());
+        UUID todoId = UUID.nameUUIDFromBytes("todo-stock".getBytes());
 
-        TodoDTO todoDTO = TodoDTO.builder().id(todoDtoId).orderKey(0)
+        TodoCreateDTO createDto = TodoCreateDTO.builder().id(todoId).orderKey(0)
                 .content(todoMapper.mapToTodoContentDTO(stockTodoContent_passport))
                 .build();
 
         ResultActions result = mockMvc.perform(post(String.format("/trip/%s/todo", tripId))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(todoDTO)))
+                .content(Utils.asJsonString(createDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
+        TodoDTO createdDTO = TestUtils.asObject(result, TodoDTO.class);
 
         result.andExpect(header().string("Location",
-                String.format("http://localhost/trip/%s/todo/%s", tripId, todoDtoId)));
+                String.format("http://localhost/trip/%s/todo/%s", tripId, todoId)));
 
-        assertThat(createdTodoDTO).usingRecursiveComparison()
-                .isEqualTo(todoDTO);
+        assertThat(createdDTO).usingRecursiveComparison()
+            .comparingOnlyFields("id", "orderKey", "content")
+                .isEqualTo(createDto);
     }
 
     // @TODO
@@ -236,8 +242,7 @@ public class TodoControllerIntegrationTest {
         Todo todo = savedTrip.getTodolist().stream().filter(todo_ -> todo_.getStockTodoContent() == null).toList()
                 .getFirst();
 
-        TodoDTO patchTodoDTO = TodoDTO.builder().orderKey(4).note("새로운 노트")
-                .completeDateIsoString("2025-02-23T00:00:00.001Z")
+        TodoPatchDTO patchTodoDTO = TodoPatchDTO.builder().orderKey(4).note("새로운 노트")
                 .content(TodoContentDTO.builder().isStock(false).category(null).type("goods")
                         .title("새로운 할 일 이름").icon(
                                 new Icon("🎁"))
@@ -255,13 +260,13 @@ public class TodoControllerIntegrationTest {
         TodoDTO actualTodoDTO = TestUtils.asObject(result, TodoDTO.class);
 
         assertThat(actualTodoDTO).usingRecursiveComparison()
-                .comparingOnlyFields("orderKey", "note", "completeDateIsoString", "content.category", "content.type",
+                .comparingOnlyFields("orderKey", "note", "completeDateIsoString", "content.type",
                         "content.title",
                         "content.icon")
                 .isEqualTo(patchTodoDTO);
 
         assertThat(actualTodoDTO).usingRecursiveComparison()
-                .ignoringFields("orderKey", "note", "completeDateIsoString", "content.category", "content.type",
+                .ignoringFields("orderKey", "note", "completeDateIsoString", "content.type",
                         "content.title",
                         "content.icon")
                 .isEqualTo(todoMapper.mapToTodoDTO(todo));
@@ -276,8 +281,8 @@ public class TodoControllerIntegrationTest {
         Todo todo = savedTrip.getTodolist().stream().filter(todo_ -> todo_.getStockTodoContent() != null).toList()
                 .getFirst();
 
-        TodoDTO patchTodoDTO = TodoDTO.builder().id(todo.getId()).orderKey(4).note("새 노트")
-                .completeDateIsoString("2025-02-23T00:00:00.001Z").content(todoMapper.mapToTodoContentDTO(todo))
+        TodoPatchDTO patchTodoDTO = TodoPatchDTO.builder().id(todo.getId()).orderKey(4).note("새 노트")
+                .content(todoMapper.mapToTodoContentDTO(todo))
                 .build();
 
         ResultActions result = mockMvc

@@ -1,5 +1,7 @@
 package com.matchalab.travel_todo_api.service;
 
+import com.matchalab.travel_todo_api.model.Flight.Airport;
+import com.matchalab.travel_todo_api.repository.AirportRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,13 +49,24 @@ public class FlightRouteService {
     private final AirlineRepository airlineRepository;
 
     @Autowired
-    private final FlightRouteMapper flightRouteMapper;
-
-    @Autowired
     private ChatModelService chatModelService;
 
     @Autowired
     private final ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    protected AirportRepository airportRepository;
+
+    private Airport getAirport(String airportIataCode) {
+        return airportRepository.findById(airportIataCode).orElse(new Airport(airportIataCode));
+    }
+
+    public FlightRoute mapToFlightRoute(FlightRouteWithoutAirline frWithoutAirline) {
+
+        return new FlightRoute(getAirport(frWithoutAirline.departureAirportIataCode()),
+            getAirport(frWithoutAirline.arrivalAirportIataCode()));
+
+    }
 
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -121,7 +134,7 @@ public class FlightRouteService {
                         frWithoutAirline.departureAirportIataCode(),
                         frWithoutAirline.arrivalAirportIataCode())
                 .orElseGet(() -> {
-                    FlightRoute newRoute = flightRouteMapper.mapToFlightRoute(frWithoutAirline);
+                    FlightRoute newRoute = mapToFlightRoute(frWithoutAirline);
                     FlightRoute savedRoute = flightRouteRepository.save(newRoute);
 
                     newlyCreatedIds.add(savedRoute.getId());
@@ -137,7 +150,7 @@ public class FlightRouteService {
                         frWithoutAirline.arrivalAirportIataCode())
                 .orElseGet(() -> {
                     FlightRoute flightRoute = flightRouteRepository
-                            .save(flightRouteMapper.mapToFlightRoute(frWithoutAirline));
+                            .save(mapToFlightRoute(frWithoutAirline));
                     eventPublisher.publishEvent(new NewFlightRouteCreatedEvent(this,
                             flightRoute.getId()));
                     return flightRoute;

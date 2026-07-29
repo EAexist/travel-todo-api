@@ -16,20 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = { AirportMapper.class })
 public abstract class FlightRouteMapper {
 
-    @Autowired
-    protected AirportRepository airportRepository;
-
-    private Airport getAirport(String airportIataCode) {
-        return airportRepository.findById(airportIataCode).orElse(new Airport(airportIataCode));
-    }
-
-    public FlightRoute mapToFlightRoute(FlightRouteWithoutAirline frWithoutAirline) {
-
-        return new FlightRoute(getAirport(frWithoutAirline.departureAirportIataCode()),
-                getAirport(frWithoutAirline.arrivalAirportIataCode()));
-
-    }
-
     public abstract FlightRouteDTO mapToFlightRouteDTO(FlightRoute flightRoute);
 
 }

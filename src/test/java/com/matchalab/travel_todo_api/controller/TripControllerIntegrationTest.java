@@ -11,7 +11,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.matchalab.travel_todo_api.DTO.FlightRouteDTO;
+import com.matchalab.travel_todo_api.DTO.TodoContentDTO;
+import com.matchalab.travel_todo_api.DTO.TripPatchDTO;
+import com.matchalab.travel_todo_api.enums.TodoCategory;
+import com.matchalab.travel_todo_api.enums.TodoPresetType;
+import com.matchalab.travel_todo_api.model.Icon;
+import com.matchalab.travel_todo_api.model.Todo.StockTodoContent;
+import com.matchalab.travel_todo_api.model.Todo.Todo;
+import com.matchalab.travel_todo_api.model.Todo.TodoPreset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -96,43 +106,31 @@ public class TripControllerIntegrationTest {
      * Mapper
      */
     @Autowired
-    private TripMapper tripMapper;
-    @Autowired
     private TodoMapper todoMapper;
 
     /*
      * TestConfig
      */
-
-    // @Autowired
-    // private TodoContent stockTodoContent;
-
     @Autowired
-    private Accomodation[] accomodations;
-
-    @Autowired
-    private Destination destination_kyoto;
-
-    @Autowired
-    private Destination destination_osaka;
+    private DestinationDTO destinationDTO_tokushima;
 
     @Autowired
     private DestinationDTO destinationDTO_osaka;
 
     @Autowired
-    private Destination destination_tokushima;
-
-    @Autowired
-    private DestinationDTO destinationDTO_tokushima;
-
-    @Autowired
-    private Airport IncheonIntl;
-
-    @Autowired
-    private Airport TokushimaIntl;
-
-    @Autowired
     private Trip trip;
+
+    @Autowired
+    private TripDTO tripDto;
+
+    @Autowired
+    private Destination[] destinations;
+
+    @Autowired
+    private Todo stockTodo;
+
+    @Autowired
+    private Todo customTodo;
 
     /*
      * Test Class Variables
@@ -155,7 +153,6 @@ public class TripControllerIntegrationTest {
     /*
      * Etc
      */
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -165,32 +162,27 @@ public class TripControllerIntegrationTest {
         tripRepository.deleteAll();
         destinationRepository.deleteAll();
 
-        // TodoPreset todoPreset =
-        // todoPresetRepository.save(TodoPreset.builder().title("기본").build());
-        // todoPreset.setTodoPresetStockTodoContent(stockTodoContentRepository.findAll().stream().map(stockTodoContent
-        // -> {
-        // return
-        // TodoPresetStockTodoContent.builder().todoPreset(null).stockTodoContent(stockTodoContent)
-        // .isFlaggedToAdd(true).build();
-        // }).toList());
-        // todoPresetRepository.save(todoPreset);
-
         userAccount = userAccountRepository.save(new UserAccount());
         userAccountId = userAccount.getId();
 
-        List<Destination> savedDestinations = List.of(new Destination(destination_kyoto),
-                new Destination(destination_osaka));
+        List<Destination> savedDestinations = destinationRepository.saveAll(List.of(destinations));
 
-        savedTrip = new Trip(trip);
-        savedDestinations
-                .forEach(dest -> {
-                    savedTrip.addDestination(dest);
-                    destinationRepository.save(dest);
-                });
+        savedTrip = tripRepository.save(new Trip(trip));
+
+        savedTrip.addDestinations(savedDestinations);
+
+        TodoPreset preset = todoPresetRepository.findByType(TodoPresetType.DEFAULT)
+            .orElseThrow(() -> new NotFoundException(null));
+        savedTrip.setTodoPreset(preset);
+
+        StockTodoContent stockTodoContent = stockTodoContentRepository.findByType("CASH")
+            .orElseThrow(() -> new NotFoundException(null));;
+        stockTodo.setStockTodoContent(stockTodoContent);
+        savedTrip.addTodo(stockTodo);
+
+        savedTrip.addTodo(customTodo);
 
         tripRepository.save(savedTrip);
-
-        log.info(String.format("[setUp] savedTrip=%s", Utils.asJsonString(tripMapper.mapToTripDTO(savedTrip))));
     }
 
     @Test
@@ -206,8 +198,10 @@ public class TripControllerIntegrationTest {
 
         TripDTO responseTripDTO = TestUtils.asObject(result, TripDTO.class);
         assertThat(responseTripDTO).usingRecursiveComparison()
-                .ignoringFieldsOfTypes().ignoringFields("*.id")
-                .isEqualTo(tripMapper.mapToTripDTO(savedTrip));
+            .ignoringFields("stockTodoContents")
+            .ignoringFieldsMatchingRegexes(".*\\.id")
+            .ignoringFieldsOfTypes(UUID.class)
+            .isEqualTo(tripDto);
     }
 
     @Test
@@ -230,7 +224,7 @@ public class TripControllerIntegrationTest {
     @Transactional
     void patchTrip_Given_ValidIdAndNewContent_When_RequestPut_Then_patchTrip() throws Exception {
 
-        TripDTO tripDTOToPatch = TripDTO.builder().isInitialized(false).title("새 여행 이름")
+        TripPatchDTO tripDTOToPatch = TripPatchDTO.builder().isInitialized(false).title("새 여행 이름")
                 .startDateIsoString("2025-02-10T00:00:00.001Z").build();
 
         ResultActions result = mockMvc
@@ -249,12 +243,13 @@ public class TripControllerIntegrationTest {
                 Utils.asJsonString(actualTripDTO)));
 
         log.info(String.format("[patchTrip_Given_ValidIdAndNewContent_When_RequestPut_Then_patchTrip] %s",
-                Utils.asJsonString(tripMapper.mapToTripDTO(savedTrip))));
+                Utils.asJsonString(tripDto)));
 
         assertThat(actualTripDTO).usingRecursiveComparison()
                 // .ignoringFieldsOfTypes(TripDTO.class)
-                .ignoringFields("title", "startDateIsoString")
-                .isEqualTo(tripMapper.mapToTripDTO(savedTrip));
+                .ignoringFields("id", "title", "startDateIsoString", "stockTodoContents")
+        .ignoringFieldsMatchingRegexes(".*\\.id")
+                .isEqualTo(tripDto);
     }
 
     @Test
@@ -282,26 +277,26 @@ public class TripControllerIntegrationTest {
                 .map(Destination::getRecommendedReturnFlight).flatMap(List::stream)
                 .toList();
 
-        List<TodoPresetItemDTO> stockTodoPresetItemDTOs = todoPresetRepository.findByTitle("기본")
+        List<TodoPresetItemDTO> stockTodoPresetItemDTOs = todoPresetRepository.findByType(TodoPresetType.DEFAULT)
                 .orElseThrow(() -> new NotFoundException(null)).getTodoPresetStockTodoContents().stream()
                 .map(todoMapper::mapToTodoPresetItemDTO).toList();
 
         List<TodoPresetItemDTO> expectedTodoPresetItemDTOs = new ArrayList<TodoPresetItemDTO>(stockTodoPresetItemDTOs);
-        // expectedTodoPresetItemDTOs.addAll(Arrays.asList(
-        // new TodoPresetItemDTO(true,
-        // TodoContentDTO.builder().isStock(false).category("reservation").type("flight")
-        // .title("가는 항공편").icon(new Icon("✈️"))
-        // .flightTodoContent(new FlightTodoContent(null,
-        // recommendedOutboudFlight)).build()),
-
-        // new TodoPresetItemDTO(true,
-        // TodoContentDTO.builder().isStock(false).category("reservation").type("flight")
-        // .title("오는 항공편").icon(new Icon("✈️"))
-        // .flightTodoContent(new FlightTodoContent(null, recommendedReturnFlight))
-        // .build())));
+         expectedTodoPresetItemDTOs.addAll(Arrays.asList(
+             new TodoPresetItemDTO(true,
+                 TodoContentDTO.builder().id(UUID.nameUUIDFromBytes("outbound-flight".getBytes()))
+                     .isStock(false).category(TodoCategory.RESERVATION).type("FLIGHT_OUTBOUND")
+                     .title("항공권 구매").icon(new Icon("🛫")).subtitle("출발 비행기")
+                     .build()),
+             new TodoPresetItemDTO(true,
+                 TodoContentDTO.builder().id(UUID.nameUUIDFromBytes("return-flight".getBytes()))
+                     .isStock(false).category(TodoCategory.RESERVATION).type("FLIGHT_RETURN")
+                     .title("항공권 구매").icon(new Icon("🛬")).subtitle("돌아오는 비행기")
+                     .build())));
 
         assertThat(actualTodoPresetItemDTOs).usingRecursiveComparison()
-                .ignoringFieldsOfTypes().ignoringFields("todoContent.id", "*.todoContent.todo")
+            .ignoringCollectionOrder()
+                .ignoringFieldsOfTypes().ignoringFields("*.content.flightRoutes")
                 .isEqualTo(expectedTodoPresetItemDTOs);
     }
 
@@ -315,40 +310,39 @@ public class TripControllerIntegrationTest {
         ResultActions result = mockMvc
                 .perform(post(String.format("/trip/%s/destination", tripId))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(Utils.asJsonString(destinationDTO_tokushima)))
+                        .content(Utils.asJsonString(destinationDTO_osaka)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id")
                         .isNotEmpty())
-                .andExpect(jsonPath("title").value(destinationDTO_tokushima.title()))
-                .andExpect(jsonPath("iso2DigitNationCode").value(destinationDTO_tokushima.iso2DigitNationCode()))
-                .andExpect(jsonPath("region").value(destinationDTO_tokushima.region()))
-                .andExpect(jsonPath("description").value(destinationDTO_tokushima.description()));
+                .andExpect(jsonPath("title").value(destinationDTO_osaka.title()))
+                .andExpect(jsonPath("iso2DigitNationCode").value(destinationDTO_osaka.iso2DigitNationCode()))
+                .andExpect(jsonPath("region").value(destinationDTO_osaka.region()))
+                .andExpect(jsonPath("description").value(destinationDTO_osaka.description()));
 
         DestinationDTO actualDestinationDTO = TestUtils.asObject(result, DestinationDTO.class);
 
         result.andExpect(header().string("Location",
-                String.format("http://localhost/destination/%s", actualDestinationDTO.id(),
-                        actualDestinationDTO.id())));
+                String.format("http://localhost/destination/%s", actualDestinationDTO.id())));
     }
 
     @Test
     @Transactional
     void addDestination_Given_AlreadyExistingDestination_Then_DoNotCreateRedundantDestination() throws Exception {
 
-        UUID destinationId_osaka = destinationRepository.findByiso2DigitNationCodeAndTitle("JP", "오사카")
+        UUID destinationId_tokushima = destinationRepository.findByiso2DigitNationCodeAndTitle("JP", "도쿠시마")
                 .orElseThrow(() -> new NotFoundException(null)).getId();
 
         ResultActions result = mockMvc
                 .perform(post(String.format("/trip/%s/destination", savedTrip.getId()))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(Utils.asJsonString(destinationDTO_osaka)))
+                        .content(Utils.asJsonString(destinationDTO_tokushima)))
                 .andDo(print());
 
         DestinationDTO actualDestinationDTO = TestUtils.asObject(result, DestinationDTO.class);
 
-        assertEquals(destinationId_osaka, actualDestinationDTO.id());
+        assertEquals(destinationId_tokushima, actualDestinationDTO.id());
         assertThat(applicationEvents.stream().anyMatch(event -> event instanceof NewDestinationCreatedEvent)).isFalse();
         assertThat(applicationEvents.stream().anyMatch(event -> event instanceof NewFlightRouteCreatedEvent)).isFalse();
     }
@@ -372,7 +366,7 @@ public class TripControllerIntegrationTest {
         // .perform(post(String.format("/trip/%s/destination",
         // savedTrip.getId()))
         // .contentType(MediaType.APPLICATION_JSON)
-        // .content(Utils.asJsonString(destinationDTO_tokushima)))
+        // .content(Utils.asJsonString(destinationDTO_osaka)))
         // .andDo(print());
 
         // String destinationId = TestUtils.asObject(result, DestinationDTO.class).id();
@@ -408,7 +402,7 @@ public class TripControllerIntegrationTest {
     // .perform(post(String.format("/trip/%s/destination",
     // savedTrip.getId()))
     // .contentType(MediaType.APPLICATION_JSON)
-    // .content(Utils.asJsonString(destinationDTO_tokushima)))
+    // .content(Utils.asJsonString(destinationDTO_osaka)))
     // .andDo(print());
 
     // assertEquals(1,

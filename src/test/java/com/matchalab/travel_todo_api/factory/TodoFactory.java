@@ -1,5 +1,7 @@
 package com.matchalab.travel_todo_api.factory;
 
+import com.matchalab.travel_todo_api.DTO.TodoCreateDTO;
+import com.matchalab.travel_todo_api.DTO.TodoPatchDTO;
 import java.util.UUID;
 
 import com.matchalab.travel_todo_api.DTO.TodoContentDTO;
@@ -33,6 +35,21 @@ public class TodoFactory {
                                 .build())
                         .build();
     }
+
+    public static TodoCreateDTO createValidCustomTodoCreateDTO() {
+        return TodoCreateDTO.builder().id(UUID.randomUUID()).orderKey(0)
+            .content(TodoContentDTO.builder().id(UUID.randomUUID())
+                .build())
+            .build();
+    }
+
+    public static TodoPatchDTO createValidCustomTodoPatchDTO() {
+        return TodoPatchDTO.builder().id(UUID.randomUUID()).orderKey(0)
+            .content(TodoContentDTO.builder().id(UUID.randomUUID())
+                .build())
+            .build();
+    }
+
 
     public static Todo createValidStockTodo(String key, StockTodoContent stockTodoContent) {
         switch (key) {

@@ -23,8 +23,7 @@ import lombok.Setter;
 public class TripDestination {
 
     @EmbeddedId
-    @Builder.Default
-    private TripDestinationId id = new TripDestinationId();
+    private TripDestinationId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("tripId")
@@ -36,7 +35,7 @@ public class TripDestination {
     @JoinColumn(name = "destination_id")
     private Destination destination;
 
-    public TripDestination(TripDestination source, Trip newTrip, Destination newDestination) {
+    public TripDestination(Trip newTrip, Destination newDestination) {
         this.id = new TripDestinationId(newTrip.getId(), newDestination.getId());
 
         // 💡 새로운 Trip 및 Destination 인스턴스를 참조하도록 설정

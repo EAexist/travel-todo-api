@@ -124,7 +124,7 @@ public class Trip {
         this.destinations = new ArrayList<>();
         for (TripDestination sourceTripDestination : sourceTrip.getDestinations()) {
             Destination newDestination = sourceTripDestination.getDestination();
-            TripDestination newTripDestination = new TripDestination(sourceTripDestination, this, newDestination);
+            TripDestination newTripDestination = new TripDestination(this, newDestination);
             newTripDestination.setTrip(this);
             this.destinations.add(newTripDestination);
         }
@@ -189,16 +189,8 @@ public class Trip {
     }
 
     public void addDestination(Destination destination) {
-        TripDestination tripDestination = new TripDestination();
-        tripDestination.setTrip(this);
-        tripDestination.setDestination(destination);
-
-        tripDestination.getId().setTripId(this.getId());
-        tripDestination.getId().setDestinationId(destination.getId());
-
+        TripDestination tripDestination = new TripDestination(this, destination);
         this.destinations.add(tripDestination);
-
-        destination.getTrips().add(tripDestination);
     }
 
     public void addDestinations(List<Destination> destinations) {

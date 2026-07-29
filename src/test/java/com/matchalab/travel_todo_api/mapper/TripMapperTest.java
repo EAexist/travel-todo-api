@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.matchalab.travel_todo_api.enums.TodoCategory;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -28,18 +29,10 @@ import com.matchalab.travel_todo_api.model.Icon;
 import com.matchalab.travel_todo_api.model.Trip;
 import com.matchalab.travel_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.travel_todo_api.repository.StockTodoContentRepository;
-import com.matchalab.travel_todo_api.config.TestConfig;
-import com.matchalab.travel_todo_api.mapper.TodoMapperImpl;
-import com.matchalab.travel_todo_api.mapper.TripMapperImpl;
-
-import lombok.extern.slf4j.Slf4j;
+import com.matchalab.travel_todo_api.config.MapperTestConfig;
 
 @SpringBootTest
-@Import({ TestConfig.class })
-@ContextConfiguration(classes = {
-        TripMapperImpl.class,
-        TodoMapperImpl.class
-})
+@Import({ TestConfig.class, MapperTestConfig.class })
 @TestInstance(Lifecycle.PER_CLASS)
 @Slf4j
 public class TripMapperTest {
