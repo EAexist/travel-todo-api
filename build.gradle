@@ -73,10 +73,13 @@ dependencies {
     
     /* OAuth2.0 */
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation"com.google.api-client:google-api-client:2.8.0"
 
     /* Google */
-    implementation 'org.springframework.ai:spring-ai-starter-model-vertex-ai-gemini:1.1.0'
+    implementation"com.google.api-client:google-api-client:2.8.0"
+
+    /* Google - Gemini */
+    implementation platform("org.springframework.ai:spring-ai-bom:1.1.2")
+    implementation "org.springframework.ai:spring-ai-starter-model-google-genai"
 
     /* Jsoup */
     implementation "org.jsoup:jsoup:1.21.2"

@@ -3,10 +3,13 @@ package com.matchalab.travel_todo_api.service.ChatModelService;
 import java.util.List;
 import java.util.Map;
 
+import com.matchalab.travel_todo_api.exception.AiQuotaExceededException;
+import com.matchalab.travel_todo_api.exception.AiServiceUnavailableException;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.converter.BeanOutputConverter;
-import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.retry.NonTransientAiException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -21,16 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Profile({ "prod" })
+@Profile({ "ai" })
 public class GeminiChatModelService implements ChatModelService {
 
-    // private final VertexAiGeminiChatModel chatModel = new
-    // VertexAiGeminiChatModel(new VertexAI(),
-    // VertexAiGeminiChatOptions.builder().model("gemini-2.0-flash-lite").build(),
-    // ToolCallingManager.builder().build(),
-    // new RetryTemplate(), null);
-
-    private final VertexAiGeminiChatModel chatModel;
+    private final ChatModel chatModel;
 
     @Override
     public ExtractReservationChatResultDTO extractReservationFromText(String confirmationText) {
@@ -85,14 +82,19 @@ public class GeminiChatModelService implements ChatModelService {
 
     private <T> T callWithBeanOutput(String message, BeanOutputConverter<T> outputConverter) {
 
-        Prompt prompt = PromptTemplate.builder().template(String.format("%s\n%s", "{format}", message))
-                .variables(Map.of("format", outputConverter.getFormat())).build().create();
+        try {
+            Prompt prompt = PromptTemplate.builder().template(String.format("%s\n%s", "{format}", message))
+                    .variables(Map.of("format", outputConverter.getFormat())).build().create();
 
-        String text = chatModel.call(prompt).getResult().getOutput().getText();
+            String text = chatModel.call(prompt).getResult().getOutput().getText();
+            log.info("[callWithBeanOutput] text: " + text);
+            return outputConverter.convert(text);
 
-        log.info("[callWithBeanOutput] text: " + text);
-
-        return outputConverter.convert(text);
+        }catch (NonTransientAiException e) {
+            throw new AiQuotaExceededException();
+        } catch (Exception e) {
+            throw new AiServiceUnavailableException();
+        }
     }
 
     private String generateTextAnalysisUserMessage(String instructionUserMessage, String confirmationText) {

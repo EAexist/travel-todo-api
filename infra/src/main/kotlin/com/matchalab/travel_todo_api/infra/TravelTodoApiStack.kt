@@ -55,13 +55,18 @@ class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env
         // Google Cloud
         val GOOGLE_CLOUD_PROJECT =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/GOOGLE_CLOUD_PROJECT")
-        val SPRING_AI_VERTEX_AI_GEMINI_LOCATION =
-            StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/SPRING_AI_VERTEX_AI_GEMINI_LOCATION")
         val appGoogleClientId =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_CLIENT_ID")
         val appGoogleWebClientId =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_WEB_CLIENT_ID")
 
+        // Gemini API
+        val SPRING_AI_GOOGLE_GENAI_PROJECT_ID =
+            StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/SPRING_AI_GOOGLE_GENAI_PROJECT_ID")
+        val SPRING_AI_GOOGLE_GENAI_API_KEY =
+            StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/SPRING_AI_GOOGLE_GENAI_API_KEY")
+
+        // Places API
         val APP_GOOGLE_PLACES_API_KEY = StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_API_KEY")
         val APP_GOOGLE_PLACES_BASE_URL = StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_BASE_URL")
 
@@ -104,9 +109,10 @@ class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env
                     "GOOGLE_CLOUD_PROJECT" to GOOGLE_CLOUD_PROJECT,
                     "APP_GOOGLE_CLIENT_ID" to appGoogleClientId,
                     "APP_GOOGLE_WEB_CLIENT_ID" to appGoogleWebClientId,
-                    "SPRING_AI_VERTEX_AI_GEMINI_LOCATION" to SPRING_AI_VERTEX_AI_GEMINI_LOCATION,
-                    "SPRING_CLOUD_GCP_CREDENTIALS_LOCATION" to "/tmp/gcp-wif-config.json",
-                    "GOOGLE_APPLICATION_CREDENTIALS" to "/tmp/gcp-wif-config.json",
+
+                    // AI
+                    "SPRING_AI_GOOGLE_GENAI_PROJECT_ID" to SPRING_AI_GOOGLE_GENAI_PROJECT_ID,
+                    "SPRING_AI_GOOGLE_GENAI_API_KEY" to SPRING_AI_GOOGLE_GENAI_API_KEY,
 
                     // app
                     "APP_SECURITY_ADMIN_EMAILS" to appSecurityAdminEmails,

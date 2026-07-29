@@ -3,8 +3,11 @@ spring:
     group:
       dev:
         - ssl
+      prod:
+        - ai
   flyway:
     enabled: true
+    locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -33,13 +36,13 @@ spring:
   cloud:
     gcp:
       project-id: ${GOOGLE_CLOUD_PROJECT}
-  cache:
-    jcache:
-      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
-    cache-names:
-      - create-reservation-from-text-api-call-quota-cache
-    caffeine:
-      spec: maximumSize=100000,expireAfterAccess=30d
+#  cache:
+#    jcache:
+#      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+#    cache-names:
+#      - create-reservation-from-text-api-call-quota-cache
+#    caffeine:
+#      spec: maximumSize=100000,expireAfterAccess=1d
 logging:
   level:
     org:
@@ -65,20 +68,21 @@ app:
 
 # @TODO: use redis, not caffeine.
 bucket4j:
-  enabled: true
-  filters:
-    - cache-name: create-reservation-from-text-api-call-quota-cache
-      url: ^/trip/[^/]+/reservation/analysis/text.*
-      filter-method: servlet
-      filter-order: 1
-      rate-limits:
-        # @TODO: use user account id as cache key (Current approach: ip address as cache key)
-        - cache-key: "getRemoteAddr()"
-          bandwidths:
-            - capacity: 2
-              time: 30
-              unit: days
-              refill-speed: interval
-        #   execute-predicates:
-        #     - METHOD=GET
-        #     - METHOD=POST
+  enabled: false
+#  filter-config-caching-enabled: false
+#  filters:
+#    - cache-name: create-reservation-from-text-api-call-quota-cache
+#      url: ^/trip/[^/]+/reservation/analysis/text.*
+#      filter-method: servlet
+#      filter-order: 1
+#      rate-limits:
+#        # @TODO: use user account id as cache key (Current approach: ip address as cache key)
+#        - cache-key: "@securityService.getUserId() ?: getRemoteAddr()"
+#          bandwidths:
+#            - capacity: 2
+#              time: 30
+#              unit: days
+#              refill-speed: interval
+#        #   execute-predicates:
+#        #     - METHOD=GET
+#        #     - METHOD=POST

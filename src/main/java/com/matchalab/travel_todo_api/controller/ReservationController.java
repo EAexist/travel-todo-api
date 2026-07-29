@@ -43,18 +43,6 @@ public class ReservationController {
     @Autowired
     private final HtmlParserService htmlParserService;
 
-    /**
-     * Provide the details of a Trip with the given id.
-     */
-    @GetMapping
-    public ResponseEntity<List<ReservationDTO>> getReservation(@PathVariable UUID tripId) {
-        try {
-            return ResponseEntity.ok().body(reservationService.getReservation(tripId));
-        } catch (HttpClientErrorException e) {
-            throw e;
-        }
-    }
-
     @PostMapping("trip/{tripId}/reservation")
     public ResponseEntity<ReservationDTO> createReservation(
             @PathVariable UUID tripId, @RequestBody ReservationPatchDTO requestbody) {
