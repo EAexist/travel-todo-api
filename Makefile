@@ -25,13 +25,17 @@ else
     ACTIVE_PROFILES := local,$(PROFILES)
 endif
 
-.PHONY: help run-dev load-data schema-gen test-lambda test
+.PHONY: help run-dev load-data schema-gen test-lambda test bootRun
 
 help: ## Show this help message
 	@echo "Usage: make [target]"
 
 run-dev: ## Run the application in dev modeNotFoundException
 	@$(GRADLE) bootRun -x test --args='--spring.profiles.active=dev,ai'
+
+bootRun: ## Run the application with DB and env vars
+	@$(DB_COMPOSE) up -d
+	@env $$(cat .env.dev | tr -d '\r' | xargs) $(GRADLE) bootRun -x test --args='--spring.profiles.active=dev,ai'
 
 load-data: ## Load reference data
 	@$(GRADLE) bootRun --args='--spring.profiles.active=dev'
