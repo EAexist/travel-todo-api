@@ -94,7 +94,7 @@ public class Trip {
     private TripSettings settings = new TripSettings();
 
     @Builder.Default
-    private Boolean isTodoPresetUpdated = true;
+    private Boolean isTodoPresetUpdated = false;
 
     @Builder.Default
     private Boolean isSample = false;
