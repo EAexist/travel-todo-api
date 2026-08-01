@@ -28,7 +28,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -53,11 +52,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AutoConfigureMockMvc
 @WithMockUser
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({ TestConfig.class })
 @TestInstance(Lifecycle.PER_CLASS)
-@ActiveProfiles({ "local" })
 @EnableWebSecurity
+@SpringBootTest
 public class TodoControllerIntegrationTest {
 
     @Autowired

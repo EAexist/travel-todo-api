@@ -44,7 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 @ContextConfiguration(classes = {
         FlightRouteMapperImpl.class
 })
-@ActiveProfiles({ "local", "local-init-data" })
 @TestInstance(Lifecycle.PER_CLASS)
 @Slf4j
 @RecordApplicationEvents

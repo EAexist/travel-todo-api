@@ -127,10 +127,18 @@ dependencies {
     // testImplementation "org.awaitility:awaitility:4.3.0"
     // testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     // testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    /* TestContainer */
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
 }
 
 test {
 	useJUnitPlatform()
+    def cliProfiles = System.getProperty('spring.profiles.active')
+    def activeProfiles = cliProfiles ? "${cliProfiles},test" : "test"
+    systemProperty 'spring.profiles.active', activeProfiles
 }
 
 shadowJar {
@@ -162,6 +170,8 @@ tasks.named('bootBuildImage') {
     imagePlatform = 'linux/amd64'
     // image.builder.platforms.set(['linux/amd64']) 
 }
+
+ext['testcontainers.version'] = '1.21.4'
 
 // tasks.withType(JavaCompile).configureEach {
 //     if (name.contains("Test")) {

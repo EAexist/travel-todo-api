@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.matchalab.travel_todo_api.DTO.FlightRouteDTO;
 import com.matchalab.travel_todo_api.DTO.TodoContentDTO;
 import com.matchalab.travel_todo_api.DTO.TripPatchDTO;
 import com.matchalab.travel_todo_api.enums.TodoCategory;
@@ -24,11 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.matchalab.travel_todo_api.exception.NotFoundException;
 import com.matchalab.travel_todo_api.model.Destination;
-import com.matchalab.travel_todo_api.model.Flight.Airport;
 import com.matchalab.travel_todo_api.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -42,7 +39,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.event.ApplicationEvents;
 import org.springframework.test.context.event.RecordApplicationEvents;
 import org.springframework.test.web.servlet.MockMvc;
@@ -59,8 +55,6 @@ import com.matchalab.travel_todo_api.config.TestConfig;
 import com.matchalab.travel_todo_api.event.NewDestinationCreatedEvent;
 import com.matchalab.travel_todo_api.event.NewFlightRouteCreatedEvent;
 import com.matchalab.travel_todo_api.mapper.TodoMapper;
-import com.matchalab.travel_todo_api.mapper.TripMapper;
-import com.matchalab.travel_todo_api.model.Accomodation;
 import com.matchalab.travel_todo_api.model.Trip;
 import com.matchalab.travel_todo_api.model.Flight.FlightRoute;
 import com.matchalab.travel_todo_api.model.UserAccount.UserAccount;
@@ -74,14 +68,13 @@ import com.matchalab.travel_todo_api.utils.TestUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@ActiveProfiles({ "local" })
 @AutoConfigureMockMvc
 @WithMockUser
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({ TestConfig.class, MockDestinationConfig.class, TestAsyncConfig.class })
 @TestInstance(Lifecycle.PER_CLASS)
 @EnableWebSecurity
 @RecordApplicationEvents
+@SpringBootTest
 public class TripControllerIntegrationTest {
 
     /*
@@ -277,7 +270,7 @@ public class TripControllerIntegrationTest {
                 .map(Destination::getRecommendedReturnFlight).flatMap(List::stream)
                 .toList();
 
-        List<TodoPresetItemDTO> stockTodoPresetItemDTOs = todoPresetRepository.findByType(TodoPresetType.DEFAULT)
+        List<TodoPresetItemDTO> stockTodoPresetItemDTOs = todoPresetRepository.findByType(TodoPresetType.JAPAN)
                 .orElseThrow(() -> new NotFoundException(null)).getTodoPresetStockTodoContents().stream()
                 .map(todoMapper::mapToTodoPresetItemDTO).toList();
 

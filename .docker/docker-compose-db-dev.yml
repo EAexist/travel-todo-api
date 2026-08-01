@@ -1,0 +1,29 @@
+services:
+  db-dev:
+    image: postgres:17.6
+    container_name: dev-postgres
+    user: root
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=travel_todo_db_dev
+      - POSTGRES_USER=guest
+      - POSTGRES_PASSWORD=hello_guest
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../src/main/resources/certs:/certs:ro
+    entrypoint: >
+      sh -c "
+      cp /certs/travel-todo-api-455519588477.asia-northeast3.run.app.test+3.pem /tmp/server.crt &&
+      cp /certs/travel-todo-api-455519588477.asia-northeast3.run.app.test+3-key.pem /tmp/server.key &&
+      chown postgres:postgres /tmp/server.crt /tmp/server.key &&
+      chmod 644 /tmp/server.crt &&
+      chmod 600 /tmp/server.key &&
+      exec docker-entrypoint.sh postgres 
+      -c ssl=on 
+      -c ssl_cert_file=/tmp/server.crt 
+      -c ssl_key_file=/tmp/server.key
+      "
+
+volumes:
+  pgdata:

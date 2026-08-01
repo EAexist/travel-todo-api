@@ -5,6 +5,12 @@ spring:
     show_sql: true
   flyway:
     clean-disabled: false
+  datasource:
+    hikari:
+      initialization-fail-timeout: 1
+      connection-test-query: ""
+      keepalive-time: 0
+      max-lifetime: 1800000
 #  ai:
 #    model:
 #      chat: none

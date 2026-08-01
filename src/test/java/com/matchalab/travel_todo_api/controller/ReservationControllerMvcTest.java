@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.matchalab.travel_todo_api.DTO.CreateReservationDTO;
 import com.matchalab.travel_todo_api.enums.ReservationCategory;
+import com.matchalab.travel_todo_api.service.HtmlParserService;
 import com.matchalab.travel_todo_api.service.ReservationService;
 import com.matchalab.travel_todo_api.utils.Utils;
 import java.util.UUID;
@@ -14,12 +15,15 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ReservationController.class)
+@Import(HtmlParserService.class)
 @WithMockUser
 public class ReservationControllerMvcTest {
 

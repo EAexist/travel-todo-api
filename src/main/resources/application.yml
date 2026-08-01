@@ -1,10 +1,13 @@
 spring:
   profiles:
     group:
-      dev:
+      local:
+        - dev
         - ssl
       prod:
         - ai
+      test:
+        - dev
   flyway:
     enabled: true
     locations: classpath:db/migration

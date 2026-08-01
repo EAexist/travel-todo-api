@@ -1,0 +1,9 @@
+spring:
+#  session:
+#    jdbc:
+#      platform: postgresql
+#  datasource:
+#    driver-class-name: ~
+#  flyway:
+#    clean-disabled: false
+#    repair-check-sum-on-migrate: true
