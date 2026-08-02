@@ -8,9 +8,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.matchalab.travel_todo_api.DTO.TodoCreateDTO;
+import com.matchalab.travel_todo_api.DTO.TodoPatchDTO;
 import java.util.List;
 import java.util.UUID;
 
+import com.matchalab.travel_todo_api.exception.NotFoundException;
+import com.matchalab.travel_todo_api.model.Destination;
+import com.matchalab.travel_todo_api.model.Icon;
+import com.matchalab.travel_todo_api.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -22,7 +28,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -47,11 +52,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @AutoConfigureMockMvc
 @WithMockUser
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({ TestConfig.class })
 @TestInstance(Lifecycle.PER_CLASS)
-@ActiveProfiles({ "local", "local-init-data" })
 @EnableWebSecurity
+@SpringBootTest
 public class TodoControllerIntegrationTest {
 
     @Autowired
@@ -95,146 +99,119 @@ public class TodoControllerIntegrationTest {
 
     @BeforeAll
     void setUp() {
+        destinationRepository.deleteAll();
 
         userAccountId = userAccountRepository.save(new UserAccount()).getId();
 
         List<Destination> savedDestinations = destinationRepository.saveAll(List.of(new Destination(destination_kyoto),
                 new Destination(destination_osaka)));
 
-        savedTrip = new Trip();
-        savedTrip.setDestinations(savedDestinations);
+        savedTrip = tripRepository.save(new Trip());
+        savedTrip.addDestinations(savedDestinations);
 
         StockTodoContent stockTodoContent_currency = stockTodoContentRepository
-                .findByTitle("환전")
+                .findByType("CASH")
                 .orElseThrow(() -> new NotFoundException(null));
-        stockTodoContent_passport = stockTodoContentRepository.findByTitle("여권")
+        stockTodoContent_passport = stockTodoContentRepository.findByType("PASSPORT")
                 .orElseThrow(() -> new NotFoundException(null));
 
         savedTrip.addTodo(customTodo);
         savedTrip.addTodo(TodoFactory.createValidStockTodo("currency", stockTodoContent_currency));
         savedTrip = tripRepository.save(savedTrip);
-        log.info(String.format("[setUp] savedTrip=%s", Utils.asJsonString(tripMapper.mapToTripDTO(savedTrip))));
+//        log.info(String.format("[setUp] savedTrip=%s", Utils.asJsonString(tripMapper.mapToTripDTO(savedTrip))));
     }
 
     @Test
-    void createTodo_Given_ValidTripIdAndCustomTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
+    void givenValidCustomTodoDto_whenCreateTodo_thenReturnsCreated() throws Exception {
 
         UUID tripId = savedTrip.getId();
-        TodoDTO todoDTO = TodoFactory.createValidCustomTodoDTO("new-reservation");
+        TodoCreateDTO createDto = TodoFactory.createValidCustomTodoCreateDTO();
 
         ResultActions result = mockMvc.perform(post(String.format("/trip/%s/todo", tripId))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(todoDTO)))
+                .content(Utils.asJsonString(createDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
+        TodoDTO createdDTO = TestUtils.asObject(result, TodoDTO.class);
         result.andExpect(header().string("Location",
-                String.format("http://localhost/trip/%s/todo/%s", tripId, todoDTO.id())));
+                String.format("http://localhost/trip/%s/todo/%s", tripId, createDto.id())));
 
-        assertThat(createdTodoDTO).usingRecursiveComparison()
-                .isEqualTo(todoDTO);
+        assertThat(createdDTO).usingRecursiveComparison()
+            .comparingOnlyFields("id", "orderKey", "content")
+                .isEqualTo(createDto);
     }
 
     @Test
-    void createTodo_Given_ValidTripIdAndStockTodoDTOOnlyWithId_When_RequestPost_Then_CreateTodo() throws Exception {
+    void givenValidStockTodoDtoWithOnlyId_whenCreateTodo_thenReturnsCreated() throws Exception {
 
         UUID tripId = savedTrip.getId();
-        UUID todoDtoId = UUID.nameUUIDFromBytes("todo-stock".getBytes());
+        UUID todoId = UUID.nameUUIDFromBytes("todo-stock".getBytes());
 
-        TodoDTO expectedTodoDTO = TodoDTO.builder().id(todoDtoId).orderKey(0)
+        TodoDTO expectedTodoDTO = TodoDTO.builder().id(todoId).orderKey(0)
                 .content(todoMapper.mapToTodoContentDTO(stockTodoContent_passport))
                 .build();
 
-        TodoDTO todoDTO = TodoDTO.builder().id(todoDtoId).orderKey(0)
+        TodoCreateDTO createDto = TodoCreateDTO.builder().id(todoId).orderKey(0)
                 .content(TodoContentDTO.builder().id(todoMapper.mapToTodoContentDTO(stockTodoContent_passport).getId())
                         .isStock(true).build())
                 .build();
 
         ResultActions result = mockMvc.perform(post(String.format("/trip/%s/todo", tripId))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(todoDTO)))
+                .content(Utils.asJsonString(createDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
+        TodoDTO createdDTO = TestUtils.asObject(result, TodoDTO.class);
 
         result.andExpect(header().string("Location",
-                String.format("http://localhost/trip/%s/todo/%s", tripId, todoDtoId)));
+                String.format("http://localhost/trip/%s/todo/%s", tripId, todoId)));
 
-        assertThat(createdTodoDTO).usingRecursiveComparison()
+        assertThat(createdDTO).usingRecursiveComparison()
+            .comparingOnlyFields("id", "orderKey", "content")
                 .isEqualTo(expectedTodoDTO);
     }
 
     @Test
-    void createTodo_Given_ValidTripIdAndStockTodoDTO_When_RequestPost_Then_CreateTodo() throws Exception {
+    void givenValidStockTodoDto_whenCreateTodo_thenReturnsCreated() throws Exception {
 
         UUID tripId = savedTrip.getId();
-        UUID todoDtoId = UUID.nameUUIDFromBytes("todo-stock".getBytes());
+        UUID todoId = UUID.nameUUIDFromBytes("todo-stock".getBytes());
 
-        TodoDTO todoDTO = TodoDTO.builder().id(todoDtoId).orderKey(0)
+        TodoCreateDTO createDto = TodoCreateDTO.builder().id(todoId).orderKey(0)
                 .content(todoMapper.mapToTodoContentDTO(stockTodoContent_passport))
                 .build();
 
         ResultActions result = mockMvc.perform(post(String.format("/trip/%s/todo", tripId))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(todoDTO)))
+                .content(Utils.asJsonString(createDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
+        TodoDTO createdDTO = TestUtils.asObject(result, TodoDTO.class);
 
         result.andExpect(header().string("Location",
-                String.format("http://localhost/trip/%s/todo/%s", tripId, todoDtoId)));
+                String.format("http://localhost/trip/%s/todo/%s", tripId, todoId)));
 
-        assertThat(createdTodoDTO).usingRecursiveComparison()
-                .isEqualTo(todoDTO);
+        assertThat(createdDTO).usingRecursiveComparison()
+            .comparingOnlyFields("id", "orderKey", "content")
+                .isEqualTo(createDto);
     }
 
-    // @TODO
-    // @Test
-    // void
-    // createTodo_Given_ValidTripIdAndFlightTodoDTO_When_RequestPost_Then_CreateTodo()
-    // throws Exception {
-
-    // String id = savedTrip.getId();
-
-    // ResultActions result =
-    // mockMvc.perform(post(String.format("/trip/%s/todo", userAccountId,
-    // id))
-    // .contentType(MediaType.APPLICATION_JSON)
-    // .content(
-    // Utils.asJsonString(TodoDTO.builder().type("flight")
-    // .flightRoutes(List.of(new FlightRoute(id, null, null, null),
-    // new FlightRoute(id, null, null, null)))
-    // .build())))
-    // .andDo(print())
-    // .andExpect(status().isCreated())
-    // .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-    // .andExpect(jsonPath("id")
-    // .isNotEmpty());
-
-    // TodoDTO createdTodoDTO = TestUtils.asObject(result, TodoDTO.class);
-    // result.andExpect(header().string("Location",
-    // String.format("http://localhost/trip/%s/todo/%s", userAccountId, id,
-    // createdTodoDTO.id())));
-    // }
-
     @Test
-    // @Transactional
-    void patchTodo_Given_NewContentAndOrderKey_When_RequestPatchCustomTodo_Then_UpdateTodo() throws Exception {
+    void givenValidCustomTodoPatchDto_whenPatchTodo_thenReturnsOk() throws Exception {
 
         UUID id = savedTrip.getId();
 
         Todo todo = savedTrip.getTodolist().stream().filter(todo_ -> todo_.getStockTodoContent() == null).toList()
                 .getFirst();
 
-        TodoDTO patchTodoDTO = TodoDTO.builder().orderKey(4).note("새로운 노트")
-                .completeDateIsoString("2025-02-23T00:00:00.001Z")
-                .content(TodoContentDTO.builder().isStock(false).category("goods").type("goods")
+        TodoPatchDTO patchTodoDTO = TodoPatchDTO.builder().orderKey(4).note("새로운 노트")
+                .content(TodoContentDTO.builder().isStock(false).category(null).type("goods")
                         .title("새로운 할 일 이름").icon(
                                 new Icon("🎁"))
                         .build())
@@ -251,29 +228,28 @@ public class TodoControllerIntegrationTest {
         TodoDTO actualTodoDTO = TestUtils.asObject(result, TodoDTO.class);
 
         assertThat(actualTodoDTO).usingRecursiveComparison()
-                .comparingOnlyFields("orderKey", "note", "completeDateIsoString", "content.category", "content.type",
+                .comparingOnlyFields("orderKey", "note", "completeDateIsoString", "content.type",
                         "content.title",
                         "content.icon")
                 .isEqualTo(patchTodoDTO);
 
         assertThat(actualTodoDTO).usingRecursiveComparison()
-                .ignoringFields("orderKey", "note", "completeDateIsoString", "content.category", "content.type",
+                .ignoringFields("orderKey", "note", "completeDateIsoString", "content.type",
                         "content.title",
                         "content.icon")
                 .isEqualTo(todoMapper.mapToTodoDTO(todo));
     }
 
     @Test
-    // @Transactional
-    void patchTodo_Given_NewContentAndOrderKey_When_RequestPatchStockTodo_Then_UpdateTodo() throws Exception {
+    void givenValidStockTodoPatchDto_whenPatchTodo_thenReturnsOk() throws Exception {
 
         UUID id = savedTrip.getId();
 
         Todo todo = savedTrip.getTodolist().stream().filter(todo_ -> todo_.getStockTodoContent() != null).toList()
                 .getFirst();
 
-        TodoDTO patchTodoDTO = TodoDTO.builder().id(todo.getId()).orderKey(4).note("새 노트")
-                .completeDateIsoString("2025-02-23T00:00:00.001Z").content(todoMapper.mapToTodoContentDTO(todo))
+        TodoPatchDTO patchTodoDTO = TodoPatchDTO.builder().id(todo.getId()).orderKey(4).note("새 노트")
+                .content(todoMapper.mapToTodoContentDTO(todo))
                 .build();
 
         ResultActions result = mockMvc

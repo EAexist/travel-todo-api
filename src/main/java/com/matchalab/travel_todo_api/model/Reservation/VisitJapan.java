@@ -27,4 +27,9 @@ public class VisitJapan {
 
     @Nullable
     String dateTimeIsoString;
+
+    public VisitJapan(VisitJapan visitJapan) {
+        this.id = UUID.randomUUID();
+        this.dateTimeIsoString = visitJapan.getDateTimeIsoString();
+    }
 }

@@ -31,6 +31,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "trip", indexes = {
@@ -64,14 +66,17 @@ public class Trip {
     // private List<Destination> destinations = new ArrayList<Destination>();
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Builder.Default
     private List<TripDestination> destinations = new ArrayList<TripDestination>();
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Builder.Default
     private List<Todo> todolist = new ArrayList<Todo>();
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Builder.Default
     private List<Reservation> reservations = new ArrayList<Reservation>();
 
@@ -83,12 +88,13 @@ public class Trip {
     private UserAccount userAccount;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "settings_id")
     @Builder.Default
     private TripSettings settings = new TripSettings();
 
     @Builder.Default
-    private Boolean isTodoPresetUpdated = true;
+    private Boolean isTodoPresetUpdated = false;
 
     @Builder.Default
     private Boolean isSample = false;
@@ -117,8 +123,8 @@ public class Trip {
         // TripDestination
         this.destinations = new ArrayList<>();
         for (TripDestination sourceTripDestination : sourceTrip.getDestinations()) {
-            Destination newDestination = new Destination(sourceTripDestination.getDestination());
-            TripDestination newTripDestination = new TripDestination(sourceTripDestination, this, newDestination);
+            Destination newDestination = sourceTripDestination.getDestination();
+            TripDestination newTripDestination = new TripDestination(this, newDestination);
             newTripDestination.setTrip(this);
             this.destinations.add(newTripDestination);
         }
@@ -180,6 +186,16 @@ public class Trip {
         return this.destinations.stream()
                 .map(TripDestination::getDestination)
                 .collect(Collectors.toList());
+    }
+
+    public void addDestination(Destination destination) {
+        TripDestination tripDestination = new TripDestination(this, destination);
+        this.destinations.add(tripDestination);
+    }
+
+    public void addDestinations(List<Destination> destinations) {
+        if (destinations == null) return;
+        destinations.forEach(this::addDestination);
     }
 
     public boolean removeDestination(UUID destinationId) {

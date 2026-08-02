@@ -1,0 +1,12 @@
+spring:
+  ssl:
+    bundle:
+      pem:
+        dev-bundle:
+          keystore:
+            certificate: classpath:certs/travel-todo-api-455519588477.asia-northeast3.run.app.test+3.pem
+            private-key: classpath:certs/travel-todo-api-455519588477.asia-northeast3.run.app.test+3-key.pem
+server:
+  port: 8443
+  ssl:
+    bundle: dev-bundle

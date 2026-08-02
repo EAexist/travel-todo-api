@@ -15,13 +15,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.matchalab.travel_todo_api.config.TestConfig;
-import com.matchalab.trip_todo_api.DTO.UserAccountDTO;r;
+import com.matchalab.travel_todo_api.DTO.UserAccountDTO;
 import com.matchalab.travel_todo_api.mapper.UserAccountMapper;
 import com.matchalab.travel_todo_api.model.UserAccount.UserAccount;
 import com.matchalab.travel_todo_api.repository.StockTodoContentRepository;
-import com.matchalab.trip_todo_api.config.TestConfig;
-import com.matchalab.trip_todo_api.mapper.TripMapperImpl;
-import com.matchalab.trip_todo_api.mapper.UserAccountMapperImpl;
+import com.matchalab.travel_todo_api.config.TestConfig;
+import com.matchalab.travel_todo_api.mapper.TripMapperImpl;
+import com.matchalab.travel_todo_api.mapper.UserAccountMapperImpl;
 
 import lombok.extern.slf4j.Slf4j;
 

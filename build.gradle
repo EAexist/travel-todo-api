@@ -1,8 +1,10 @@
 // https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.0'
 	id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.gradleup.shadow' version '9.3.1'
 }
 
 group = 'com.matchalab'
@@ -71,15 +73,13 @@ dependencies {
     
     /* OAuth2.0 */
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    
+
+    /* Google */
     implementation"com.google.api-client:google-api-client:2.8.0"
 
-    /* Google */    
-    implementation 'com.google.cloud:spring-cloud-gcp-starter-vision'
-    implementation 'org.springframework.ai:spring-ai-starter-model-vertex-ai-gemini:1.1.0'
-
-    implementation "com.opencsv:opencsv:5.12.0"
-    implementation "com.amadeus:amadeus-java:10.0.0"
+    /* Google - Gemini */
+    implementation platform("org.springframework.ai:spring-ai-bom:1.1.2")
+    implementation "org.springframework.ai:spring-ai-starter-model-google-genai"
 
     /* Jsoup */
     implementation "org.jsoup:jsoup:1.21.2"
@@ -113,7 +113,12 @@ dependencies {
     // https://mvnrepository.com/artifact/org.flywaydb/flyway-database-postgresql
     runtimeOnly("org.flywaydb:flyway-database-postgresql:11.17.0")
 
+    // AWS
+    implementation(platform("software.amazon.awssdk:bom:2.25.0"))
+    implementation("software.amazon.awssdk:ssm")
 
+    // Actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     /* Test */
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -122,11 +127,43 @@ dependencies {
     // testImplementation "org.awaitility:awaitility:4.3.0"
     // testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     // testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    
+
+    /* TestContainer */
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
 }
 
-tasks.named('test') {	
+test {
 	useJUnitPlatform()
+    def cliProfiles = System.getProperty('spring.profiles.active')
+    def activeProfiles = cliProfiles ? "${cliProfiles},test" : "test"
+    systemProperty 'spring.profiles.active', activeProfiles
+}
+
+shadowJar {
+    zip64 = true
+    mergeServiceFiles()
+    append 'META-INF/spring.handlers'
+    append 'META-INF/spring.schemas'
+    append 'META-INF/spring.tooling'
+
+    manifest {
+        attributes(
+                'Main-Class': 'com.matchalab.travel_todo_api.TravelTodoApiApplication'
+        )
+    }
+}
+
+tasks.register('buildLambdaWebAdapterZip', Zip) {
+    dependsOn 'bootJar'
+    zip64 = true
+    from('run.sh') {
+        filePermissions { user { execute = true }; group { execute = true }; other { execute = true } }
+    }
+    from(tasks.bootJar) {
+        rename { 'app.jar' }
+    }
 }
 
 tasks.named('bootBuildImage') {
@@ -134,7 +171,7 @@ tasks.named('bootBuildImage') {
     // image.builder.platforms.set(['linux/amd64']) 
 }
 
-
+ext['testcontainers.version'] = '1.21.4'
 
 // tasks.withType(JavaCompile).configureEach {
 //     if (name.contains("Test")) {

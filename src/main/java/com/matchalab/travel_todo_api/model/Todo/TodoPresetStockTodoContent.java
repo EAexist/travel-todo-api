@@ -25,8 +25,7 @@ import lombok.Setter;
 public class TodoPresetStockTodoContent {
 
     @EmbeddedId
-    @Builder.Default
-    private TodoPresetStockTodoContentId id = new TodoPresetStockTodoContentId();
+    private TodoPresetStockTodoContentId id;
 
     @Builder.Default
     private Boolean isFlaggedToAdd = false;

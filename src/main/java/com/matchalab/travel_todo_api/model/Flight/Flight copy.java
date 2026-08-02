@@ -1,6 +1,6 @@
-// package com.matchalab.trip_todo_api.model.Flight;
+// package com.matchalab.travel_todo_api.model.Flight;
 
-// import com.matchalab.trip_todo_api.model.Todo.Todo;
+// import com.matchalab.travel_todo_api.model.Todo.Todo;
 
 // import jakarta.annotation.Nullable;
 // import jakarta.persistence.CascadeType;

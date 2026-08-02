@@ -17,6 +17,7 @@ bin/
 *.classpath
 *.prefs
 .vscode/
+.idea/
 
 # Docker
 pgdata/
@@ -31,8 +32,20 @@ src/main/resources/application-aws.yml
 src/main/resources/application-render.yml
 *.pem
 test-local.sh
+*.crt
+*.key
 
-src/main/java/com/matchalab/travel_todo_api/.deprecated/
+# Temp files
+src/main/resources/temp
 
+.env*
+
+# Deprecated
+.deprecated
+
+# Scripts
+.local
+
+# Sqls
 sql/
 sql/*

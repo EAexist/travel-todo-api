@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import com.matchalab.travel_todo_api.model.Destination;
+import com.matchalab.travel_todo_api.model.Flight.Airline;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
@@ -34,7 +36,7 @@ import com.matchalab.travel_todo_api.repository.AirlineRepository;
 import com.matchalab.travel_todo_api.repository.DestinationRepository;
 import com.matchalab.travel_todo_api.repository.FlightRouteRepository;
 import com.matchalab.travel_todo_api.utils.Utils;
-import com.matchalab.trip_todo_api.mapper.FlightRouteMapperImpl;
+import com.matchalab.travel_todo_api.mapper.FlightRouteMapperImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,7 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 @ContextConfiguration(classes = {
         FlightRouteMapperImpl.class
 })
-@ActiveProfiles({ "local", "local-init-data" })
 @TestInstance(Lifecycle.PER_CLASS)
 @Slf4j
 @RecordApplicationEvents
@@ -74,37 +75,37 @@ public class NewEntityCreatedEventHandlerServiceTest {
     @BeforeAll
     void globalSetup() {
         airlines = List.of(
-                new Airline("RF", "에어로K"),
-                new Airline("BX", "에어부산"),
-                new Airline("YP", "에어프레미아"),
-                new Airline("RS", "에어서울"),
-                new Airline("OZ", "아시아나항공"),
-                new Airline("ZE", "이스타항공"),
-                new Airline("7C", "제주항공"),
-                new Airline("LJ", "진에어"),
-                new Airline("KE", "대한항공"),
-                new Airline("TW", "티웨이항공"),
-                new Airline("KJ", "에어인천"),
-                new Airline("HD", "에어두"),
-                new Airline("NH", "전일본공수"),
-                new Airline("JH", "후지드림항공"),
-                new Airline("JL", "일본항공"),
-                new Airline("NU", "저팬트랜스오션에어"),
-                new Airline("GK", "제트스타일본"),
-                new Airline("MM", "피치항공"),
-                new Airline("BC", "스카이마크항공"),
-                new Airline("6J", "솔라시드에어"),
-                new Airline("7G", "스타플라이어"),
-                new Airline("NQ", "에어재팬"),
-                new Airline("IJ", "일본춘추 항공"),
-                new Airline("ZG", "집에어"),
-                new Airline("MZ", "아마쿠사항공"),
-                new Airline("EH", "아나윙즈"),
-                new Airline("FW", "아이벡스항공"),
-                new Airline("JC", "일본항공 커뮤터"),
-                new Airline("OC", "오리엔탈에어브리지"),
-                new Airline("NU", "류큐에어커뮤터"),
-                new Airline("BV", "토키항공"));
+                new Airline("RF", "EOK", "에어로K"),
+                new Airline("BX", "ABL", "에어부산"),
+                new Airline("YP", "APZ", "에어프레미아"),
+                new Airline("RS", "ASV", "에어서울"),
+                new Airline("OZ", "AAR", "아시아나항공"),
+                new Airline("ZE", "ESR", "이스타항공"),
+                new Airline("7C", "JJA", "제주항공"),
+                new Airline("LJ", "JNA", "진에어"),
+                new Airline("KE", "KAL", "대한항공"),
+                new Airline("TW", "TWB", "티웨이항공"),
+                new Airline("KJ", "AIH", "에어인천"),
+                new Airline("HD", "ADO", "에어두"),
+                new Airline("NH", "ANA", "전일본공수"),
+                new Airline("JH", "FDA", "후지드림항공"),
+                new Airline("JL", "JAL", "일본항공"),
+                new Airline("NU", "JTA", "저팬트랜스오션에어"),
+                new Airline("GK", "JJP", "제트스타일본"),
+                new Airline("MM", "APJ", "피치항공"),
+                new Airline("BC", "SKY", "스카이마크항공"),
+                new Airline("6J", "SNJ", "솔라시드에어"),
+                new Airline("7G", "SFJ", "스타플라이어"),
+                new Airline("NQ", "AJX", "에어재팬"),
+                new Airline("IJ", "SJO", "일본춘추 항공"),
+                new Airline("ZG", "TZP", "집에어"),
+                new Airline("MZ", "AHX", "아마쿠사항공"),
+                new Airline("EH", "AKX", "아나윙즈"),
+                new Airline("FW", "IBX", "아이벡스항공"),
+                new Airline("JC", "JAC", "일본항공 커뮤터"),
+                new Airline("OC", "ORC", "오리엔탈에어브리지"),
+                new Airline("NU", "RAC", "류큐에어커뮤터"),
+                new Airline("BV", "TOK", "토키항공"));
     }
 
     @BeforeEach
@@ -159,45 +160,45 @@ public class NewEntityCreatedEventHandlerServiceTest {
     }
 
     // @Test
-    public void processNewDestinationAsync_When_NewDestinationCreatedEvent_Then_AddRecommendedFlights()
-            throws Exception {
-
-        CompletableFuture<Destination> future = newEntityCreatedEventHandler
-                .processNewDestinationAsync(new NewDestinationCreatedEvent(this, UUID.randomUUID()));
-        Destination destination = future.get();
-
-        log.info(String.format("destination: %s", Utils.asJsonString(destination)));
-
-        assertThat(destination.getRecommendedOutboundFlight().getFirst())
-                .usingRecursiveComparison()
-                .ignoringFieldsOfTypes(FlightRoute.class, Airport.class)
-                .isEqualTo(List.of(new FlightRoute(AirportFactory.createValidAirport("ICN"),
-                        AirportFactory.createValidAirport("KIX"))));
-
-        assertThat(destination.getRecommendedOutboundFlight().stream()
-                .filter(f -> f.getDeparture().getIataCode().equals("CJJ")).toList().getFirst())
-                .usingRecursiveComparison()
-                .ignoringFieldsOfTypes(FlightRoute.class, Airport.class)
-                .isEqualTo(List.of(new FlightRoute(AirportFactory.createValidAirport("CJJ"),
-                        AirportFactory.createValidAirport("KIX"))));
-
-        assertThat(destination.getRecommendedReturnFlight().getFirst())
-                .usingRecursiveComparison()
-                .ignoringFieldsOfTypes(FlightRoute.class, Airport.class)
-                .isEqualTo(List.of(new FlightRoute(AirportFactory.createValidAirport("KIX"),
-                        AirportFactory.createValidAirport("ICN"))));
-    }
+//    public void processNewDestinationAsync_When_NewDestinationCreatedEvent_Then_AddRecommendedFlights()
+//            throws Exception {
+//
+//        CompletableFuture<Destination> future = newEntityCreatedEventHandler
+//                .processNewDestinationAsync(new NewDestinationCreatedEvent(this, UUID.randomUUID()));
+//        Destination destination = future.get();
+//
+//        log.info(String.format("destination: %s", Utils.asJsonString(destination)));
+//
+//        assertThat(destination.getRecommendedOutboundFlight().getFirst())
+//                .usingRecursiveComparison()
+//                .ignoringFieldsOfTypes(FlightRoute.class, Airport.class)
+//                .isEqualTo(List.of(new FlightRoute(AirportFactory.createValidAirport("ICN"),
+//                        AirportFactory.createValidAirport("KIX"))));
+//
+//        assertThat(destination.getRecommendedOutboundFlight().stream()
+//                .filter(f -> f.getDeparture().getIataCode().equals("CJJ")).toList().getFirst())
+//                .usingRecursiveComparison()
+//                .ignoringFieldsOfTypes(FlightRoute.class, Airport.class)
+//                .isEqualTo(List.of(new FlightRoute(AirportFactory.createValidAirport("CJJ"),
+//                        AirportFactory.createValidAirport("KIX"))));
+//
+//        assertThat(destination.getRecommendedReturnFlight().getFirst())
+//                .usingRecursiveComparison()
+//                .ignoringFieldsOfTypes(FlightRoute.class, Airport.class)
+//                .isEqualTo(List.of(new FlightRoute(AirportFactory.createValidAirport("KIX"),
+//                        AirportFactory.createValidAirport("ICN"))));
+//    }
 
     // @Test
-    public void processNewFlightRouteAsync_When_NewFlightRouteCreatedEvent_Then_AddRecommendedAirlines()
-            throws Exception {
-
-        CompletableFuture<FlightRoute> future = newEntityCreatedEventHandler
-                .processNewFlightRouteAsync(new NewFlightRouteCreatedEvent(this, UUID.randomUUID()));
-        FlightRoute flightRoute = future.get();
-
-        log.info(String.format("FlightRoute: %s", Utils.asJsonString(flightRoute)));
-        assertThat(flightRoute.getAirlines().stream().map(al -> al.getName()).toList()).contains(
-                "대한항공", "아시아나항공", "일본항공", "에어부산", "진에어", "에어서울", "이스타항공", "피치항공", "제트스타일본");
-    }
+//    public void processNewFlightRouteAsync_When_NewFlightRouteCreatedEvent_Then_AddRecommendedAirlines()
+//            throws Exception {
+//
+//        CompletableFuture<FlightRoute> future = newEntityCreatedEventHandler
+//                .processNewFlightRouteAsync(new NewFlightRouteCreatedEvent(this, UUID.randomUUID()));
+//        FlightRoute flightRoute = future.get();
+//
+//        log.info(String.format("FlightRoute: %s", Utils.asJsonString(flightRoute)));
+//        assertThat(flightRoute.getAirlines().stream().map(al -> al.getTitle()).toList()).contains(
+//                "대한항공", "아시아나항공", "일본항공", "에어부산", "진에어", "에어서울", "이스타항공", "피치항공", "제트스타일본");
+//    }
 }

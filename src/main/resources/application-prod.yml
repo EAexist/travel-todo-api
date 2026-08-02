@@ -1,0 +1,6 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+server:
+  port: ${PORT:8080}

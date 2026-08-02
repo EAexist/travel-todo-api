@@ -53,7 +53,8 @@ public class UserAccountService {
             userAccount = new UserAccount(googleProfile);
             userAccount.setUserRole(UserRole.ADMIN);
             userAccount = userAccountRepository.save(userAccount);
-            tripService.createAdminSampleTrip(userAccount.getId());
+            Trip trip = tripService.createAdminSampleTrip(userAccount.getId());
+            userAccount.setActiveTripId(trip.getId());
         }
         return userAccount;
     }

@@ -12,8 +12,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,13 +33,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ConfigurationProperties(prefix="app.google.places")
 public class GooglePlaceAutocompleteService {
+
+    @Setter
+    private String apiKey;
+
+    @Setter
+    private String baseUrl;
 
     @Autowired
     private final Iso2DigitNationCodeDataCache iso2DigitNationCodeDataCache;
-
-    private final String GOOGLE_PLACES_API_KEY = "AIzaSyClYZkWHBqRmV-UUFclFZPx2MeVl8RgTlI";
-    private final String GOOGLE_PLACES_API_BASE_URL = "https://maps.googleapis.com/maps/api/place/autocomplete/json";
 
     @Value("classpath:/static/allowed-nation-iso2Digit.txt")
     private Resource nationsFile;
@@ -55,9 +61,9 @@ public class GooglePlaceAutocompleteService {
         } else {
 
             RestTemplate restTemplate = new RestTemplate();
-            URI uri = UriComponentsBuilder.fromUriString(GOOGLE_PLACES_API_BASE_URL)
+            URI uri = UriComponentsBuilder.fromUriString(baseUrl)
                     .queryParam("input", input)
-                    .queryParam("key", GOOGLE_PLACES_API_KEY)
+                    .queryParam("key", apiKey)
                     .queryParam("language", language)
                     .queryParam("type", type)
                     // .queryParams(query)
@@ -66,6 +72,11 @@ public class GooglePlaceAutocompleteService {
 
             GooglePlaceAutoCompleteResponse response = restTemplate.getForObject(uri,
                     GooglePlaceAutoCompleteResponse.class);
+
+            if(response == null ){
+                return GooglePlaceAutoCompleteResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                        .build();
+            }
 
             googlePlaceDataList = response.predictions();
 

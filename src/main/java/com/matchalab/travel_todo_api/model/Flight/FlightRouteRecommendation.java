@@ -1,5 +1,5 @@
 package com.matchalab.travel_todo_api.model.Flight;
-// package com.matchalab.trip_todo_api.model;
+// package com.matchalab.travel_todo_api.model;
 
 // import jakarta.persistence.Entity;
 // import jakarta.persistence.GeneratedValue;

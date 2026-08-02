@@ -34,6 +34,7 @@ public class Flight {
     String departureDateTimeIsoString;
 
     public Flight(String flightNumber, String departureDateTimeIsoString) {
+        this.id = UUID.randomUUID();
         this.flightNumber = flightNumber;
         this.departureDateTimeIsoString = departureDateTimeIsoString;
     }

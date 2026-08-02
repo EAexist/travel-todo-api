@@ -49,5 +49,7 @@ public record TripDTO(
         private List<DestinationDTO> destinations = new ArrayList<DestinationDTO>();
         private List<TodoDTO> todolist = new ArrayList<TodoDTO>();
         private List<ReservationDTO> reservations = new ArrayList<ReservationDTO>();
+        private List<TodoContentDTO> stockTodoContents = new ArrayList();
+        private TripSettings settings = new TripSettings();
     }
 }

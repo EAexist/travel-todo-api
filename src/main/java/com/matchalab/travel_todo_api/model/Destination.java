@@ -6,26 +6,25 @@ import java.util.UUID;
 
 import com.matchalab.travel_todo_api.model.Flight.FlightRoute;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "destination", uniqueConstraints = {
+        @UniqueConstraint(
+                name = "uk_destination_title_code_region",
+                columnNames = {"title", "iso2DigitNationCode", "region"}
+        )
+})
 // @Builder
 public class Destination {
 
@@ -39,6 +38,7 @@ public class Destination {
     // private List<Trip> trips = new ArrayList<Trip>();
 
     @OneToMany(mappedBy = "destination", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     // @Builder.Default
     private List<TripDestination> trips = new ArrayList<TripDestination>();
 
@@ -59,7 +59,6 @@ public class Destination {
 
     public Destination(Destination destination) {
         this();
-        this.id = destination.getId();
         this.description = destination.getDescription();
         this.iso2DigitNationCode = destination.getIso2DigitNationCode();
         this.title = destination.getTitle();

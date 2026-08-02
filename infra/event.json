@@ -1,0 +1,18 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/actuator/health/readiness",
+  "rawQueryString": "",
+  "headers": {
+    "accept": "*/*",
+    "host": "localhost"
+  },
+  "requestContext": {
+    "http": {
+      "method": "GET",
+      "path": "/actuator/health/readiness",
+      "protocol": "HTTP/1.1"
+    }
+  },
+  "isBase64Encoded": false
+}

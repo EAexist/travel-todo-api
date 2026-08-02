@@ -11,5 +11,7 @@ import com.matchalab.travel_todo_api.model.Todo.TodoPreset;
 public interface TodoPresetRepository extends JpaRepository<TodoPreset, UUID> {
     Optional<TodoPreset> findByType(TodoPresetType type);
 
+    Optional<TodoPreset> findByTitle(String title);
+
     Boolean existsByType(TodoPresetType type);
 }

@@ -1,0 +1,3 @@
+{
+  "ssm:account=043309337239:parameterName=/stg/travel-todo-api/APP_CORS_ALLOWED_ORIGINS:region=ap-northeast-2": "https://travel-todo-demo.vercel.app,https://travel-todo-git-staging-sobalab.vercel.app"
+}

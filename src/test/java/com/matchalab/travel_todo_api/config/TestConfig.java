@@ -1,8 +1,11 @@
 package com.matchalab.travel_todo_api.config;
 
+import com.matchalab.travel_todo_api.model.TripSettings;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.matchalab.travel_todo_api.enums.TodoCategory;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
@@ -44,7 +47,9 @@ public class TestConfig {
 
     @Bean
     DestinationDTO destinationDTO_tokushima() {
-        return new DestinationDTO(null, "도쿠시마", "JP", "시코쿠", "시코쿠");
+        return new DestinationDTO(null, destination_tokushima().getTitle(),
+            destination_tokushima().getIso2DigitNationCode(), destination_tokushima().getRegion(),
+            destination_tokushima().getDescription());
     }
 
     @Bean
@@ -54,7 +59,7 @@ public class TestConfig {
 
     @Bean
     DestinationDTO destinationDTO_osaka() {
-        return new DestinationDTO(null, "오사카", "JP", "간사이", "");
+        return new DestinationDTO(null, destination_osaka().getTitle(), destination_osaka().getIso2DigitNationCode(), destination_osaka().getRegion(), destination_osaka().getDescription());
     }
 
     @Bean
@@ -64,7 +69,7 @@ public class TestConfig {
 
     @Bean
     DestinationDTO destinationDTO_kyoto() {
-        return new DestinationDTO(null, "교토", "JP", "간사이", "간사이");
+        return new DestinationDTO(null, destination_kyoto().getTitle(), destination_kyoto().getIso2DigitNationCode(), destination_kyoto().getRegion(), destination_kyoto().getDescription());
     }
 
     @Bean
@@ -121,99 +126,59 @@ public class TestConfig {
         };
     }
 
-    // private List<AccomodationDTO> accomodationDTOs = new
-    // ArrayList<AccomodationDTO>(
-    // Arrays.asList(new AccomodationDTO[] {
-    // new AccomodationDTO(
-    // null,
-    // "Hostel PAQ Tokushima",
-    // "혼성 도미토리 내 베드",
-    // 2,
-    // "PYO HYEON",
-    // "2025-02-20T00:00:00.001Z",
-    // "2025-02-22T00:00:00.001Z",
-    // "2025-07-01T18:00:00",
-    // "2025-07-01T21:00:00",
-    // "2025-07-01T10:00:00",
-    // "도쿠시마",
-    // "dorm",
-    // Map.of(
-    // "googleMap", "https://maps.app.goo.gl/81rvb62d2LKrYPNV7", "airbnb",
-    // "https://www.airbnb.co.kr/hotels/35388028?guests=1&adults=1&s=67&unique_share_id=be1c9ac3-c029-4927-a05e-efe2166f1903")),
-    // new AccomodationDTO(
-    // null,
-    // "Yoshiko 님의 숙소",
-    // "",
-    // 2,
-    // "PYO HYEON",
-    // "2025-02-23T00:00:00.001Z",
-    // "2025-02-24T00:00:00.001Z",
-    // "2025-07-01T17:00:00",
-    // "2025-07-01T21:00:00",
-    // "2025-07-01T10:00:00",
-    // "나루토",
-    // "airbnb",
-    // Map.of(
-    // "googleMap", "https://maps.app.goo.gl/yGivrbvsiyPBDVyR8", "airbnb",
-    // "https://www.airbnb.co.kr/rooms/12317142?viralityEntryPoint=1&s=76"))
-    // }));
+    StockTodoContent stockTodoContent = StockTodoContent.builder()
+        .id(UUID.nameUUIDFromBytes("stockTodoContent-cash".getBytes()))
+        .category(TodoCategory.FOREIGN)
+        .type("CASH").title("환전 (현금)").icon(new Icon("💱")).build();
 
     @Bean
     Todo stockTodo() {
-        Todo todo = Todo.builder().note("환전은 미리미리 할 것").stockTodoContent(stockTodoContent).build();
-        return todo;
+        return Todo.builder().id(UUID.nameUUIDFromBytes("customTodoContent-cash".getBytes())).orderKey(0).note("환전은 미리미리 할 것").stockTodoContent(stockTodoContent).build();
     }
+
+    TodoContentDTO stockTodoContentDto = TodoContentDTO.builder().id(stockTodoContent.getId())
+        .isStock(true).category(stockTodoContent.getCategory()).type(
+            stockTodoContent.getType())
+        .title(stockTodoContent.getTitle()).icon(stockTodoContent.getIcon()).build();
 
     @Bean
     TodoDTO stockTodoDTO() {
         return TodoDTO.builder()
                 .id(stockTodo().getId())
-                .orderKey(0)
-                .note("환전은 미리미리 할 것")
-                .completeDateIsoString(null)
-                .content(TodoContentDTO.builder().id(UUID.nameUUIDFromBytes("stockTodoContent-currency".getBytes()))
-                        .isStock(true).category("foreign").type(
-                                "currency")
-                        .title("환전").icon(new Icon("💱")).build())
+                .orderKey(stockTodo().getOrderKey())
+                .note(stockTodo().getNote())
+                .content(stockTodoContentDto)
                 .build();
     }
 
-    StockTodoContent stockTodoContent = StockTodoContent.builder()
-            .id(UUID.nameUUIDFromBytes("stockTodoContent-currency".getBytes()))
-            .isStock(true).category("foreign")
-            .type("currency").title("환전").icon(new Icon("💱")).build();
+
+    CustomTodoContent customTodoContent = CustomTodoContent.builder()
+        .id(UUID.nameUUIDFromBytes("customTodoContent-camera".getBytes())).category(TodoCategory.ELECTRONICS)
+        .type("goods").title("필름카메라").icon(new Icon("📸")).build();
 
     @Bean
     Todo customTodo() {
-        Todo todo = Todo.builder().id(UUID.nameUUIDFromBytes("customTodoContent-camera".getBytes()))
-                .orderKey(1).note(
-                        "카메라 필름 챙겼는지 확인할 것")
-                // .completeDateIsoString("2025-02-23T00:00:00.001Z")
-                .customTodoContent(customTodoContent).build();
-        return todo;
+        return Todo.builder().id(UUID.nameUUIDFromBytes("customTodoContent-camera".getBytes()))
+            .orderKey(1).note(
+                "카메라 필름 챙겼는지 확인할 것")
+            .customTodoContent(customTodoContent).build();
     }
+
+    TodoContentDTO customTodoContentDTO = TodoContentDTO.builder()
+        .id(customTodoContent.getId())
+        .isStock(false).category(customTodoContent.getCategory())
+        .type(customTodoContent.getType())
+        .title(customTodoContent.getTitle()).icon(customTodoContent.getIcon()).build();
 
     @Bean
     TodoDTO customTodoDTO() {
         return TodoDTO.builder()
                 .id(customTodo().getId())
-                .orderKey(1)
-                .note("카메라 필름 챙겼는지 확인할 것")
-                // .completeDateIsoString("2025-02-23T00:00:00.001Z")
+                .orderKey(customTodo().getOrderKey())
+                .note(customTodo().getNote())
                 .content(customTodoContentDTO)
                 .build();
     }
-
-    CustomTodoContent customTodoContent = CustomTodoContent.builder()
-            .id(UUID.nameUUIDFromBytes("customTodoContent-camera".getBytes()))
-            .isStock(false).category("goods")
-            .type("goods").title("필름카메라").icon(new Icon("📸")).build();
-
-    TodoContentDTO customTodoContentDTO = TodoContentDTO.builder()
-            .id(customTodoContent.getId())
-            .isStock(false).category("goods")
-            .type("goods")
-            .title("필름카메라").icon(new Icon("📸")).build();
 
     @Bean
     Trip trip() {
@@ -227,26 +192,27 @@ public class TestConfig {
 
     @Bean
     Trip tripHydrated() {
-        return Trip.builder().id(trip().getId()).title(
-                "Vaundy 보러 가는 도쿠시마 여행").startDateIsoString(
-                        "2025-02-20T00:00:00.001Z")
-                .endDateIsoString(
-                        "2025-02-25T00:00:00.001Z")
-                .destination(List.of(destinations()))
+
+        Trip _trip = Trip.builder().id(trip().getId()).title(
+                trip().getTitle()).startDateIsoString(trip().getStartDateIsoString())
+                .endDateIsoString(trip().getEndDateIsoString())
                 .todolist(List.of(new Todo[] { stockTodo(), customTodo() }))
                 .build();
+
+        _trip.addDestinations(List.of(destinations()));
+
+        return _trip;
     }
 
     @Bean
     TripDTO tripDTO() {
         return TripDTO.builder()
                 .id(trip().getId())
-                .isInitialized(false)
-                .title("Vaundy 보러 가는 도쿠시마 여행")
-                .startDateIsoString("2025-02-20T00:00:00.001Z")
-                .endDateIsoString("2025-02-25T00:00:00.001Z")
-                .destination(List.of(destinationDTOs()))
+                .isInitialized(false).title(
+                trip().getTitle()).startDateIsoString(trip().getStartDateIsoString())
+            .endDateIsoString(trip().getEndDateIsoString())
                 .todolist(List.of(new TodoDTO[] { stockTodoDTO(), customTodoDTO() }))
+                .destinations(List.of(destinationDTOs()))
                 .build();
     }
 
@@ -257,7 +223,7 @@ public class TestConfig {
                 .title(trip().getTitle())
                 .startDateIsoString(trip().getStartDateIsoString())
                 .endDateIsoString(trip().getEndDateIsoString())
-                .destination(List.of(destination_tokushima().getTitle(), destination_kyoto().getTitle()))
+                .destinationTitles(Arrays.stream(destinationDTOs()).map(it->it.title()).toList())
                 .build();
     }
 }

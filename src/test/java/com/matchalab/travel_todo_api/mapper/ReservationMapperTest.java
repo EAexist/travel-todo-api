@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.matchalab.travel_todo_api.config.TestConfig;
-import com.matchalab.trip_todo_api.mapper.ReservationMapperImpl;
+import com.matchalab.travel_todo_api.mapper.ReservationMapperImpl;
 
 import lombok.extern.slf4j.Slf4j;
 

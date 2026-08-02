@@ -1,5 +1,6 @@
 package com.matchalab.travel_todo_api.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mapstruct.BeanMapping;
@@ -82,7 +83,7 @@ public abstract class TodoMapper {
     public List<FlightRouteDTO> mapToFlightRoutes(CustomTodoContent customTodoContent) {
         return customTodoContent.getFlightTodoContent() != null ? customTodoContent.getFlightTodoContent().getRoutes()
                 .stream().map(flightRouteMapper::mapToFlightRouteDTO)
-                .toList() : null;
+                .toList() : new ArrayList<>();
 
     }
 

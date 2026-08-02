@@ -1,9 +1,30 @@
 spring:
+  profiles:
+    group:
+      local:
+        - dev
+        - ssl
+      prod:
+        - ai
+      test:
+        - dev
   flyway:
     enabled: true
+    locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
     driver-class-name: org.postgresql.Driver
+    hikari:
+      keepalive-time: 30000
+      max-lifetime: 600000
+      connection-test-query: SELECT 1
+      initialization-fail-timeout: 1
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
   security:
     oauth2:
       resourceserver:
@@ -15,34 +36,31 @@ spring:
   session:
     jdbc:
       initialize-schema: always
-  ai:
-    vertex:
-      ai:
-        gemini:
-          project-id: travel-checklist-461608
-          #   credentials-uri: classpath:/certs/application_default_credentials.json
-          location: us-west1
-          chat:
-            options:
-              model: gemini-2.0-flash-lite
   cloud:
     gcp:
-      project-id: travel-checklist-461608
-    #   credentials:
-    # location: ${GCP_CREDENTIALS_LOCATION}
-    # location: classpath:/certs/gc-service-account-key.json
-  cache:
-    jcache:
-      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
-    cache-names:
-      - create-reservation-from-text-api-call-quota-cache
-    caffeine:
-      spec: maximumSize=100000,expireAfterAccess=30d
+      project-id: ${GOOGLE_CLOUD_PROJECT}
+#  cache:
+#    jcache:
+#      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+#    cache-names:
+#      - create-reservation-from-text-api-call-quota-cache
+#    caffeine:
+#      spec: maximumSize=100000,expireAfterAccess=1d
 logging:
   level:
     org:
       springframework:
         security: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true
 app:
   quota:
     max-trips: 5
@@ -50,30 +68,24 @@ app:
     max-destinations: 4
     max-todos: 64
     max-reservations: 64
-  security:
-    admin-emails: hyeon.expression@gmail.com
-  google:
-    client-id: 428235231680-j847tt5013n612lk39j8rjp6gih61fsd.apps.googleusercontent.com
-    web-client-id: 428235231680-9nkmdpjmnp35484s3unlpm6nnf4g05t4.apps.googleusercontent.com
-  cors:
-    allowed-origins: ""
 
 # @TODO: use redis, not caffeine.
 bucket4j:
-  enabled: true
-  filters:
-    - cache-name: create-reservation-from-text-api-call-quota-cache
-      url: ^/trip/[^/]+/reservation/analysis/text.*
-      filter-method: servlet
-      filter-order: 1
-      rate-limits:
-        # @TODO: use user account id as cache key (Current approach: ip address as cache key)
-        - cache-key: "getRemoteAddr()"
-          bandwidths:
-            - capacity: 2
-              time: 30
-              unit: days
-              refill-speed: interval
-        #   execute-predicates:
-        #     - METHOD=GET
-        #     - METHOD=POST
+  enabled: false
+#  filter-config-caching-enabled: false
+#  filters:
+#    - cache-name: create-reservation-from-text-api-call-quota-cache
+#      url: ^/trip/[^/]+/reservation/analysis/text.*
+#      filter-method: servlet
+#      filter-order: 1
+#      rate-limits:
+#        # @TODO: use user account id as cache key (Current approach: ip address as cache key)
+#        - cache-key: "@securityService.getUserId() ?: getRemoteAddr()"
+#          bandwidths:
+#            - capacity: 2
+#              time: 30
+#              unit: days
+#              refill-speed: interval
+#        #   execute-predicates:
+#        #     - METHOD=GET
+#        #     - METHOD=POST

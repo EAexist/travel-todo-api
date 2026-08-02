@@ -1,11 +1,25 @@
 package com.matchalab.travel_todo_api.utils;
 
-import org.springframework.test.web.servlet.ResultActions;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.matchalab.travel_todo_api.DTO.CreateReservationDTO;
+import com.matchalab.travel_todo_api.enums.ReservationCategory;
+import java.nio.charset.StandardCharsets;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.StreamUtils;
 
 public class TestUtils {
+
+    public static CreateReservationDTO createReservationDTOFromFile(String resourcePath, ReservationCategory category) throws Exception {
+        ClassPathResource resource = new ClassPathResource(resourcePath);
+        String confirmationText = StreamUtils.copyToString(resource.getInputStream(),
+                StandardCharsets.UTF_8);
+
+        return CreateReservationDTO.builder()
+                .category(category)
+                .confirmationText(confirmationText).build();
+    }
 
     public static <T> T asObject(final ResultActions result, TypeReference<T> classType) {
         try {

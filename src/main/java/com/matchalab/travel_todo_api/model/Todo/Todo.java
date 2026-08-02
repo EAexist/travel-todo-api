@@ -2,6 +2,8 @@ package com.matchalab.travel_todo_api.model.Todo;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.domain.Persistable;
 
 import com.matchalab.travel_todo_api.model.Trip;
@@ -39,6 +41,7 @@ public class Todo implements Persistable<UUID> {
     private int orderKey;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @Nullable
     private CustomTodoContent customTodoContent;
 

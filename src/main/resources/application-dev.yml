@@ -1,0 +1,57 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show_sql: true
+  flyway:
+    clean-disabled: false
+  datasource:
+    hikari:
+      initialization-fail-timeout: 1
+      connection-test-query: ""
+      keepalive-time: 0
+      max-lifetime: 1800000
+#  ai:
+#    model:
+#      chat: none
+logging:
+  level:
+    # root: DEBUG
+    org:
+      hibernate:
+        sql: DEBUG
+      springframework:
+        security:
+          web:
+            FilterChainProxy: DEBUG
+server:
+  servlet:
+    session:
+      timeout: 4h
+app:
+  cors:
+    allowed-origins: https://localhost
+# bucket4j:
+#   filters:
+#     - cache-name: create-reservation-from-text-api-call-quota-cache
+#       url: ^/trip/[^/]+/reservation/analysis/text.*
+#       filter-method: servlet
+#       filter-order: 1
+#       rate-limits:
+#         - cache-key: "'TEST_KEY_STATIC'"
+#           bandwidths:
+#             - capacity: 2
+#               time: 30
+#               unit: days
+#               refill-speed: interval
+#   execute-predicates:
+#     - METHOD=GET
+#     - METHOD=POST
+---
+spring:
+  config:
+    activate:
+      on-profile: local-init-data
+  jpa:
+    hibernate:
+      ddl-auto: create

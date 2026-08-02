@@ -48,8 +48,6 @@ public class ReservationService {
 
     @Autowired
     private ChatModelService chatModelService;
-    @Autowired
-    private VisionService visionService;
 
     /*
      * Mapper

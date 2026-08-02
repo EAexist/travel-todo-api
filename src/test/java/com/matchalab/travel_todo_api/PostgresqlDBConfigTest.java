@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @SpringJUnitConfig(classes = {}, initializers = ConfigDataApplicationContextInitializer.class)
 // @TestPropertySource(properties = {
 // "spring.config.location=classpath:application-dev.yml" })
-@ActiveProfiles({ "local", "local-init-data" })
 public class PostgresqlDBConfigTest {
 
     @Value("${spring.datasource.url}")

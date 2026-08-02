@@ -13,5 +13,4 @@ public record TodoPatchDTO(
         int orderKey,
         String note,
         @Nullable JsonNullable<String> completeDateIsoString,
-        TodoContentDTO content) {
-}
+        TodoContentDTO content) implements TodoRequest {}
