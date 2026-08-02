@@ -11,7 +11,7 @@
     API Server supporting Expo Mobile App
     <br />
     <br />
-    <a href="https://travel-todo-demo.vercel.app">View Demo</a>
+    <a href="https://travel-todo-demo.vercel.app" target="_blank" rel="noopener noreferrer">View Demo</a>
   </p>
 </div>
 
@@ -48,7 +48,7 @@ This API Server supports Subscription Killer service.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-<a href="https://travel-todo-demo.vercel.app">View Demo</a>
+<a href="https://travel-todo-demo.vercel.app" target="_blank" rel="noopener noreferrer">View Demo</a>
 <!-- 
 ### Prerequisites
 
