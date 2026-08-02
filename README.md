@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/EAexist/travel-todo-api">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/app-icon.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Travel Todo API</h3>
@@ -11,7 +11,7 @@
     API Server supporting Expo Mobile App
     <br />
     <br />
-    <a href="https://travel-todo-git-staging-matchalab-project.vercel.app">View Demo</a>
+    <a href="https://travel-todo-demo.vercel.app">View Demo</a>
   </p>
 </div>
 
@@ -48,7 +48,7 @@ This API Server supports Subscription Killer service.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-<a href="https://travel-todo-git-staging-matchalab-project.vercel.app">View Demo</a>
+<a href="https://travel-todo-demo.vercel.app">View Demo</a>
 <!-- 
 ### Prerequisites
 
