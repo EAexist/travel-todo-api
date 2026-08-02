@@ -34,7 +34,7 @@ class TravelTodoApiApp {
                     // want to deploy the stack to.
                     .env(
                         Environment.builder()
-                            .account("660410403413")
+                            .account("043309337239")
                             .region("ap-northeast-2")
                             .build()
                     )

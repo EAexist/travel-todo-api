@@ -9,8 +9,6 @@ import software.amazon.awscdk.services.logs.RetentionDays
 import software.amazon.awscdk.services.ssm.StringParameter
 import software.constructs.Construct
 import java.io.File
-import kotlin.String
-import kotlin.to
 
 
 class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env: String = "stg") :
@@ -42,18 +40,18 @@ class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env
 
         val artifactPath = File("..", "build/distributions/travel-todo-api-0.0.1-SNAPSHOT.zip").path
 
-        val SPRING_PROFILES_ACTIVE = "prod"
+        val springProfilesActive = "prod"
 
         // Database
-        val SPRING_DATASOURCE_URL =
+        val springDatasourceUrl =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/SPRING_DATASOURCE_URL")
-        val SPRING_DATASOURCE_USERNAME =
+        val springDatasourceUsername =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/SPRING_DATASOURCE_USERNAME")
-        val SPRING_DATASOURCE_PASSWORD =
+        val springDatasourcePassword =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/SPRING_DATASOURCE_PASSWORD")
 
         // Google Cloud
-        val GOOGLE_CLOUD_PROJECT =
+        val googleCloudProject =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/GOOGLE_CLOUD_PROJECT")
         val appGoogleClientId =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_CLIENT_ID")
@@ -61,20 +59,19 @@ class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_WEB_CLIENT_ID")
 
         // Gemini API
-        val SPRING_AI_GOOGLE_GENAI_PROJECT_ID =
+        val springAiGoogleGenaiProjectId =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/SPRING_AI_GOOGLE_GENAI_PROJECT_ID")
-        val SPRING_AI_GOOGLE_GENAI_API_KEY =
+        val springAiGoogleGenaiApiKey =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/SPRING_AI_GOOGLE_GENAI_API_KEY")
 
         // Places API
-        val APP_GOOGLE_PLACES_API_KEY = StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_API_KEY")
-        val APP_GOOGLE_PLACES_BASE_URL = StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_BASE_URL")
-
+        val appGooglePlacesApiKey = StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_API_KEY")
+        val appGooglePlacesBaseUrl = StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_BASE_URL")
 
         //  app
         val appSecurityAdminEmails =
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_SECURITY_ADMIN_EMAILS")
-        val appCorsAllowedOrigins = StringParameter.valueForStringParameter(
+        val appCorsAllowedOrigins = StringParameter.valueFromLookup(
             this, "/stg/travel-todo-api/APP_CORS_ALLOWED_ORIGINS"
         )
 
@@ -95,29 +92,29 @@ class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env
             .environment(
                 mapOf(
                     // profile
-                    "SPRING_PROFILES_ACTIVE" to SPRING_PROFILES_ACTIVE,
+                    "SPRING_PROFILES_ACTIVE" to springProfilesActive,
 
                     // frontend
                     "APP_CORS_ALLOWED_ORIGINS" to appCorsAllowedOrigins,
 
                     // database
-                    "SPRING_DATASOURCE_URL" to SPRING_DATASOURCE_URL,
-                    "SPRING_DATASOURCE_USERNAME" to SPRING_DATASOURCE_USERNAME,
-                    "SPRING_DATASOURCE_PASSWORD" to SPRING_DATASOURCE_PASSWORD,
+                    "SPRING_DATASOURCE_URL" to springDatasourceUrl,
+                    "SPRING_DATASOURCE_USERNAME" to springDatasourceUsername,
+                    "SPRING_DATASOURCE_PASSWORD" to springDatasourcePassword,
 
                     // google cloud
-                    "GOOGLE_CLOUD_PROJECT" to GOOGLE_CLOUD_PROJECT,
+                    "GOOGLE_CLOUD_PROJECT" to googleCloudProject,
                     "APP_GOOGLE_CLIENT_ID" to appGoogleClientId,
                     "APP_GOOGLE_WEB_CLIENT_ID" to appGoogleWebClientId,
 
                     // AI
-                    "SPRING_AI_GOOGLE_GENAI_PROJECT_ID" to SPRING_AI_GOOGLE_GENAI_PROJECT_ID,
-                    "SPRING_AI_GOOGLE_GENAI_API_KEY" to SPRING_AI_GOOGLE_GENAI_API_KEY,
+                    "SPRING_AI_GOOGLE_GENAI_PROJECT_ID" to springAiGoogleGenaiProjectId,
+                    "SPRING_AI_GOOGLE_GENAI_API_KEY" to springAiGoogleGenaiApiKey,
 
                     // app
                     "APP_SECURITY_ADMIN_EMAILS" to appSecurityAdminEmails,
-                    "APP_GOOGLE_PLACES_API_KEY" to APP_GOOGLE_PLACES_API_KEY,
-                    "APP_GOOGLE_PLACES_BASE_URL" to APP_GOOGLE_PLACES_BASE_URL,
+                    "APP_GOOGLE_PLACES_API_KEY" to appGooglePlacesApiKey,
+                    "APP_GOOGLE_PLACES_BASE_URL" to appGooglePlacesBaseUrl,
 
                     // web adapter layer
                     "AWS_LWA_ASYNC_INIT" to "false",
