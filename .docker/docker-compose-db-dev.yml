@@ -10,7 +10,7 @@ services:
       - POSTGRES_USER=guest
       - POSTGRES_PASSWORD=hello_guest
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata-dev:/var/lib/postgresql/data
       - ../src/main/resources/certs:/certs:ro
     entrypoint: >
       sh -c "
@@ -24,6 +24,11 @@ services:
       -c ssl_cert_file=/tmp/server.crt 
       -c ssl_key_file=/tmp/server.key
       "
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  pgdata:
+  pgdata-dev:
