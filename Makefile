@@ -40,22 +40,27 @@ schema-gen: ## Generate DB schema using Hibernate
 	-@$(GRADLE) bootRun -x test --args='--spring.profiles.active=dev,schema-generation'
 	@$(DB_COMPOSE) down
 
-test-lambda: ## Build and test lambda artifact locally
-	$(GRADLE) clean buildLambdaWebAdapterZip -x test
-	@bash scripts/test-lambda-docker.sh
-
-deploy-lambda: ## Build and deploy lambda with CDK
+lambda-deploy: ## Build and deploy lambda with CDK
 	$(GRADLE) clean buildLambdaWebAdapterZip -x test
 	@cd infra && cdk deploy
 
-test-db-up:
-	@$(DB_COMPOSE_TEST) up -d
+lambda-test-run: ## Build and test lambda artifact locally
+	$(GRADLE) clean buildLambdaWebAdapterZip -x test
+	@bash scripts/test-lambda-docker.sh
 
-test-db-down:
-	@$(DB_COMPOSE_TEST) down -t 1
+test-local: test-db-up
+	@echo "Database is ready. Running tests..."
+	$(MAKE) test
 
 test: ## Run tests. Usage: make test PROFILES=... TEST_FILTER=...
 	@export $$(grep -v '^#' .env.dev.db.test | xargs) && \
 	$(GRADLE) clean test \
 		-Dspring.profiles.active=$(PROFILES) \
 		$(if $(TEST_FILTER),--tests "$(TEST_FILTER)")
+
+test-db-up:
+	@echo "Starting test database..."
+	$(DB_COMPOSE_TEST) up -d --wait
+
+test-db-down:
+	@$(DB_COMPOSE_TEST) down -t 1
