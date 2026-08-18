@@ -3,7 +3,6 @@ package com.matchalab.travel_todo_api.model.Reservation;
 import com.matchalab.travel_todo_api.model.Flight.Airport;
 import com.matchalab.travel_todo_api.model.Flight.Flight;
 import com.matchalab.travel_todo_api.model.Todo.Todo;
-
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -24,27 +23,24 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class FlightBooking extends Flight {
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Nullable
-    Todo todo;
+  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @Nullable
+  Todo todo;
 
-    @ManyToOne
-    Airport departureAirport;
+  @ManyToOne Airport departureAirport;
 
-    @ManyToOne
-    Airport arrivalAirport;
+  @ManyToOne Airport arrivalAirport;
 
-    @Nullable
-    int numberOfPassenger;
+  @Nullable int numberOfPassenger;
 
-    String passengerName;
+  String passengerName;
 
-    public FlightBooking(FlightBooking flightBooking) {
-        super(flightBooking.getFlightNumber(), flightBooking.getDepartureDateTimeIsoString());
-        // this.todo = flightBooking.getTodo();
-        this.departureAirport = flightBooking.getDepartureAirport();
-        this.arrivalAirport = flightBooking.getArrivalAirport();
-        this.numberOfPassenger = flightBooking.getNumberOfPassenger();
-        this.passengerName = flightBooking.getPassengerName();
-    }
+  public FlightBooking(FlightBooking flightBooking) {
+    super(flightBooking.getFlightNumber(), flightBooking.getDepartureDateTimeIsoString());
+    // this.todo = flightBooking.getTodo();
+    this.departureAirport = flightBooking.getDepartureAirport();
+    this.arrivalAirport = flightBooking.getArrivalAirport();
+    this.numberOfPassenger = flightBooking.getNumberOfPassenger();
+    this.passengerName = flightBooking.getPassengerName();
+  }
 }

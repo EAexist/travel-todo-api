@@ -1,27 +1,225 @@
-create table accomodation (number_of_client integer not null, id uuid not null, category varchar(255) check (category in ('GENERAL','HOTEL','DORMITORY','GUESTHOUSE','AIRBNB')), checkin_date_iso_string varchar(255), checkin_end_time_iso_string varchar(255), checkin_start_time_iso_string varchar(255), checkout_date_iso_string varchar(255), checkout_time_iso_string varchar(255), client_name varchar(255), location varchar(255), room_title varchar(255), title varchar(255), links jsonb, primary key (id));
-create table airline (iata_code varchar(255), icao_code varchar(255) not null, title varchar(255), primary key (icao_code));
-create table airport (airport_name varchar(255), city_name varchar(255), iata_code varchar(255) not null, iso2digit_nation_code varchar(255), primary key (iata_code));
-create table custom_todo_content (flight_todo_content_id uuid unique, id uuid not null, category varchar(255) check (category in ('WORK','RESERVATION','FOREIGN','SUPPLY','WASH','ELECTRONICS','CLOTHING')), subtitle varchar(255), title varchar(255), type varchar(255), icon jsonb, primary key (id));
-create table destination (id uuid not null, description varchar(255), iso2digit_nation_code varchar(255), region varchar(255), title varchar(255), primary key (id), constraint uk_destination_title_code_region unique (title, iso2digit_nation_code, region));
-create table destination_outbound (destination_id uuid not null, "flight-route_id" uuid not null);
-create table destination_return (destination_id uuid not null, "flight-route_id" uuid not null);
-create table "flight-todo-content_flight-route" ("flight-route_id" uuid not null, "flight-todo-content_id" uuid not null);
-create table flight_booking (number_of_passenger integer not null, id uuid not null, todo_id uuid unique, arrival_airport_iata_code varchar(255), departure_airport_iata_code varchar(255), departure_date_time_iso_string varchar(255), flight_number varchar(255), passenger_name varchar(255), primary key (id));
-create table flight_route (id uuid not null, arrival_airport_id varchar(255), departure_airport_id varchar(255), primary key (id));
-create table flight_route_airlines (flight_route_id uuid not null, airlines_icao_code varchar(255) not null unique);
-create table flight_ticket (id uuid not null, todo_id uuid unique, arrival_airport_iata_code varchar(255), departure_airport_iata_code varchar(255), departure_date_time_iso_string varchar(255), flight_number varchar(255), passenger_name varchar(255), primary key (id));
-create table flight_todo_content (id uuid not null, primary key (id));
-create table general_reservation (number_of_client integer not null, id uuid not null, client_name varchar(255), date_time_iso_string varchar(255), title varchar(255), primary key (id));
-create table reservation (is_completed boolean, accomodation_id uuid unique, flight_booking_id uuid unique, flight_ticket_id uuid unique, general_reservation_id uuid unique, id uuid not null, trip_id uuid, visit_japan_id uuid unique, primary_href_link varchar(2048), category varchar(255) check (category in ('UNKNOWN','GENERAL','FLIGHT_BOOKING','FLIGHT_TICKET','ACCOMODATION','VISIT_JAPAN')), code varchar(255), note varchar(255), raw_text oid, primary key (id));
-create table stock_todo_content (id uuid default gen_random_uuid() not null, todo_id uuid, category varchar(255) check (category in ('WORK','RESERVATION','FOREIGN','SUPPLY','WASH','ELECTRONICS','CLOTHING')), subtitle varchar(255), title varchar(255), type varchar(255) unique, icon jsonb, primary key (id));
-create table todo (order_key integer not null, custom_todo_content_id uuid unique, id uuid not null, "preset-todo-content_id" uuid, trip_id uuid, complete_date_iso_string varchar(255), note varchar(255), primary key (id));
-create table todo_preset (id uuid not null, title varchar(255), type varchar(255) unique check (type in ('DEFAULT','DOMESTIC','DOMESTIC_FLIGHT','FOREIGN','JAPAN')), primary key (id));
-create table todo_preset_stock_todo_content (is_flagged_to_add boolean, order_key integer not null, "stock-todo-content_id" uuid not null, "todo-preset_id" uuid not null, primary key ("stock-todo-content_id", "todo-preset_id"));
-create table trip (is_initialized boolean, is_sample boolean, is_todo_preset_updated boolean, id uuid not null, settings_id uuid unique, todo_preset_id uuid, user_account_id uuid, create_date_iso_string varchar(255), end_date_iso_string varchar(255), start_date_iso_string varchar(255), title varchar(255), primary key (id));
-create table trip_destination (destination_id uuid not null, trip_id uuid not null, primary key (destination_id, trip_id));
-create table trip_settings (is_trip_mode boolean, id uuid not null, category_key_to_index jsonb, primary key (id));
-create table user_account (active_trip_id uuid, id uuid not null, google_id varchar(255), kakao_id varchar(255), nickname varchar(255), user_role varchar(255) check (user_role in ('ADMIN','USER')), google_profile jsonb, kakao_profile jsonb, primary key (id));
-create table visit_japan (id uuid not null, date_time_iso_string varchar(255), primary key (id));
+create table accomodation
+(
+    number_of_client              integer not null,
+    id                            uuid    not null,
+    category                      varchar(255) check (category in ('GENERAL', 'HOTEL', 'DORMITORY', 'GUESTHOUSE', 'AIRBNB')),
+    checkin_date_iso_string       varchar(255),
+    checkin_end_time_iso_string   varchar(255),
+    checkin_start_time_iso_string varchar(255),
+    checkout_date_iso_string      varchar(255),
+    checkout_time_iso_string      varchar(255),
+    client_name                   varchar(255),
+    location                      varchar(255),
+    room_title                    varchar(255),
+    title                         varchar(255),
+    links                         jsonb,
+    primary key (id)
+);
+create table airline
+(
+    iata_code varchar(255),
+    icao_code varchar(255) not null,
+    title     varchar(255),
+    primary key (icao_code)
+);
+create table airport
+(
+    airport_name          varchar(255),
+    city_name             varchar(255),
+    iata_code             varchar(255) not null,
+    iso2digit_nation_code varchar(255),
+    primary key (iata_code)
+);
+create table custom_todo_content
+(
+    flight_todo_content_id uuid unique,
+    id                     uuid not null,
+    category               varchar(255) check (category in
+                                               ('WORK', 'RESERVATION', 'FOREIGN', 'SUPPLY', 'WASH', 'ELECTRONICS',
+                                                'CLOTHING')),
+    subtitle               varchar(255),
+    title                  varchar(255),
+    type                   varchar(255),
+    icon                   jsonb,
+    primary key (id)
+);
+create table destination
+(
+    id                    uuid not null,
+    description           varchar(255),
+    iso2digit_nation_code varchar(255),
+    region                varchar(255),
+    title                 varchar(255),
+    primary key (id),
+    constraint uk_destination_title_code_region unique (title, iso2digit_nation_code, region)
+);
+create table destination_outbound
+(
+    destination_id    uuid not null,
+    "flight-route_id" uuid not null
+);
+create table destination_return
+(
+    destination_id    uuid not null,
+    "flight-route_id" uuid not null
+);
+create table "flight-todo-content_flight-route"
+(
+    "flight-route_id"        uuid not null,
+    "flight-todo-content_id" uuid not null
+);
+create table flight_booking
+(
+    number_of_passenger            integer not null,
+    id                             uuid    not null,
+    todo_id                        uuid unique,
+    arrival_airport_iata_code      varchar(255),
+    departure_airport_iata_code    varchar(255),
+    departure_date_time_iso_string varchar(255),
+    flight_number                  varchar(255),
+    passenger_name                 varchar(255),
+    primary key (id)
+);
+create table flight_route
+(
+    id                   uuid not null,
+    arrival_airport_id   varchar(255),
+    departure_airport_id varchar(255),
+    primary key (id)
+);
+create table flight_route_airlines
+(
+    flight_route_id    uuid         not null,
+    airlines_icao_code varchar(255) not null unique
+);
+create table flight_ticket
+(
+    id                             uuid not null,
+    todo_id                        uuid unique,
+    arrival_airport_iata_code      varchar(255),
+    departure_airport_iata_code    varchar(255),
+    departure_date_time_iso_string varchar(255),
+    flight_number                  varchar(255),
+    passenger_name                 varchar(255),
+    primary key (id)
+);
+create table flight_todo_content
+(
+    id uuid not null,
+    primary key (id)
+);
+create table general_reservation
+(
+    number_of_client     integer not null,
+    id                   uuid    not null,
+    client_name          varchar(255),
+    date_time_iso_string varchar(255),
+    title                varchar(255),
+    primary key (id)
+);
+create table reservation
+(
+    is_completed           boolean,
+    accomodation_id        uuid unique,
+    flight_booking_id      uuid unique,
+    flight_ticket_id       uuid unique,
+    general_reservation_id uuid unique,
+    id                     uuid not null,
+    trip_id                uuid,
+    visit_japan_id         uuid unique,
+    primary_href_link      varchar(2048),
+    category               varchar(255) check (category in
+                                               ('UNKNOWN', 'GENERAL', 'FLIGHT_BOOKING', 'FLIGHT_TICKET', 'ACCOMODATION',
+                                                'VISIT_JAPAN')),
+    code                   varchar(255),
+    note                   varchar(255),
+    raw_text               oid,
+    primary key (id)
+);
+create table stock_todo_content
+(
+    id       uuid default gen_random_uuid() not null,
+    todo_id  uuid,
+    category varchar(255) check (category in
+                                 ('WORK', 'RESERVATION', 'FOREIGN', 'SUPPLY', 'WASH', 'ELECTRONICS', 'CLOTHING')),
+    subtitle varchar(255),
+    title    varchar(255),
+    type     varchar(255) unique,
+    icon     jsonb,
+    primary key (id)
+);
+create table todo
+(
+    order_key                integer not null,
+    custom_todo_content_id   uuid unique,
+    id                       uuid    not null,
+    "preset-todo-content_id" uuid,
+    trip_id                  uuid,
+    complete_date_iso_string varchar(255),
+    note                     varchar(255),
+    primary key (id)
+);
+create table todo_preset
+(
+    id    uuid not null,
+    title varchar(255),
+    type  varchar(255) unique check (type in ('DEFAULT', 'DOMESTIC', 'DOMESTIC_FLIGHT', 'FOREIGN', 'JAPAN')),
+    primary key (id)
+);
+create table todo_preset_stock_todo_content
+(
+    is_flagged_to_add       boolean,
+    order_key               integer not null,
+    "stock-todo-content_id" uuid    not null,
+    "todo-preset_id"        uuid    not null,
+    primary key ("stock-todo-content_id", "todo-preset_id")
+);
+create table trip
+(
+    is_initialized         boolean,
+    is_sample              boolean,
+    is_todo_preset_updated boolean,
+    id                     uuid not null,
+    settings_id            uuid unique,
+    todo_preset_id         uuid,
+    user_account_id        uuid,
+    create_date_iso_string varchar(255),
+    end_date_iso_string    varchar(255),
+    start_date_iso_string  varchar(255),
+    title                  varchar(255),
+    primary key (id)
+);
+create table trip_destination
+(
+    destination_id uuid not null,
+    trip_id        uuid not null,
+    primary key (destination_id, trip_id)
+);
+create table trip_settings
+(
+    is_trip_mode          boolean,
+    id                    uuid not null,
+    category_key_to_index jsonb,
+    primary key (id)
+);
+create table user_account
+(
+    active_trip_id uuid,
+    id             uuid not null,
+    google_id      varchar(255),
+    kakao_id       varchar(255),
+    nickname       varchar(255),
+    user_role      varchar(255) check (user_role in ('ADMIN', 'USER')),
+    google_profile jsonb,
+    kakao_profile  jsonb,
+    primary key (id)
+);
+create table visit_japan
+(
+    id                   uuid not null,
+    date_time_iso_string varchar(255),
+    primary key (id)
+);
 create index idx_sample on trip (is_sample);
 alter table if exists custom_todo_content add constraint FK4866gpr55o50uel7xwpkaj682 foreign key (flight_todo_content_id) references flight_todo_content;
 alter table if exists destination_outbound add constraint FKktbw0b64utji392frk20m3b5y foreign key ("flight-route_id") references flight_route;

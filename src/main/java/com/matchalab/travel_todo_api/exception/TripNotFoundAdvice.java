@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 class TripNotFoundAdvice {
 
-    @ExceptionHandler(TripNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    String tripNotFoundHandler(TripNotFoundException ex) {
-        return ex.getMessage();
-    }
+  @ExceptionHandler(TripNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  String tripNotFoundHandler(TripNotFoundException ex) {
+    return ex.getMessage();
+  }
 }

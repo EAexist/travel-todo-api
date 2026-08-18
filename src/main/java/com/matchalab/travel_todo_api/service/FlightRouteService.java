@@ -1,13 +1,25 @@
 package com.matchalab.travel_todo_api.service;
 
+import com.matchalab.travel_todo_api.event.NewFlightRouteCreatedEvent;
+import com.matchalab.travel_todo_api.exception.NotFoundException;
+import com.matchalab.travel_todo_api.model.Destination;
+import com.matchalab.travel_todo_api.model.Flight.Airline;
 import com.matchalab.travel_todo_api.model.Flight.Airport;
+import com.matchalab.travel_todo_api.model.Flight.FlightRoute;
+import com.matchalab.travel_todo_api.model.genAI.FlightRouteWithoutAirline;
+import com.matchalab.travel_todo_api.model.genAI.RecommendedFlightChatResult;
+import com.matchalab.travel_todo_api.repository.AirlineRepository;
 import com.matchalab.travel_todo_api.repository.AirportRepository;
+import com.matchalab.travel_todo_api.repository.DestinationRepository;
+import com.matchalab.travel_todo_api.repository.FlightRouteRepository;
+import com.matchalab.travel_todo_api.service.ChatModelService.ChatModelService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
@@ -15,146 +27,122 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.matchalab.travel_todo_api.event.NewFlightRouteCreatedEvent;
-import com.matchalab.travel_todo_api.exception.NotFoundException;
-import com.matchalab.travel_todo_api.mapper.FlightRouteMapper;
-import com.matchalab.travel_todo_api.model.Destination;
-import com.matchalab.travel_todo_api.model.Flight.Airline;
-import com.matchalab.travel_todo_api.model.Flight.FlightRoute;
-import com.matchalab.travel_todo_api.model.genAI.FlightRouteWithoutAirline;
-import com.matchalab.travel_todo_api.model.genAI.RecommendedFlightChatResult;
-import com.matchalab.travel_todo_api.repository.AirlineRepository;
-import com.matchalab.travel_todo_api.repository.DestinationRepository;
-import com.matchalab.travel_todo_api.repository.FlightRouteRepository;
-import com.matchalab.travel_todo_api.service.ChatModelService.ChatModelService;
-import com.matchalab.travel_todo_api.utils.Utils;
-
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 @RequiredArgsConstructor
-@Slf4j
 @Setter
 @Service
 public class FlightRouteService {
 
-    @Autowired
-    private final DestinationRepository destinationRepository;
+  @Autowired private final DestinationRepository destinationRepository;
 
-    @Autowired
-    private final FlightRouteRepository flightRouteRepository;
+  @Autowired private final FlightRouteRepository flightRouteRepository;
 
-    @Autowired
-    private final AirlineRepository airlineRepository;
+  @Autowired private final AirlineRepository airlineRepository;
+  @Autowired private final ApplicationEventPublisher eventPublisher;
+  @Autowired protected AirportRepository airportRepository;
+  @Autowired private ChatModelService chatModelService;
 
-    @Autowired
-    private ChatModelService chatModelService;
+  private Airport getAirport(String airportIataCode) {
+    return airportRepository.findById(airportIataCode).orElse(new Airport(airportIataCode));
+  }
 
-    @Autowired
-    private final ApplicationEventPublisher eventPublisher;
+  public FlightRoute mapToFlightRoute(FlightRouteWithoutAirline frWithoutAirline) {
 
-    @Autowired
-    protected AirportRepository airportRepository;
+    return new FlightRoute(
+        getAirport(frWithoutAirline.departureAirportIataCode()),
+        getAirport(frWithoutAirline.arrivalAirportIataCode()));
+  }
 
-    private Airport getAirport(String airportIataCode) {
-        return airportRepository.findById(airportIataCode).orElse(new Airport(airportIataCode));
+  @Async
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public CompletableFuture<Destination> setRecommendedFlightRoutes(UUID destinationId) {
+
+    Destination destination =
+        destinationRepository
+            .findById(destinationId)
+            .orElseThrow(() -> new NotFoundException(destinationId));
+
+    if (destination.getIso2DigitNationCode() != null) {
+
+      List<UUID> newlyCreatedFlightRouteIds = new ArrayList<UUID>();
+
+      RecommendedFlightChatResult recommendedFlightChatResult =
+          chatModelService.getRecommendedFlight(destination.getTitle());
+
+      List<FlightRoute> outboundFlightRoutes =
+          recommendedFlightChatResult.recommendedOutboundFlight().stream()
+              .map(fr -> this.findOrCreateFlightRoute(fr, newlyCreatedFlightRouteIds))
+              .toList();
+
+      List<FlightRoute> returnFlightRoutes =
+          recommendedFlightChatResult.recommendedReturnFlight().stream()
+              .map(fr -> this.findOrCreateFlightRoute(fr, newlyCreatedFlightRouteIds))
+              .toList();
+
+      destination.addRecommendedOutboundFlight(outboundFlightRoutes);
+      destination.addRecommendedReturnFlight(returnFlightRoutes);
+
+      destination = destinationRepository.save(destination);
+
+      newlyCreatedFlightRouteIds.stream()
+          .forEach(
+              id -> {
+                eventPublisher.publishEvent(new NewFlightRouteCreatedEvent(this, id));
+              });
     }
 
-    public FlightRoute mapToFlightRoute(FlightRouteWithoutAirline frWithoutAirline) {
+    return CompletableFuture.completedFuture(destination);
+  }
 
-        return new FlightRoute(getAirport(frWithoutAirline.departureAirportIataCode()),
-            getAirport(frWithoutAirline.arrivalAirportIataCode()));
+  @Async
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public CompletableFuture<FlightRoute> setAirlines(UUID flightRouteId) {
+    FlightRoute flightRoute =
+        flightRouteRepository
+            .findById(flightRouteId)
+            .orElseThrow(() -> new NotFoundException(flightRouteId));
+    List<String> airlineIcaoCodes = chatModelService.getRecommendedAirline(flightRoute);
 
-    }
+    List<Airline> airlines =
+        airlineIcaoCodes.stream()
+            .map(airlineRepository::findById)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList();
 
-    @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public CompletableFuture<Destination> setRecommendedFlightRoutes(UUID destinationId) {
+    flightRoute.getAirlines().addAll(airlines);
 
-        Destination destination = destinationRepository.findById(destinationId)
-                .orElseThrow(() -> new NotFoundException(destinationId));
+    return CompletableFuture.completedFuture(flightRouteRepository.save(flightRoute));
+  }
 
-        if (destination.getIso2DigitNationCode() != null) {
+  private FlightRoute findOrCreateFlightRoute(
+      FlightRouteWithoutAirline frWithoutAirline, List<UUID> newlyCreatedIds) {
+    return flightRouteRepository
+        .findByDepartureIataCodeAndArrivalIataCode(
+            frWithoutAirline.departureAirportIataCode(), frWithoutAirline.arrivalAirportIataCode())
+        .orElseGet(
+            () -> {
+              FlightRoute newRoute = mapToFlightRoute(frWithoutAirline);
+              FlightRoute savedRoute = flightRouteRepository.save(newRoute);
 
-            List<UUID> newlyCreatedFlightRouteIds = new ArrayList<UUID>();
+              newlyCreatedIds.add(savedRoute.getId());
 
-            RecommendedFlightChatResult recommendedFlightChatResult = chatModelService
-                    .getRecommendedFlight(destination.getTitle());
-
-            List<FlightRoute> outboundFlightRoutes = recommendedFlightChatResult.recommendedOutboundFlight()
-                    .stream()
-                    .map(fr -> this.findOrCreateFlightRoute(fr, newlyCreatedFlightRouteIds))
-                    .toList();
-
-            List<FlightRoute> returnFlightRoutes = recommendedFlightChatResult.recommendedReturnFlight().stream()
-                    .map(fr -> this.findOrCreateFlightRoute(fr, newlyCreatedFlightRouteIds))
-                    .toList();
-
-            destination.addRecommendedOutboundFlight(outboundFlightRoutes);
-            destination.addRecommendedReturnFlight(returnFlightRoutes);
-
-            destination = destinationRepository.save(destination);
-
-            newlyCreatedFlightRouteIds.stream().forEach(id -> {
-                eventPublisher.publishEvent(new NewFlightRouteCreatedEvent(this,
-                        id));
-
+              return savedRoute;
             });
-        }
+  }
 
-        log.info(String.format("[setRecommendedFlightRoutes] destination svaed"));
-        return CompletableFuture.completedFuture(destination);
+  private FlightRoute processRecommendedFlightChatResult(
+      FlightRouteWithoutAirline frWithoutAirline) {
 
-    }
-
-    @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public CompletableFuture<FlightRoute> setAirlines(UUID flightRouteId) {
-        log.info(String.format("[setAirlines] flightRouteId: %s", flightRouteId));
-        FlightRoute flightRoute = flightRouteRepository.findById(flightRouteId)
-                .orElseThrow(() -> new NotFoundException(flightRouteId));
-        List<String> airlineIcaoCodes = chatModelService.getRecommendedAirline(flightRoute);
-
-        List<Airline> airlines = airlineIcaoCodes.stream().map(airlineRepository::findById).filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
-
-        flightRoute.getAirlines().addAll(airlines);
-
-        log.info(String.format("flightRoute: %s", Utils.asJsonString(flightRoute)));
-        return CompletableFuture.completedFuture(flightRouteRepository.save(flightRoute));
-    }
-
-    private FlightRoute findOrCreateFlightRoute(
-            FlightRouteWithoutAirline frWithoutAirline,
-            List<UUID> newlyCreatedIds) {
-        return flightRouteRepository
-                .findByDepartureIataCodeAndArrivalIataCode(
-                        frWithoutAirline.departureAirportIataCode(),
-                        frWithoutAirline.arrivalAirportIataCode())
-                .orElseGet(() -> {
-                    FlightRoute newRoute = mapToFlightRoute(frWithoutAirline);
-                    FlightRoute savedRoute = flightRouteRepository.save(newRoute);
-
-                    newlyCreatedIds.add(savedRoute.getId());
-
-                    return savedRoute;
-                });
-    }
-
-    private FlightRoute processRecommendedFlightChatResult(FlightRouteWithoutAirline frWithoutAirline) {
-
-        return flightRouteRepository
-                .findByDepartureIataCodeAndArrivalIataCode(frWithoutAirline.departureAirportIataCode(),
-                        frWithoutAirline.arrivalAirportIataCode())
-                .orElseGet(() -> {
-                    FlightRoute flightRoute = flightRouteRepository
-                            .save(mapToFlightRoute(frWithoutAirline));
-                    eventPublisher.publishEvent(new NewFlightRouteCreatedEvent(this,
-                            flightRoute.getId()));
-                    return flightRoute;
-                });
-    }
-
+    return flightRouteRepository
+        .findByDepartureIataCodeAndArrivalIataCode(
+            frWithoutAirline.departureAirportIataCode(), frWithoutAirline.arrivalAirportIataCode())
+        .orElseGet(
+            () -> {
+              FlightRoute flightRoute =
+                  flightRouteRepository.save(mapToFlightRoute(frWithoutAirline));
+              eventPublisher.publishEvent(
+                  new NewFlightRouteCreatedEvent(this, flightRoute.getId()));
+              return flightRoute;
+            });
+  }
 }

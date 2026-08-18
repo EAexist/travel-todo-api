@@ -8,12 +8,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CreateTodoRequest {
 
-    @Nullable
-    private String category;
+  @Nullable private String category;
 
-    @Nullable
-    private String type;
+  @Nullable private String type;
 
-    @Nullable
-    private String stockId;
+  @Nullable private String stockId;
 }

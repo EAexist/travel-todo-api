@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -27,35 +26,50 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockUser
 public class ReservationControllerMvcTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @MockitoBean
-    private ReservationService reservationService;
+  @MockitoBean private ReservationService reservationService;
 
-    @Test
-    @Disabled
-    void givenInvalidConfirmationText_whenCreateReservationFromText_thenReturnsBadRequest() throws Exception {
-        doThrow(new IllegalArgumentException()).when(reservationService).extractReservationFromText(any(), any());
+  @Test
+  @Disabled
+  void givenInvalidConfirmationText_whenCreateReservationFromText_thenReturnsBadRequest()
+      throws Exception {
+    doThrow(new IllegalArgumentException())
+        .when(reservationService)
+        .extractReservationFromText(any(), any());
 
-        mockMvc.perform(post("/trip/{tripId}/reservation/analysis/text", UUID.randomUUID())
+    mockMvc
+        .perform(
+            post("/trip/{tripId}/reservation/analysis/text", UUID.randomUUID())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(CreateReservationDTO.builder()
-                        .category(ReservationCategory.UNKNOWN)
-                        .confirmationText("invalid-text").build())))
-               .andExpect(status().isBadRequest());
-    }
+                .content(
+                    Utils.asJsonString(
+                        CreateReservationDTO.builder()
+                            .category(ReservationCategory.UNKNOWN)
+                            .confirmationText("invalid-text")
+                            .build())))
+        .andExpect(status().isBadRequest());
+  }
 
-    @Test
-    @Disabled
-    void givenValidConfirmationTextButServiceFails_whenCreateReservationFromText_thenReturnsInternalServerError() throws Exception {
-        doThrow(new RuntimeException("DB error")).when(reservationService).saveReservation(any(), any());
+  @Test
+  @Disabled
+  void
+      givenValidConfirmationTextButDBFails_whenCreateReservationFromText_thenReturnsInternalServerError()
+          throws Exception {
+    doThrow(new RuntimeException("DB error"))
+        .when(reservationService)
+        .saveReservation(any(), any());
 
-        mockMvc.perform(post("/trip/{tripId}/reservation/analysis/text", UUID.randomUUID())
+    mockMvc
+        .perform(
+            post("/trip/{tripId}/reservation/analysis/text", UUID.randomUUID())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(CreateReservationDTO.builder()
-                        .category(ReservationCategory.UNKNOWN)
-                        .confirmationText("valid-text").build())))
-               .andExpect(status().isInternalServerError());
-    }
+                .content(
+                    Utils.asJsonString(
+                        CreateReservationDTO.builder()
+                            .category(ReservationCategory.UNKNOWN)
+                            .confirmationText("valid-text")
+                            .build())))
+        .andExpect(status().isInternalServerError());
+  }
 }

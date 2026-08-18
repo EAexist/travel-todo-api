@@ -30,32 +30,37 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles({"ai"})
 @WithMockUser
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import({TestConfig.class })
+@Import({TestConfig.class})
 public class ReservationControllerLiveIntegrationTest {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private TripRepository tripRepository;
-    @Autowired private UserAccountRepository userAccountRepository;
-    @Autowired private Trip trip;
+  @Autowired private MockMvc mockMvc;
+  @Autowired private TripRepository tripRepository;
+  @Autowired private UserAccountRepository userAccountRepository;
+  @Autowired private Trip trip;
 
-    private UUID tripId;
+  private UUID tripId;
 
-    @BeforeAll
-    void setUp() {
-        tripRepository.deleteAll();
-        userAccountRepository.save(new UserAccount());
-        Trip savedTrip = tripRepository.save(new Trip(trip));
-        tripId = savedTrip.getId();
-    }
+  @BeforeAll
+  void setUp() {
+    tripRepository.deleteAll();
+    userAccountRepository.save(new UserAccount());
+    Trip savedTrip = tripRepository.save(new Trip(trip));
+    tripId = savedTrip.getId();
+  }
 
-    @Test
-    void givenValidConfirmationText_whenCreateReservationFromTextLive_thenReturnsCreated() throws Exception {
-        // Essential happy path scenario using real AI (requires 'live' profile)
-        CreateReservationDTO createReservationDTO = TestUtils.createReservationDTOFromFile("text/flightTicket/eastarjet/kakao_text_ko.txt", ReservationCategory.UNKNOWN);
-        
-        mockMvc.perform(post("/trip/{tripId}/reservation/analysis/text", tripId)
+  @Test
+  void givenValidConfirmationText_whenCreateReservationFromTextLive_thenReturnsCreated()
+      throws Exception {
+    // Essential happy path scenario using real AI (requires 'live' profile)
+    CreateReservationDTO createReservationDTO =
+        TestUtils.createReservationDTOFromFile(
+            "text/flightTicket/eastarjet/kakao_text_ko.txt", ReservationCategory.UNKNOWN);
+
+    mockMvc
+        .perform(
+            post("/trip/{tripId}/reservation/analysis/text", tripId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Utils.asJsonString(createReservationDTO)))
-               .andExpect(status().isCreated());
-    }
+        .andExpect(status().isCreated());
+  }
 }

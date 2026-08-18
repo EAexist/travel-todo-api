@@ -1,36 +1,28 @@
 package com.matchalab.travel_todo_api.service;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
-import com.matchalab.travel_todo_api.model.Flight.Airline;
 import com.matchalab.travel_todo_api.repository.AirlineRepository;
-
-import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityNotFoundException;
+import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AirlineLookupService {
-    private final AirlineRepository repository;
-    // private final Map<String, String> airlineLookupMap = new
-    // ConcurrentHashMap<>();
+  private final AirlineRepository repository;
 
-    public AirlineLookupService(AirlineRepository repository) {
-        this.repository = repository;
-    }
+  // private final Map<String, String> airlineLookupMap = new
+  // ConcurrentHashMap<>();
 
-    // @PostConstruct
-    // public void loadAirlineLookupMap() {
-    // airlineLookupMap.putAll(
-    // repository.findAll().stream()
-    // .collect(Collectors.toMap(Airline::getIataCode, Airline::getTitle)));
-    // }
+  public AirlineLookupService(AirlineRepository repository) {
+    this.repository = repository;
+  }
 
-    public Optional<String> get(String icaoCode) {
-        return repository.findById(icaoCode).map(airline -> airline.getTitle());
-    }
+  // @PostConstruct
+  // public void loadAirlineLookupMap() {
+  // airlineLookupMap.putAll(
+  // repository.findAll().stream()
+  // .collect(Collectors.toMap(Airline::getIataCode, Airline::getTitle)));
+  // }
+
+  public Optional<String> get(String icaoCode) {
+    return repository.findById(icaoCode).map(airline -> airline.getTitle());
+  }
 }

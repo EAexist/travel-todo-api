@@ -2,31 +2,36 @@ package com.matchalab.travel_todo_api.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.matchalab.travel_todo_api.DTO.TodoContentDTO;
-import com.matchalab.travel_todo_api.DTO.TripPatchDTO;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.matchalab.travel_todo_api.DTO.*;
+import com.matchalab.travel_todo_api.config.MockDestinationConfig;
+import com.matchalab.travel_todo_api.config.TestAsyncConfig;
+import com.matchalab.travel_todo_api.config.TestConfig;
 import com.matchalab.travel_todo_api.enums.TodoCategory;
 import com.matchalab.travel_todo_api.enums.TodoPresetType;
+import com.matchalab.travel_todo_api.event.NewDestinationCreatedEvent;
+import com.matchalab.travel_todo_api.event.NewFlightRouteCreatedEvent;
+import com.matchalab.travel_todo_api.exception.NotFoundException;
+import com.matchalab.travel_todo_api.mapper.TodoMapper;
+import com.matchalab.travel_todo_api.model.Destination;
+import com.matchalab.travel_todo_api.model.Flight.FlightRoute;
 import com.matchalab.travel_todo_api.model.Icon;
 import com.matchalab.travel_todo_api.model.Todo.StockTodoContent;
 import com.matchalab.travel_todo_api.model.Todo.Todo;
 import com.matchalab.travel_todo_api.model.Todo.TodoPreset;
+import com.matchalab.travel_todo_api.model.Trip;
+import com.matchalab.travel_todo_api.model.UserAccount.UserAccount;
+import com.matchalab.travel_todo_api.repository.*;
+import com.matchalab.travel_todo_api.utils.TestUtils;
+import com.matchalab.travel_todo_api.utils.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-import com.matchalab.travel_todo_api.exception.NotFoundException;
-import com.matchalab.travel_todo_api.model.Destination;
-import com.matchalab.travel_todo_api.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -45,351 +50,325 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.matchalab.travel_todo_api.DTO.DestinationDTO;
-import com.matchalab.travel_todo_api.DTO.TodoPresetItemDTO;
-import com.matchalab.travel_todo_api.DTO.TripDTO;
-import com.matchalab.travel_todo_api.config.MockDestinationConfig;
-import com.matchalab.travel_todo_api.config.TestAsyncConfig;
-import com.matchalab.travel_todo_api.config.TestConfig;
-import com.matchalab.travel_todo_api.event.NewDestinationCreatedEvent;
-import com.matchalab.travel_todo_api.event.NewFlightRouteCreatedEvent;
-import com.matchalab.travel_todo_api.mapper.TodoMapper;
-import com.matchalab.travel_todo_api.model.Trip;
-import com.matchalab.travel_todo_api.model.Flight.FlightRoute;
-import com.matchalab.travel_todo_api.model.UserAccount.UserAccount;
-import com.matchalab.travel_todo_api.repository.DestinationRepository;
-import com.matchalab.travel_todo_api.repository.StockTodoContentRepository;
-import com.matchalab.travel_todo_api.repository.TodoPresetRepository;
-import com.matchalab.travel_todo_api.repository.TripRepository;
-import com.matchalab.travel_todo_api.repository.UserAccountRepository;
-import com.matchalab.travel_todo_api.utils.TestUtils;
-
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @AutoConfigureMockMvc
 @WithMockUser
-@Import({ TestConfig.class, MockDestinationConfig.class, TestAsyncConfig.class })
+@Import({TestConfig.class, MockDestinationConfig.class, TestAsyncConfig.class})
 @TestInstance(Lifecycle.PER_CLASS)
 @EnableWebSecurity
 @RecordApplicationEvents
 @SpringBootTest
 public class TripControllerIntegrationTest {
 
-    /*
-     * Repository
-     */
-    @Autowired
-    private TripRepository tripRepository;
+  /*
+   * Repository
+   */
+  @Autowired private TripRepository tripRepository;
 
-    @Autowired
-    private StockTodoContentRepository stockTodoContentRepository;
+  @Autowired private StockTodoContentRepository stockTodoContentRepository;
 
-    @Autowired
-    private UserAccountRepository userAccountRepository;
+  @Autowired private UserAccountRepository userAccountRepository;
 
-    @Autowired
-    private DestinationRepository destinationRepository;
+  @Autowired private DestinationRepository destinationRepository;
 
-    @Autowired
-    private TodoPresetRepository todoPresetRepository;
+  @Autowired private TodoPresetRepository todoPresetRepository;
 
-    /*
-     * Mapper
-     */
-    @Autowired
-    private TodoMapper todoMapper;
+  /*
+   * Mapper
+   */
+  @Autowired private TodoMapper todoMapper;
 
-    /*
-     * TestConfig
-     */
-    @Autowired
-    private DestinationDTO destinationDTO_tokushima;
+  /*
+   * TestConfig
+   */
+  @Autowired private DestinationDTO destinationDTO_tokushima;
 
-    @Autowired
-    private DestinationDTO destinationDTO_osaka;
+  @Autowired private DestinationDTO destinationDTO_osaka;
 
-    @Autowired
-    private Trip trip;
+  @Autowired private Trip trip;
 
-    @Autowired
-    private TripDTO tripDto;
+  @Autowired private TripDTO tripDto;
 
-    @Autowired
-    private Destination[] destinations;
+  @Autowired private Destination[] destinations;
 
-    @Autowired
-    private Todo stockTodo;
+  @Autowired private Todo stockTodo;
 
-    @Autowired
-    private Todo customTodo;
+  @Autowired private Todo customTodo;
 
-    /*
-     * Test Class Variables
-     */
-    private Trip savedTrip;
+  /*
+   * Test Class Variables
+   */
+  private Trip savedTrip;
 
-    private UserAccount userAccount;
+  private UserAccount userAccount;
 
-    private UUID userAccountId;
+  private UUID userAccountId;
 
-    /*
-     * Event
-     */
-    @Autowired
-    private ApplicationEvents applicationEvents;
+  /*
+   * Event
+   */
+  @Autowired private ApplicationEvents applicationEvents;
 
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
+  @Autowired private ApplicationEventPublisher eventPublisher;
 
-    /*
-     * Etc
-     */
-    @Autowired
-    private MockMvc mockMvc;
+  /*
+   * Etc
+   */
+  @Autowired private MockMvc mockMvc;
 
-    @BeforeAll
-    void setUp() {
+  @BeforeAll
+  void setUp() {
 
-        tripRepository.deleteAll();
-        destinationRepository.deleteAll();
+    tripRepository.deleteAll();
+    destinationRepository.deleteAll();
 
-        userAccount = userAccountRepository.save(new UserAccount());
-        userAccountId = userAccount.getId();
+    userAccount = userAccountRepository.save(new UserAccount());
+    userAccountId = userAccount.getId();
 
-        List<Destination> savedDestinations = destinationRepository.saveAll(List.of(destinations));
+    List<Destination> savedDestinations = destinationRepository.saveAll(List.of(destinations));
 
-        savedTrip = tripRepository.save(new Trip(trip));
+    savedTrip = tripRepository.save(new Trip(trip));
 
-        savedTrip.addDestinations(savedDestinations);
+    savedTrip.addDestinations(savedDestinations);
 
-        TodoPreset preset = todoPresetRepository.findByType(TodoPresetType.DEFAULT)
+    TodoPreset preset =
+        todoPresetRepository
+            .findByType(TodoPresetType.DEFAULT)
             .orElseThrow(() -> new NotFoundException(null));
-        savedTrip.setTodoPreset(preset);
+    savedTrip.setTodoPreset(preset);
 
-        StockTodoContent stockTodoContent = stockTodoContentRepository.findByType("CASH")
-            .orElseThrow(() -> new NotFoundException(null));;
-        stockTodo.setStockTodoContent(stockTodoContent);
-        savedTrip.addTodo(stockTodo);
+    StockTodoContent stockTodoContent =
+        stockTodoContentRepository
+            .findByType("CASH")
+            .orElseThrow(() -> new NotFoundException(null));
+    ;
+    stockTodo.setStockTodoContent(stockTodoContent);
+    savedTrip.addTodo(stockTodo);
 
-        savedTrip.addTodo(customTodo);
+    savedTrip.addTodo(customTodo);
 
-        tripRepository.save(savedTrip);
-    }
+    tripRepository.save(savedTrip);
+  }
 
-    @Test
-    @Transactional
-    void givenValidTripId_whenGetTrip_thenReturnsCorrectTripDto() throws Exception {
+  @Test
+  @Transactional
+  void givenValidTripId_whenGetTrip_thenReturnsCorrectTripDto() throws Exception {
 
-        UUID id = savedTrip.getId();
+    UUID id = savedTrip.getId();
 
-        ResultActions result = mockMvc.perform(get(String.format("/trip/%s", id)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    ResultActions result =
+        mockMvc
+            .perform(get(String.format("/trip/%s", id)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        TripDTO responseTripDTO = TestUtils.asObject(result, TripDTO.class);
-        assertThat(responseTripDTO).usingRecursiveComparison()
-            .ignoringFields("stockTodoContents")
-            .ignoringFieldsMatchingRegexes(".*\\.id")
-            .ignoringFieldsOfTypes(UUID.class)
-            .isEqualTo(tripDto);
-    }
-
-    @Test
-    @Transactional
-    void whenCreateTrip_thenReturnsCreated() throws Exception {
-
-        ResultActions result = mockMvc.perform(post(String.format("/user/%s/trip", userAccountId)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("id").isNotEmpty());
-
-        TripDTO tripDTO = TestUtils.asObject(result, TripDTO.class);
-
-        result.andExpect(header().string("Location",
-                String.format("http://localhost/trip/%s", tripDTO.id())));
-    }
-
-    @Test
-    @Transactional
-    void givenValidPatchDto_whenPatchTrip_thenReturnsOk() throws Exception {
-
-        TripPatchDTO tripDTOToPatch = TripPatchDTO.builder().isInitialized(false).title("새 여행 이름")
-                .startDateIsoString("2025-02-10T00:00:00.001Z").build();
-
-        ResultActions result = mockMvc
-                .perform(patch(String.format("/trip/%s", savedTrip.getId()))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(Utils.asJsonString(tripDTOToPatch)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("title").value(tripDTOToPatch.title()))
-                .andExpect(jsonPath("startDateIsoString").value(tripDTOToPatch.startDateIsoString()));
-
-        TripDTO actualTripDTO = TestUtils.asObject(result, TripDTO.class);
-
-        log.info(String.format("[patchTrip_Given_ValidIdAndNewContent_When_RequestPut_Then_patchTrip] %s",
-                Utils.asJsonString(actualTripDTO)));
-
-        log.info(String.format("[patchTrip_Given_ValidIdAndNewContent_When_RequestPut_Then_patchTrip] %s",
-                Utils.asJsonString(tripDto)));
-
-        assertThat(actualTripDTO).usingRecursiveComparison()
-                // .ignoringFieldsOfTypes(TripDTO.class)
-                .ignoringFields("id", "title", "startDateIsoString", "stockTodoContents")
+    TripDTO responseTripDTO = TestUtils.asObject(result, TripDTO.class);
+    assertThat(responseTripDTO)
+        .usingRecursiveComparison()
+        .ignoringFields("stockTodoContents")
         .ignoringFieldsMatchingRegexes(".*\\.id")
-                .isEqualTo(tripDto);
-    }
+        .ignoringFieldsOfTypes(UUID.class)
+        .isEqualTo(tripDto);
+  }
 
-    @Test
-    @Transactional
-    void givenPopulatedPresetDb_whenGetTodoPresets_thenReturnsAllPresets() throws Exception {
+  @Test
+  @Transactional
+  void whenCreateTrip_thenReturnsCreated() throws Exception {
 
-        log.info(String.format("[getTodoPreset_Given_PopulatedPresetDB_When_RequestGet_Then_AllPresets] %s",
-                Utils.asJsonString(stockTodoContentRepository.findAll())));
+    ResultActions result =
+        mockMvc
+            .perform(post(String.format("/user/%s/trip", userAccountId)))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("id").isNotEmpty());
 
-        ResultActions result = mockMvc
-                .perform(get(String.format("/trip/%s/todoPreset", savedTrip.getId())))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    TripDTO tripDTO = TestUtils.asObject(result, TripDTO.class);
 
-        List<TodoPresetItemDTO> actualTodoPresetItemDTOs = TestUtils.asObject(result,
-                new TypeReference<List<TodoPresetItemDTO>>() {
-                });
+    result.andExpect(
+        header().string("Location", String.format("http://localhost/trip/%s", tripDTO.id())));
+  }
 
-        List<FlightRoute> recommendedOutboudFlight = savedTrip.getDestinationsDirectly().stream()
-                .map(Destination::getRecommendedOutboundFlight).flatMap(List::stream)
-                .toList();
+  @Test
+  @Transactional
+  void givenValidPatchDto_whenPatchTrip_thenReturnsOk() throws Exception {
 
-        List<FlightRoute> recommendedReturnFlight = savedTrip.getDestinationsDirectly().stream()
-                .map(Destination::getRecommendedReturnFlight).flatMap(List::stream)
-                .toList();
+    TripPatchDTO tripDTOToPatch =
+        TripPatchDTO.builder()
+            .isInitialized(false)
+            .title("새 여행 이름")
+            .startDateIsoString("2025-02-10T00:00:00.001Z")
+            .build();
 
-        List<TodoPresetItemDTO> stockTodoPresetItemDTOs = todoPresetRepository.findByType(TodoPresetType.JAPAN)
-                .orElseThrow(() -> new NotFoundException(null)).getTodoPresetStockTodoContents().stream()
-                .map(todoMapper::mapToTodoPresetItemDTO).toList();
+    ResultActions result =
+        mockMvc
+            .perform(
+                patch(String.format("/trip/%s", savedTrip.getId()))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(Utils.asJsonString(tripDTOToPatch)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("title").value(tripDTOToPatch.title()))
+            .andExpect(jsonPath("startDateIsoString").value(tripDTOToPatch.startDateIsoString()));
 
-        List<TodoPresetItemDTO> expectedTodoPresetItemDTOs = new ArrayList<TodoPresetItemDTO>(stockTodoPresetItemDTOs);
-         expectedTodoPresetItemDTOs.addAll(Arrays.asList(
-             new TodoPresetItemDTO(true,
-                 TodoContentDTO.builder().id(UUID.nameUUIDFromBytes("outbound-flight".getBytes()))
-                     .isStock(false).category(TodoCategory.RESERVATION).type("FLIGHT_OUTBOUND")
-                     .title("항공권 구매").icon(new Icon("🛫")).subtitle("출발 비행기")
-                     .build()),
-             new TodoPresetItemDTO(true,
-                 TodoContentDTO.builder().id(UUID.nameUUIDFromBytes("return-flight".getBytes()))
-                     .isStock(false).category(TodoCategory.RESERVATION).type("FLIGHT_RETURN")
-                     .title("항공권 구매").icon(new Icon("🛬")).subtitle("돌아오는 비행기")
-                     .build())));
+    TripDTO actualTripDTO = TestUtils.asObject(result, TripDTO.class);
 
-        assertThat(actualTodoPresetItemDTOs).usingRecursiveComparison()
-            .ignoringCollectionOrder()
-                .ignoringFieldsOfTypes().ignoringFields("*.content.flightRoutes")
-                .isEqualTo(expectedTodoPresetItemDTOs);
-    }
+    assertThat(actualTripDTO)
+        .usingRecursiveComparison()
+        // .ignoringFieldsOfTypes(TripDTO.class)
+        .ignoringFields("id", "title", "startDateIsoString", "stockTodoContents")
+        .ignoringFieldsMatchingRegexes(".*\\.id")
+        .isEqualTo(tripDto);
+  }
 
-    @Test
-    @Transactional
-    void givenValidDestinationDto_whenAddDestination_thenReturnsCreated()
-            throws Exception {
+  @Test
+  @Transactional
+  void givenPopulatedPresetDb_whenGetTodoPresets_thenReturnsAllPresets() throws Exception {
 
-        UUID tripId = savedTrip.getId();
+    ResultActions result =
+        mockMvc
+            .perform(get(String.format("/trip/%s/todoPreset", savedTrip.getId())))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        ResultActions result = mockMvc
-                .perform(post(String.format("/trip/%s/destination", tripId))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(Utils.asJsonString(destinationDTO_osaka)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("id")
-                        .isNotEmpty())
-                .andExpect(jsonPath("title").value(destinationDTO_osaka.title()))
-                .andExpect(jsonPath("iso2DigitNationCode").value(destinationDTO_osaka.iso2DigitNationCode()))
-                .andExpect(jsonPath("region").value(destinationDTO_osaka.region()))
-                .andExpect(jsonPath("description").value(destinationDTO_osaka.description()));
+    List<TodoPresetItemDTO> actualTodoPresetItemDTOs =
+        TestUtils.asObject(result, new TypeReference<List<TodoPresetItemDTO>>() {});
 
-        DestinationDTO actualDestinationDTO = TestUtils.asObject(result, DestinationDTO.class);
+    List<FlightRoute> recommendedOutboudFlight =
+        savedTrip.getDestinationsDirectly().stream()
+            .map(Destination::getRecommendedOutboundFlight)
+            .flatMap(List::stream)
+            .toList();
 
-        result.andExpect(header().string("Location",
+    List<FlightRoute> recommendedReturnFlight =
+        savedTrip.getDestinationsDirectly().stream()
+            .map(Destination::getRecommendedReturnFlight)
+            .flatMap(List::stream)
+            .toList();
+
+    List<TodoPresetItemDTO> stockTodoPresetItemDTOs =
+        todoPresetRepository
+            .findByType(TodoPresetType.JAPAN)
+            .orElseThrow(() -> new NotFoundException(null))
+            .getTodoPresetStockTodoContents()
+            .stream()
+            .map(todoMapper::mapToTodoPresetItemDTO)
+            .toList();
+
+    List<TodoPresetItemDTO> expectedTodoPresetItemDTOs =
+        new ArrayList<TodoPresetItemDTO>(stockTodoPresetItemDTOs);
+    expectedTodoPresetItemDTOs.addAll(
+        Arrays.asList(
+            new TodoPresetItemDTO(
+                true,
+                TodoContentDTO.builder()
+                    .id(UUID.nameUUIDFromBytes("outbound-flight".getBytes()))
+                    .isStock(false)
+                    .category(TodoCategory.RESERVATION)
+                    .type("FLIGHT_OUTBOUND")
+                    .title("항공권 구매")
+                    .icon(new Icon("🛫"))
+                    .subtitle("출발 비행기")
+                    .build()),
+            new TodoPresetItemDTO(
+                true,
+                TodoContentDTO.builder()
+                    .id(UUID.nameUUIDFromBytes("return-flight".getBytes()))
+                    .isStock(false)
+                    .category(TodoCategory.RESERVATION)
+                    .type("FLIGHT_RETURN")
+                    .title("항공권 구매")
+                    .icon(new Icon("🛬"))
+                    .subtitle("돌아오는 비행기")
+                    .build())));
+
+    assertThat(actualTodoPresetItemDTOs)
+        .usingRecursiveComparison()
+        .ignoringCollectionOrder()
+        .ignoringFieldsOfTypes()
+        .ignoringFields("*.content.flightRoutes")
+        .isEqualTo(expectedTodoPresetItemDTOs);
+  }
+
+  @Test
+  @Transactional
+  void givenValidDestinationDto_whenAddDestination_thenReturnsCreated() throws Exception {
+
+    UUID tripId = savedTrip.getId();
+
+    ResultActions result =
+        mockMvc
+            .perform(
+                post(String.format("/trip/%s/destination", tripId))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(Utils.asJsonString(destinationDTO_osaka)))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("id").isNotEmpty())
+            .andExpect(jsonPath("title").value(destinationDTO_osaka.title()))
+            .andExpect(
+                jsonPath("iso2DigitNationCode").value(destinationDTO_osaka.iso2DigitNationCode()))
+            .andExpect(jsonPath("region").value(destinationDTO_osaka.region()))
+            .andExpect(jsonPath("description").value(destinationDTO_osaka.description()));
+
+    DestinationDTO actualDestinationDTO = TestUtils.asObject(result, DestinationDTO.class);
+
+    result.andExpect(
+        header()
+            .string(
+                "Location",
                 String.format("http://localhost/destination/%s", actualDestinationDTO.id())));
-    }
+  }
 
-    @Test
-    @Transactional
-    void givenExistingDestination_whenAddDestination_thenReturnsExistingId() throws Exception {
+  @Test
+  @Transactional
+  void givenExistingDestination_whenAddDestination_thenReturnsExistingId() throws Exception {
 
-        UUID destinationId_tokushima = destinationRepository.findByiso2DigitNationCodeAndTitle("JP", "도쿠시마")
-                .orElseThrow(() -> new NotFoundException(null)).getId();
+    UUID destinationId_tokushima =
+        destinationRepository
+            .findByiso2DigitNationCodeAndTitle("JP", "도쿠시마")
+            .orElseThrow(() -> new NotFoundException(null))
+            .getId();
 
-        ResultActions result = mockMvc
-                .perform(post(String.format("/trip/%s/destination", savedTrip.getId()))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(Utils.asJsonString(destinationDTO_tokushima)))
-                .andDo(print());
+    ResultActions result =
+        mockMvc
+            .perform(
+                post(String.format("/trip/%s/destination", savedTrip.getId()))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(Utils.asJsonString(destinationDTO_tokushima)))
+            .andDo(print());
 
-        DestinationDTO actualDestinationDTO = TestUtils.asObject(result, DestinationDTO.class);
+    DestinationDTO actualDestinationDTO = TestUtils.asObject(result, DestinationDTO.class);
 
-        assertEquals(destinationId_tokushima, actualDestinationDTO.id());
-        assertThat(applicationEvents.stream().anyMatch(event -> event instanceof NewDestinationCreatedEvent)).isFalse();
-        assertThat(applicationEvents.stream().anyMatch(event -> event instanceof NewFlightRouteCreatedEvent)).isFalse();
-    }
+    assertEquals(destinationId_tokushima, actualDestinationDTO.id());
+    assertThat(
+            applicationEvents.stream()
+                .anyMatch(event -> event instanceof NewDestinationCreatedEvent))
+        .isFalse();
+    assertThat(
+            applicationEvents.stream()
+                .anyMatch(event -> event instanceof NewFlightRouteCreatedEvent))
+        .isFalse();
+  }
 
-    @Transactional
-    private Destination findDestinationWithRecommendedFlights(UUID destinationId) {
-        Destination destination = destinationRepository.findById(destinationId).orElseThrow();
-        destination.getRecommendedOutboundFlight().size();
-        destination.getRecommendedReturnFlight().size();
-        // Hibernate.initialize(destination.getRecommendedOutboundFlight());
-        // Hibernate.initialize(destination.getRecommendedReturnFlight());
-        return destination;
-    }
+  @Transactional
+  private Destination findDestinationWithRecommendedFlights(UUID destinationId) {
+    Destination destination = destinationRepository.findById(destinationId).orElseThrow();
+    destination.getRecommendedOutboundFlight().size();
+    destination.getRecommendedReturnFlight().size();
+    // Hibernate.initialize(destination.getRecommendedOutboundFlight());
+    // Hibernate.initialize(destination.getRecommendedReturnFlight());
+    return destination;
+  }
 
-    @Test
-    @Transactional
-    void addDestination_Given_FirstSeenDestinationWithFirstSeenFlightRoute_When_RequestPost_Then_AddFlightRouteAndAirlines()
-            throws Exception {
-
-        // ResultActions result = mockMvc
-        // .perform(post(String.format("/trip/%s/destination",
-        // savedTrip.getId()))
-        // .contentType(MediaType.APPLICATION_JSON)
-        // .content(Utils.asJsonString(destinationDTO_osaka)))
-        // .andDo(print());
-
-        // String destinationId = TestUtils.asObject(result, DestinationDTO.class).id();
-
-        // Awaitility.await().atMost(5, TimeUnit.SECONDS).until(() -> {
-        // Destination destination = testService.findDestinationById(destinationId);
-        // return destination.getRecommendedOutboundFlight().size() > 0;
-        // });
-
-        // FlightRoute bestFlightRouteResult =
-        // destination.getRecommendedOutboundFlight().getFirst();
-
-        // assertThat(bestFlightRouteResult)
-        // .usingRecursiveComparison()
-        // .comparingOnlyFields("IataCode")
-        // // .ignoringFieldsOfTypes(FlightRoute.class, Airport.class)
-        // .isEqualTo(List.of(new FlightRoute(AirportFactory.createValidAirport("ICN"),
-        // AirportFactory.createValidAirport("KIX"))));
-
-        // assertThat(bestFlightRouteResult.getAirlines().stream().map(al ->
-        // al.getName()).toList()).contains(
-        // "이스타항공");
-    }
-
-    // @Test
-    // @Transactional
-    // @Transactional
-    // void
-    // addDestination_Given_FirstSeenDestinationWithFirstSeenFlightRoute_When_RequestPost_Then_PublishNewFlightRouteCreatedEvent()
-    // throws Exception {
+  @Test
+  @Transactional
+  void
+      addDestination_Given_FirstSeenDestinationWithFirstSeenFlightRoute_When_RequestPost_Then_AddFlightRouteAndAirlines()
+          throws Exception {
 
     // ResultActions result = mockMvc
     // .perform(post(String.format("/trip/%s/destination",
@@ -398,68 +377,44 @@ public class TripControllerIntegrationTest {
     // .content(Utils.asJsonString(destinationDTO_osaka)))
     // .andDo(print());
 
-    // assertEquals(1,
-    // applicationEvents.stream(NewFlightRouteCreatedEvent.class).count());
+    // String destinationId = TestUtils.asObject(result, DestinationDTO.class).id();
 
-    // }
-
-    /* @TODO */
-    // @Test
-    // @Transactional
-    void deleteDestination_When_Then() throws Exception {
-    }
-
-    // @Test
-    // @Transactional
-    // void
-    // accomodationPlan_Given_TripWithAccomodation_When_RequestGet_Then_AllAccomodations()
-    // throws Exception {
-
-    // String id = savedTrip.getId();
-
-    // ResultActions result =
-    // mockMvc.perform(get(String.format("/trip/%s/accomodation",
-    // userAccountId,id)))
-    // .andDo(print())
-    // .andExpect(status().isOk())
-    // .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-    // .andExpect(jsonPath("$[0].id").isNotEmpty())
-    // .andExpect(jsonPath("$[1].id").isNotEmpty());
-
-    // List<AccomodationDTO> actualAccomodationDTOs = TestUtils.asObject(result, new
-    // TypeReference<List<AccomodationDTO>>() {
+    // Awaitility.await().atMost(5, TimeUnit.SECONDS).until(() -> {
+    // Destination destination = testService.findDestinationById(destinationId);
+    // return destination.getRecommendedOutboundFlight().size() > 0;
     // });
 
-    // List<AccomodationDTO> expectedDTO =
-    // Arrays.stream(accomodations).map(tripMapper::mapToAccomodationDTO).toList();
+    // FlightRoute bestFlightRouteResult =
+    // destination.getRecommendedOutboundFlight().getFirst();
 
-    // assertThat(actualAccomodationDTOs).usingRecursiveComparison()
-    // .ignoringFieldsOfTypes().ignoringFields(".*id")
-    // .isEqualTo(expectedDTO);
+    // assertThat(bestFlightRouteResult)
+    // .usingRecursiveComparison()
+    // .comparingOnlyFields("IataCode")
+    // // .ignoringFieldsOfTypes(FlightRoute.class, Airport.class)
+    // .isEqualTo(List.of(new FlightRoute(AirportFactory.createValidAirport("ICN"),
+    // AirportFactory.createValidAirport("KIX"))));
 
-    // }
+    // assertThat(bestFlightRouteResult.getAirlines().stream().map(al ->
+    // al.getName()).toList()).contains(
+    // "이스타항공");
+  }
 
-    // @Test
-    // @Transactional
-    // void createAccomodation_When_RequestPost_Then_CreateNewAccomodation() throws
-    // Exception {
+  // @Test
+  // @Transactional
+  // @Transactional
+  // void
+  // addDestination_Given_FirstSeenDestinationWithFirstSeenFlightRoute_When_RequestPost_Then_PublishNewFlightRouteCreatedEvent()
+  // throws Exception {
 
-    // String id = savedTrip.getId();
+  // ResultActions result = mockMvc
+  // .perform(post(String.format("/trip/%s/destination",
+  // savedTrip.getId()))
+  // .contentType(MediaType.APPLICATION_JSON)
+  // .content(Utils.asJsonString(destinationDTO_osaka)))
+  // .andDo(print());
 
-    // ResultActions result =
-    // mockMvc.perform(post(String.format("/trip/%s/accomodation",
-    // userAccountId, id))
-    // .contentType(MediaType.APPLICATION_JSON))
-    // .andDo(print())
-    // .andExpect(status().isCreated())
-    // .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-    // .andExpect(jsonPath("id").isNotEmpty());
+  // assertEquals(1,
+  // applicationEvents.stream(NewFlightRouteCreatedEvent.class).count());
 
-    // Accomodation createdAccomodation = TestUtils.asObject(result,
-    // Accomodation.class);
-    // result.andExpect(header().string("Location",
-    // String.format("http://localhost/trip/%s/accomodation/%s",
-    // userAccountId, id,
-    // createdAccomodation.getId())));
-    // }
+  // }
 }

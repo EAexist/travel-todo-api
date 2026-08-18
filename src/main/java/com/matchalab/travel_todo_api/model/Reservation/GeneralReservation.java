@@ -1,10 +1,9 @@
 package com.matchalab.travel_todo_api.model.Reservation;
 
-import java.util.UUID;
-
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,25 +18,20 @@ import lombok.Setter;
 @Builder
 public class GeneralReservation {
 
-    @Id
-    @Builder.Default
-    private UUID id = UUID.randomUUID();
+  @Id @Builder.Default private UUID id = UUID.randomUUID();
 
-    private String title;
-    @Nullable
-    private int numberOfClient;
-    @Nullable
-    private String clientName;
-    // @Nullable
-    // private List<String> clientNames;
-    @Nullable
-    private String dateTimeIsoString;
+  private String title;
+  @Nullable private int numberOfClient;
+  @Nullable private String clientName;
+  // @Nullable
+  // private List<String> clientNames;
+  @Nullable private String dateTimeIsoString;
 
-    public GeneralReservation(GeneralReservation generalReservation) {
-        this.id = UUID.randomUUID();
-        this.title = generalReservation.getTitle();
-        this.numberOfClient = generalReservation.getNumberOfClient();
-        this.clientName = generalReservation.getClientName();
-        this.dateTimeIsoString = generalReservation.getDateTimeIsoString();
-    }
+  public GeneralReservation(GeneralReservation generalReservation) {
+    this.id = UUID.randomUUID();
+    this.title = generalReservation.getTitle();
+    this.numberOfClient = generalReservation.getNumberOfClient();
+    this.clientName = generalReservation.getClientName();
+    this.dateTimeIsoString = generalReservation.getDateTimeIsoString();
+  }
 }

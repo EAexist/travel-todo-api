@@ -12,6 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Link {
-    private String provider;
-    private String url;
+  private String provider;
+  private String url;
 }

@@ -6,16 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile({ "prod" })
+@Profile({"prod"})
 public class ChatClientConfig {
 
-    // @Bean
-    // ChatClient chatClient() {
-    // return ChatClient.builder(null).build();
-    // }
-
-    @Bean
-    ChatClient chatClient(ChatClient.Builder builder) {
-        return builder.build();
-    }
+  @Bean
+  ChatClient chatClient(ChatClient.Builder builder) {
+    return builder.build();
+  }
 }

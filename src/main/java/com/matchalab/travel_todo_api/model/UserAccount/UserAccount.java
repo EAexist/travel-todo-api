@@ -1,18 +1,8 @@
 package com.matchalab.travel_todo_api.model.UserAccount;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.type.SqlTypes;
-
 import com.matchalab.travel_todo_api.DTO.GoogleUserDTO;
 import com.matchalab.travel_todo_api.enums.UserRole;
 import com.matchalab.travel_todo_api.model.Trip;
-
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -22,11 +12,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Getter
@@ -36,63 +33,61 @@ import lombok.Setter;
 @Builder
 public class UserAccount {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private UserRole userRole = UserRole.USER;
+  @Enumerated(EnumType.STRING)
+  @Builder.Default
+  private UserRole userRole = UserRole.USER;
 
-    @Nullable
-    private String nickname;
+  @Nullable private String nickname;
 
-    private String kakaoId;
-    private String googleId;
+  private String kakaoId;
+  private String googleId;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    private KakaoProfile kakaoProfile;
+  @JdbcTypeCode(SqlTypes.JSON)
+  private KakaoProfile kakaoProfile;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    private GoogleProfile googleProfile;
+  @JdbcTypeCode(SqlTypes.JSON)
+  private GoogleProfile googleProfile;
 
-    @Nullable
-    private UUID activeTripId;
+  @Nullable private UUID activeTripId;
 
-    @OneToMany(mappedBy = "userAccount", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Builder.Default
-    private List<Trip> trips = new ArrayList<Trip>();
+  @OneToMany(mappedBy = "userAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  @Builder.Default
+  private List<Trip> trips = new ArrayList<Trip>();
 
-    public UserAccount(String kakaoId, KakaoProfile kakaoProfile) {
-        this();
-        this.kakaoId = kakaoId;
-        this.kakaoProfile = kakaoProfile;
-    }
+  public UserAccount(String kakaoId, KakaoProfile kakaoProfile) {
+    this();
+    this.kakaoId = kakaoId;
+    this.kakaoProfile = kakaoProfile;
+  }
 
-    public UserAccount(GoogleProfile googleUserDTO) {
-        this();
-        this.googleId = googleUserDTO.id();
-        this.googleProfile = googleUserDTO;
-    }
+  public UserAccount(GoogleProfile googleUserDTO) {
+    this();
+    this.googleId = googleUserDTO.id();
+    this.googleProfile = googleUserDTO;
+  }
 
-    public UserAccount(GoogleUserDTO googleUserDTO) {
-        this();
-        this.googleId = googleUserDTO.idToken();
-        this.googleProfile = googleUserDTO.user();
-    }
+  public UserAccount(GoogleUserDTO googleUserDTO) {
+    this();
+    this.googleId = googleUserDTO.idToken();
+    this.googleProfile = googleUserDTO.user();
+  }
 
-    public Trip addTrip(Trip trip) {
-        // Add
-        this.trips.add(trip);
-        trip.setUserAccount(this);
-        // Always set newly added trip as activeTrip
-        this.setActiveTripId(trip.getId());
-        return trip;
-    }
+  public Trip addTrip(Trip trip) {
+    // Add
+    this.trips.add(trip);
+    trip.setUserAccount(this);
+    // Always set newly added trip as activeTrip
+    this.setActiveTripId(trip.getId());
+    return trip;
+  }
 
-    public void removeTrip(Trip trip) {
-        this.trips.remove(trip);
-        trip.setUserAccount(null);
-    }
+  public void removeTrip(Trip trip) {
+    this.trips.remove(trip);
+    trip.setUserAccount(null);
+  }
 }

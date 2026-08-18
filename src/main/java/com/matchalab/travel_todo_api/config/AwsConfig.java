@@ -9,11 +9,11 @@ import software.amazon.awssdk.services.ssm.SsmClient;
 @Configuration
 public class AwsConfig {
 
-    @Bean
-    public SsmClient ssmClient() {
-        return SsmClient.builder()
-                .region(Region.AP_NORTHEAST_2)
-                .credentialsProvider(DefaultCredentialsProvider.create())
-                .build();
-    }
+  @Bean
+  public SsmClient ssmClient() {
+    return SsmClient.builder()
+        .region(Region.AP_NORTHEAST_2)
+        .credentialsProvider(DefaultCredentialsProvider.create())
+        .build();
+  }
 }

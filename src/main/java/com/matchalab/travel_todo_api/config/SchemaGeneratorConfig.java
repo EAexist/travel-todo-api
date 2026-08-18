@@ -9,12 +9,12 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class SchemaGeneratorConfig {
 
-    @Bean
-    @Profile("schema-generation")
-    public CommandLineRunner terminateAfterSchema(ApplicationContext ctx) {
-        return args -> {
-            System.out.println("✅ Schema generation complete. Terminating...");
-            System.exit(0);
-        };
-    }
+  @Bean
+  @Profile("schema-generation")
+  public CommandLineRunner terminateAfterSchema(ApplicationContext ctx) {
+    return args -> {
+      System.out.println("✅ Schema generation complete. Terminating...");
+      System.exit(0);
+    };
+  }
 }

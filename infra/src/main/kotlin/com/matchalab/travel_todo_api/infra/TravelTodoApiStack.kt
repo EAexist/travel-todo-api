@@ -65,8 +65,10 @@ class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/SPRING_AI_GOOGLE_GENAI_API_KEY")
 
         // Places API
-        val appGooglePlacesApiKey = StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_API_KEY")
-        val appGooglePlacesBaseUrl = StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_BASE_URL")
+        val appGooglePlacesApiKey =
+            StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_API_KEY")
+        val appGooglePlacesBaseUrl =
+            StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_BASE_URL")
 
         //  app
         val appSecurityAdminEmails =

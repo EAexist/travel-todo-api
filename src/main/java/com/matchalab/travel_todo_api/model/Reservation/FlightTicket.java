@@ -3,7 +3,6 @@ package com.matchalab.travel_todo_api.model.Reservation;
 import com.matchalab.travel_todo_api.model.Flight.Airport;
 import com.matchalab.travel_todo_api.model.Flight.Flight;
 import com.matchalab.travel_todo_api.model.Todo.Todo;
-
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -24,24 +23,23 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class FlightTicket extends Flight {
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Nullable
-    Todo todo;
+  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @Nullable
+  Todo todo;
 
-    @ManyToOne
-    Airport departureAirport;
+  @ManyToOne Airport departureAirport;
 
-    @ManyToOne
-    Airport arrivalAirport;
+  @ManyToOne Airport arrivalAirport;
 
-    String passengerName;
-    // String qrCodeFilePath;
+  String passengerName;
 
-    public FlightTicket(FlightTicket flightTicket) {
-        super(flightTicket.getFlightNumber(), flightTicket.getDepartureDateTimeIsoString());
-        // this.todo = flightTicket.getTodo();
-        this.departureAirport = flightTicket.getDepartureAirport();
-        this.arrivalAirport = flightTicket.getArrivalAirport();
-        this.passengerName = flightTicket.getPassengerName();
-    }
+  // String qrCodeFilePath;
+
+  public FlightTicket(FlightTicket flightTicket) {
+    super(flightTicket.getFlightNumber(), flightTicket.getDepartureDateTimeIsoString());
+    // this.todo = flightTicket.getTodo();
+    this.departureAirport = flightTicket.getDepartureAirport();
+    this.arrivalAirport = flightTicket.getArrivalAirport();
+    this.passengerName = flightTicket.getPassengerName();
+  }
 }

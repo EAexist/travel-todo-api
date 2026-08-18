@@ -12,10 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Airline {
 
-    @Id
-    private String icaoCode;
+  @Id private String icaoCode;
 
-    private String iataCode;
+  private String iataCode;
 
-    private String title;
+  private String title;
 }

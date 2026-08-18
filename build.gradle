@@ -1,9 +1,9 @@
 // https://github.com/GoogleCloudPlatform/spring-cloud-gcp/tree/main/spring-cloud-gcp-samples/spring-cloud-gcp-vision-api-sample
 
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.0'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.5.0'
+    id 'io.spring.dependency-management' version '1.1.7'
     id 'com.gradleup.shadow' version '9.3.1'
 }
 
@@ -11,19 +11,19 @@ group = 'com.matchalab'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 // sourceSets {
 //     main {
@@ -45,17 +45,17 @@ dependencyManagement {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	// developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.postgresql:postgresql' 
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.postgresql:postgresql'
 
     implementation 'org.mapstruct:mapstruct:1.6.3'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
     testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
-	compileOnly 'org.projectlombok:lombok'    
-	annotationProcessor 'org.projectlombok:lombok'  
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
@@ -63,19 +63,19 @@ dependencies {
     implementation 'org.postgresql:postgresql'
 
     /* Mapstruct */
-	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'   
-    testAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0' 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    testAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     /* Security */
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	testImplementation 'org.springframework.security:spring-security-test'
-    
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+
     /* OAuth2.0 */
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 
     /* Google */
-    implementation"com.google.api-client:google-api-client:2.8.0"
+    implementation "com.google.api-client:google-api-client:2.8.0"
 
     /* Google - Gemini */
     implementation platform("org.springframework.ai:spring-ai-bom:1.1.2")
@@ -103,7 +103,7 @@ dependencies {
 
     /* Cache */
     implementation "org.springframework.boot:spring-boot-starter-cache"
-    
+
     // https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
 
@@ -121,7 +121,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     /* Test */
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core:3.27.2'
     testImplementation "org.awaitility:awaitility:4.3.0"
     // testImplementation "org.awaitility:awaitility:4.3.0"
@@ -135,7 +135,7 @@ dependencies {
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
     def cliProfiles = System.getProperty('spring.profiles.active')
     def activeProfiles = cliProfiles ? "${cliProfiles},test" : "test"
     systemProperty 'spring.profiles.active', activeProfiles

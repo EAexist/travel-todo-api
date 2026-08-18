@@ -1,14 +1,12 @@
 package com.matchalab.travel_todo_api.config.security;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.matchalab.travel_todo_api.service.UserAccountService;
+import java.util.Collections;
+import java.util.List;
+import javax.sql.DataSource;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,139 +29,131 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.matchalab.travel_todo_api.service.UserAccountService;
-
 @Configuration
 @EnableWebSecurity
 @ConfigurationProperties(prefix = "app.cors")
 public class WebSecurityConfig {
 
-    @Setter
-    private List<String> allowedOrigins;
+  private static final String ANONYMOUS_AUTH_PATH = "/auth/web-browser";
+  private static final String ADMIN_AUTH_PATH = "/auth/admin";
+  @Setter private List<String> allowedOrigins;
+  @Value("${spring.security.oauth2.resourceserver.jwt.kakao.issuer-uri}")
+  private String kakaoIssuerUri;
+  @Value("${spring.security.oauth2.resourceserver.jwt.google.issuer-uri}")
+  private String googleIssuerUri;
+  @Autowired private DataSource dataSource;
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.kakao.issuer-uri}")
-    private String kakaoIssuerUri;
+  @Bean
+  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.google.issuer-uri}")
-    private String googleIssuerUri;
+    // https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/multitenancy.html#_resolving_the_tenant_by_claim
 
-    @Autowired
-    private DataSource dataSource;
+    JwtIssuerAuthenticationManagerResolver authenticationManagerResolver =
+        JwtIssuerAuthenticationManagerResolver.fromTrustedIssuers(kakaoIssuerUri, googleIssuerUri);
 
-    private static final String ANONYMOUS_AUTH_PATH = "/auth/web-browser";
-    private static final String ADMIN_AUTH_PATH = "/auth/admin";
+    http.securityMatcher(request -> request.getHeader("X-Device-Type") != null)
+        .csrf((csrf) -> csrf.ignoringRequestMatchers("/**"))
+        // if Spring MVC is on classpath and no CorsConfigurationSource is provided,
+        // Spring Security will use CORS configuration provided to Spring MVC
+        .cors(Customizer.withDefaults())
+        /* https://spring.io/guides/gs/securing-web */
+        .authorizeHttpRequests(
+            (requests) -> requests.requestMatchers("/**").permitAll().anyRequest().authenticated())
+        .oauth2ResourceServer(
+            oauth2 -> oauth2.authenticationManagerResolver(authenticationManagerResolver));
 
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    // .oauth2ResourceServer(oauth2 -> oauth2
+    // .jwt(jwt -> jwt
+    // .jwkSetUri("https://idp.example.com/.well-known/jwks.json")
+    // )
+    // )
+    ;
+    // .oauth2Login(Customizer.withDefaults());
+    // .oauth2Login();
+    /*
+     * https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#
+     * csrf-token-repository-cookie
+     */
+    // .csrf((csrf) -> csrf
+    // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
 
-        // https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/multitenancy.html#_resolving_the_tenant_by_claim
+    return http.build();
+  }
 
-        JwtIssuerAuthenticationManagerResolver authenticationManagerResolver = JwtIssuerAuthenticationManagerResolver
-                .fromTrustedIssuers(kakaoIssuerUri, googleIssuerUri);
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(allowedOrigins);
+    configuration.setAllowCredentials(true);
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+    configuration.setAllowedHeaders(
+        List.of("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"));
+    configuration.setExposedHeaders(List.of("Location"));
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+  }
 
-        http.securityMatcher(request -> request.getHeader("X-Device-Type") != null)
-                .csrf((csrf) -> csrf
-                        .ignoringRequestMatchers("/**"))
-                // if Spring MVC is on classpath and no CorsConfigurationSource is provided,
-                // Spring Security will use CORS configuration provided to Spring MVC
-                .cors(Customizer.withDefaults())
-                /* https://spring.io/guides/gs/securing-web */
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .authenticationManagerResolver(authenticationManagerResolver));
-
-        // .oauth2ResourceServer(oauth2 -> oauth2
-        // .jwt(jwt -> jwt
-        // .jwkSetUri("https://idp.example.com/.well-known/jwks.json")
-        // )
-        // )
-        ;
-        // .oauth2Login(Customizer.withDefaults());
-        // .oauth2Login();
-        /*
-         * https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#
-         * csrf-token-repository-cookie
-         */
+  @Bean
+  SecurityFilterChain webBrowserRequestSecurityFilterChain(
+      HttpSecurity http,
+      AnonymousUserLoginFilter anonymousUserLoginFilter,
+      AdminLoginFilter adminLoginFilter)
+      throws Exception {
+    http
         // .csrf((csrf) -> csrf
-        // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+        // .ignoringRequestMatchers("/**"))
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(Customizer.withDefaults())
+        .addFilterAt(anonymousUserLoginFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(adminLoginFilter, AnonymousUserLoginFilter.class)
+        .authorizeHttpRequests(
+            (authorize) ->
+                authorize
+                    .requestMatchers("/actuator/health/**")
+                    .permitAll()
+                    .requestMatchers("/auth/**")
+                    .permitAll()
+                    //
+                    // .requestMatchers("/proxy/place/autocomplete/json").permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .sessionManagement(session -> session.maximumSessions(1))
+        .exceptionHandling(
+            exceptions ->
+                exceptions.authenticationEntryPoint(
+                    new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+    return http.build();
+  }
 
-        return http.build();
-    }
+  @Bean
+  AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
+    UsernameOnlyAuthenticationProvider authenticationProvider =
+        new UsernameOnlyAuthenticationProvider(userDetailsService);
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"));
-        configuration.setExposedHeaders(List.of("Location"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+    return new ProviderManager(authenticationProvider);
+  }
 
-    @Bean
-    SecurityFilterChain webBrowserRequestSecurityFilterChain(HttpSecurity http,
-            AnonymousUserLoginFilter anonymousUserLoginFilter, AdminLoginFilter adminLoginFilter)
-            throws Exception {
-        http
-                // .csrf((csrf) -> csrf
-                // .ignoringRequestMatchers("/**"))
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .addFilterAt(anonymousUserLoginFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(adminLoginFilter, AnonymousUserLoginFilter.class)
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/actuator/health/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-//                        .requestMatchers("/proxy/place/autocomplete/json").permitAll()
-                        .anyRequest().authenticated())
-                .sessionManagement(session -> session
-                        .maximumSessions(1))
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
-        return http.build();
-    }
+  @Bean
+  AnonymousUserLoginFilter anonymousUserLoginFilter(
+      UserAccountService userAccountService, UserDetailsService userDetailsService) {
+    return new AnonymousUserLoginFilter(
+        userAccountService, userDetailsService, ANONYMOUS_AUTH_PATH);
+  }
 
-    @Bean
-    AuthenticationManager authenticationManager(
-            UserDetailsService userDetailsService) {
-        UsernameOnlyAuthenticationProvider authenticationProvider = new UsernameOnlyAuthenticationProvider(
-                userDetailsService);
+  @Bean
+  public GoogleIdTokenVerifier googleIdTokenVerifier(
+      @Value("${app.google.web-client-id}") String webClientId) {
+    return new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+        .setAudience(Collections.singletonList(webClientId))
+        .build();
+  }
 
-        return new ProviderManager(authenticationProvider);
-    }
-
-    @Bean
-    AnonymousUserLoginFilter anonymousUserLoginFilter(
-            UserAccountService userAccountService,
-            UserDetailsService userDetailsService) {
-        return new AnonymousUserLoginFilter(
-                userAccountService,
-                userDetailsService,
-                ANONYMOUS_AUTH_PATH);
-    }
-
-    @Bean
-    public GoogleIdTokenVerifier googleIdTokenVerifier(
-            @Value("${app.google.web-client-id}") String webClientId) {
-        return new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                .setAudience(Collections.singletonList(webClientId))
-                .build();
-    }
-
-    @Bean
-    AdminLoginFilter adminLoginFilter(
-            UserAccountService userAccountService,
-            UserDetailsService userDetailsService,
-            GoogleIdTokenVerifier verifier) {
-        return new AdminLoginFilter(
-                userAccountService,
-                userDetailsService,
-                verifier,
-                ADMIN_AUTH_PATH);
-    }
+  @Bean
+  AdminLoginFilter adminLoginFilter(
+      UserAccountService userAccountService,
+      UserDetailsService userDetailsService,
+      GoogleIdTokenVerifier verifier) {
+    return new AdminLoginFilter(userAccountService, userDetailsService, verifier, ADMIN_AUTH_PATH);
+  }
 }

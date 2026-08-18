@@ -1,17 +1,8 @@
 package com.matchalab.travel_todo_api.model.Reservation;
 
-import java.util.UUID;
-
-import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.data.domain.Persistable;
-
 import com.matchalab.travel_todo_api.enums.ReservationCategory;
 import com.matchalab.travel_todo_api.model.Accomodation;
 import com.matchalab.travel_todo_api.model.Trip;
-
 import io.micrometer.common.lang.NonNull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Basic;
@@ -29,11 +20,16 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.Transient;
+import java.util.UUID;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.domain.Persistable;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -43,106 +39,101 @@ import lombok.Setter;
 @Builder
 public class Reservation implements Persistable<UUID> {
 
-    @Id
-    @NonNull
-    @Builder.Default
-    private UUID id = UUID.randomUUID();
+  @Enumerated(EnumType.STRING)
+  ReservationCategory category;
+  @Id @NonNull @Builder.Default private UUID id = UUID.randomUUID();
+  @Builder.Default private Boolean isCompleted = false;
+  @Lob
+  @Basic(fetch = FetchType.LAZY)
+  private String rawText;
 
-    @Builder.Default
-    private Boolean isCompleted = false;
+  @Nullable
+  @Column(length = 2048)
+  @Size(max = 2048, message = "primaryHrefLink cannot exceed 2048 characters.")
+  private String primaryHrefLink;
 
-    @Enumerated(EnumType.STRING)
-    ReservationCategory category;
+  @Nullable private String code;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    private String rawText;
+  private String note;
 
-    @Nullable
-    @Column(length = 2048)
-    @Size(max = 2048, message = "primaryHrefLink cannot exceed 2048 characters.")
-    private String primaryHrefLink;
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  @Nullable
+  private VisitJapan visitJapan;
 
-    @Nullable
-    private String code;
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  @Nullable
+  private Accomodation accomodation;
 
-    private String note;
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  @Nullable
+  private FlightBooking flightBooking;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Nullable
-    private VisitJapan visitJapan;
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  @Nullable
+  private FlightTicket flightTicket;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Nullable
-    private Accomodation accomodation;
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  @Nullable
+  private GeneralReservation generalReservation;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Nullable
-    private FlightBooking flightBooking;
+  // @Nullable
+  // private String serverFileUri;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Nullable
-    private FlightTicket flightTicket;
+  // @Nullable
+  // private String localAppStorageFileUri;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Nullable
-    private GeneralReservation generalReservation;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "trip_id")
+  private Trip trip;
 
-    // @Nullable
-    // private String serverFileUri;
+  @Transient @Builder.Default private boolean isNew = true;
 
-    // @Nullable
-    // private String localAppStorageFileUri;
+  public Reservation(Reservation reservation) {
+    this.id = UUID.randomUUID();
+    this.isCompleted = reservation.getIsCompleted();
+    this.category = reservation.getCategory();
+    // this.rawText = reservation.getRawText();
+    this.primaryHrefLink = reservation.getPrimaryHrefLink();
+    this.accomodation =
+        reservation.getAccomodation() != null
+            ? new Accomodation(reservation.getAccomodation())
+            : null;
+    this.flightBooking =
+        reservation.getFlightBooking() != null
+            ? new FlightBooking(reservation.getFlightBooking())
+            : null;
+    this.flightTicket =
+        reservation.getFlightTicket() != null
+            ? new FlightTicket(reservation.getFlightTicket())
+            : null;
+    this.generalReservation =
+        reservation.getGeneralReservation() != null
+            ? new GeneralReservation(reservation.getGeneralReservation())
+            : null;
+    this.visitJapan =
+        reservation.getVisitJapan() != null ? new VisitJapan(reservation.getVisitJapan()) : null;
+    // this.serverFileUri = reservation.getServerFileUri();
+    // this.localAppStorageFileUri = reservation.getLocalAppStorageFileUri();
+  }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trip_id")
-    private Trip trip;
+  @Override
+  public UUID getId() {
+    return id;
+  }
 
-    @Transient
-    @Builder.Default
-    private boolean isNew = true;
+  @Override
+  public boolean isNew() {
+    return this.isNew;
+  }
 
-    @Override
-    public UUID getId() {
-        return id;
-    }
-
-    @Override
-    public boolean isNew() {
-        return this.isNew;
-    }
-
-    @PostPersist
-    @PostLoad
-    private void setIsNotNew() {
-        this.isNew = false;
-    }
-
-    public Reservation(
-            Reservation reservation) {
-        this.id = UUID.randomUUID();
-        this.isCompleted = reservation.getIsCompleted();
-        this.category = reservation.getCategory();
-        // this.rawText = reservation.getRawText();
-        this.primaryHrefLink = reservation.getPrimaryHrefLink();
-        this.accomodation = reservation.getAccomodation() != null ? new Accomodation(reservation.getAccomodation())
-                : null;
-        this.flightBooking = reservation.getFlightBooking() != null ? new FlightBooking(reservation.getFlightBooking())
-                : null;
-        this.flightTicket = reservation.getFlightTicket() != null ? new FlightTicket(reservation.getFlightTicket())
-                : null;
-        this.generalReservation = reservation.getGeneralReservation() != null
-                ? new GeneralReservation(reservation.getGeneralReservation())
-                : null;
-        this.visitJapan = reservation.getVisitJapan() != null
-                ? new VisitJapan(reservation.getVisitJapan())
-                : null;
-        // this.serverFileUri = reservation.getServerFileUri();
-        // this.localAppStorageFileUri = reservation.getLocalAppStorageFileUri();
-    }
+  @PostPersist
+  @PostLoad
+  private void setIsNotNew() {
+    this.isNew = false;
+  }
 }
