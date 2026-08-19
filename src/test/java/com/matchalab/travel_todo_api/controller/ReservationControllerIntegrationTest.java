@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.matchalab.travel_todo_api.DTO.CreateReservationDTO;
 import com.matchalab.travel_todo_api.config.MockReservationConfig;
+import com.matchalab.travel_todo_api.config.PostgresTestContainerSupport;
 import com.matchalab.travel_todo_api.config.TestConfig;
 import com.matchalab.travel_todo_api.enums.ReservationCategory;
 import com.matchalab.travel_todo_api.model.Trip;
@@ -30,7 +31,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @WithMockUser
 @Import({TestConfig.class, MockReservationConfig.class})
 @SpringBootTest
-public class ReservationControllerIntegrationTest {
+public class ReservationControllerIntegrationTest implements PostgresTestContainerSupport {
 
   @Autowired private MockMvc mockMvc;
   @Autowired private TripRepository tripRepository;

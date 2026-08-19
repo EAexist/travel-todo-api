@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.matchalab.travel_todo_api.DTO.*;
 import com.matchalab.travel_todo_api.config.MockDestinationConfig;
+import com.matchalab.travel_todo_api.config.PostgresTestContainerSupport;
 import com.matchalab.travel_todo_api.config.TestAsyncConfig;
 import com.matchalab.travel_todo_api.config.TestConfig;
 import com.matchalab.travel_todo_api.enums.TodoCategory;
@@ -57,7 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
 @EnableWebSecurity
 @RecordApplicationEvents
 @SpringBootTest
-public class TripControllerIntegrationTest {
+public class TripControllerIntegrationTest implements PostgresTestContainerSupport {
 
   /*
    * Repository

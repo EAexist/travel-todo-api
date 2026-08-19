@@ -3,20 +3,22 @@ spring:
     hibernate:
       ddl-auto: none
     show_sql: true
-  flyway:
-    clean-disabled: false
-  datasource:
-    hikari:
-      initialization-fail-timeout: 1
-      connection-test-query: ""
-      keepalive-time: 0
-      max-lifetime: 1800000
+#  flyway:
+#    clean-disabled: false
+#  datasource:
+#    hikari:
+#      initialization-fail-timeout: 1
+#      connection-test-query: ""
+#      keepalive-time: 0
+#      max-lifetime: 1800000
 #  ai:
 #    model:
 #      chat: none
 logging:
   level:
-    # root: DEBUG
+    com:
+      matchalab:
+        travel_todo_api: DEBUG
     org:
       hibernate:
         sql: DEBUG
