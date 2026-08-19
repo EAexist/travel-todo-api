@@ -18,26 +18,18 @@
 
 <!-- ABOUT THE APP -->
 ## About The App
+여권 만료일 다 돼가는 줄 모르고 있다가 여행 전날 당황할 일 없게 
 
-Don't worry forgetting your passport expiracy. 
+손에 캐리어 두 개 가방 세개 쥐고 호텔 로비에서 식은땀 흘리며 이메일 뒤적일 일 없게 
 
-Don't be dig through emails at the hotel desk while clutching three suitcases.
+여권, 보조배터리, 입국 서류, 짐, 미술관·테마파크·호텔·에어비앤비 예약 내역 중 꼭 한 두개씩 빼먹는 일 없게
 
-Whether it's a passport, a portable charger, and bookings for all the museums, parks, hotels, and airbnbns, let travel todo track all them for you at once. All you have to do is enjoy the planning. 
-
+떠나는 당신을 위한 단 하나의 투두리스트
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This API Server supports Subscription Killer service. 
-
-* **RESTful API**
-
-  Designed in RESTful structure and follows HTTP response protocol.
-  
-* **Built with Test-Driven Development**
-
-  Developed using a TDD approach, achieving high code coverage and ensuring system reliability.
+This RESTful API Server supports mobile app "Travel Todo". 
 
 ### Built With
 
@@ -49,79 +41,7 @@ This API Server supports Subscription Killer service.
 ## Getting Started
 
 <a href="https://travel-todo-demo.vercel.app" target="_blank" rel="noopener noreferrer">View Demo</a>
-<!-- 
-### Prerequisites
 
-* Get Google Cloud Platform Info
-  
-  A.  Google Cloud Platform Project id : [Creating and managing projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
-
-  
-  B.  Google Cloud Platform Service Account Credentials: [Create access credentials](https://developers.google.com/workspace/guides/create-credentials)
-
-  
-* Run Frontend Dev Server
-
-  If you want to run a demo app using this api server, please refer to [trip-todo](https://github.com/EAexist/trip-todo).
-  
-
-
-
-### Installation
-
-1. Get **A. Google Cloud Platfor Project id** and **B. Google Cloud Platform Service Account Credentials**. Refer to **Prerequisites**.
-2. Clone the repo
-   ```sh
-   git clone https://github.com/EAexist/trip-todo-api.git
-   ```
-3. Create a new file `application.yml` at `src/main/resources` and enter following environment variables.
-   ```sh
-    spring:
-        datasource:
-            driver-class-name: org.postgresql.Driver
-            url: jdbc:postgresql://localhost:5432/trip-todo
-            username: guest
-            password: hello_guest
-            driver-class-name: org.postgresql.Driver
-        jpa:
-          hibernate:
-            ddl-auto: update
-        security:
-            oauth2:
-                resourceserver:
-                    jwt:
-                        kakao:
-                            issuer-uri: https://kauth.kakao.com
-                        google:
-                            issuer-uri: https://accounts.google.com
-        ai:
-            vertex:
-                ai:
-                    gemini:
-                        project-id: trip-todo
-                        location: asia-northeast3
-                        chat:
-                            options:
-                                model: gemini-2.0-flash-lite 
-        cloud:
-            gcp:
-                project-id: 'YOUR GOOGLE CLOUD PROJECT ID'
-                credentials:
-                      location: 'PATH TO YOUR GOOGLE SERVICE ACCOUNT KEY FILE (Place it under src/main/resources)'
-    cors:
-      allowed-origins: http://localhost:8081 (or the url you're running client app)
-   ```
-4. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
-   ```
-5. Run the dev server. 
-   ```sh
-   bash local.sh
-   ```
-6. Your server will run in `http://localhost:5000` or on other port if 5000 is occupied. Check the console output for detailed information about the running server.  
-    -->
 
 
 <!-- LICENSE -->
