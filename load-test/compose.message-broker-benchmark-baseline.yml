@@ -1,0 +1,11 @@
+services:
+  target-spring-app:
+    extends:
+      file: compose.base.yml
+      service: target-spring-app
+    image: travel-todo-api:${TARGET_TAG}
+    depends_on:
+      db:
+        condition: service_healthy
+      llm-mock-server:
+        condition: service_started # TODO: update llm-mock-server to non-distroless and add healthceck and service_healthy dependency

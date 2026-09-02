@@ -39,6 +39,10 @@ spring:
   cloud:
     gcp:
       project-id: ${GOOGLE_CLOUD_PROJECT}
+  ai:
+    openai:
+      api-key: fake-spring-ai-openai-api-key
+      base-url: replace-this-with-mock-server-base-url
 #  cache:
 #    jcache:
 #      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
@@ -55,12 +59,21 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,prometheus
   endpoint:
     health:
       show-details: when_authorized
       probes:
         enabled: true
+  # https://docs.spring.io/spring-boot/reference/actuator/metrics.html#actuator.metrics.customizing.per-meter-properties
+  # https://docs.spring.io/spring-boot/reference/actuator/metrics.html#actuator.metrics.supported.spring-mvc
+  metrics:
+    enable:
+      all: false
+      http.server.requests: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
 app:
   quota:
     max-trips: 5
@@ -68,6 +81,8 @@ app:
     max-destinations: 4
     max-todos: 64
     max-reservations: 64
+
+
 
 # @TODO: use redis, not caffeine.
 bucket4j:

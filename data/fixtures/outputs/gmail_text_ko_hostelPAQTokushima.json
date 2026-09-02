@@ -1,0 +1,22 @@
+{
+  "partOfTextAndLinksThatContainsReservationInformation": null,
+  "flightBookings": [],
+  "flightTickets": [],
+  "accomodations": [
+    {
+      "reservationDetailHrefLink": "https://agoda.onelink.me/1640755593?pid=redirect&c=CONFIRMATION_EMAIL_ONELINK&af_dp=agoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&deep_link_value=agoda%3a%2f%2fmmb%2f%3fbookingToken%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d&af_sub1=EXP-ID-AM-7093-B&af_sub3=bebf6434-a5d7-42ce-805f-3715787ae814&af_sub4=Hotel&af_force_deeplink=true&af_web_dp=https%3a%2f%2fwww.agoda.com%2faccount%2feditbooking.html%3fbookingId%3dzPG19SiliyJJ1yAm5RPtQA%3d%3d%26",
+      "reservationNumberOrCode": "1546592100",
+      "accomodationTitle": "HOSTEL PAQ tokushima",
+      "roomTitle": "도미토리 내 1인 예약 (혼성)",
+      "numberOfClient": 1,
+      "clientName": "PYO HYEON",
+      "checkinDateIsoString": "2025-02-24",
+      "checkoutDateIsoString": "2025-02-25",
+      "checkinAvailableSinceThisTimeIsoString": "15:00",
+      "checkoutDeadlineTimeIsoString": "10:00",
+      "location": "Tokushima city nakatouriimachi 2-5, 도쿠시마, 일본, 770-0844",
+      "accomodationCategory": "DORMITORY"
+    }
+  ],
+  "otherReservations": []
+}

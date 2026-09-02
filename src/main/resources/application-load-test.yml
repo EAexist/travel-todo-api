@@ -1,0 +1,36 @@
+spring:
+  ai:
+    openai:
+      api-key: fake-spring-ai-openai-api-key
+      base-url: replace-this-with-mock-server-base-url
+      chat:
+        options:
+          model: gemini-2.5-flash
+management:
+  metrics:
+# !Depend on env-var auto wiring. This re-assignment conflicts and causes duplicate metric label name error.
+#    tags:
+#      test_id: ${MANAGEMENT_METRICS_TAGS_TESTID}
+#      iteration: ${MANAGEMENT_METRICS_TAGS_ITERATION}
+    enable:
+      all: false
+
+      # reservation_analysis_e2e_duration
+      reservation.analysis.e2e.duration: true
+
+      # http_server_requests_seconds_count
+      http.server.requests: true
+
+      # process_cpu_usage
+      process.cpu.usage: true
+
+      # jvm_memory_used_bytes
+      jvm.memory.used: true
+
+      # jvm_gc_memory_allocated_bytes_total
+      jvm.gc.memory: true
+
+    # Disable Histogram Buckets for http.server.requests
+    distribution:
+      percentiles-histogram:
+        http.server.requests: false
