@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import com.matchalab.travel_todo_api.DTO.TodoDTO;
 import com.matchalab.travel_todo_api.DTO.TodoPatchDTO;
 import com.matchalab.travel_todo_api.config.MapperTestConfig;
+import com.matchalab.travel_todo_api.config.PostgresTestContainerSupport;
 import com.matchalab.travel_todo_api.config.TestConfig;
 import com.matchalab.travel_todo_api.model.Todo.Todo;
 import com.matchalab.travel_todo_api.repository.StockTodoContentRepository;
@@ -26,7 +27,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @Import({TestConfig.class, MapperTestConfig.class})
 @TestInstance(Lifecycle.PER_CLASS)
 @Slf4j
-public class TodoMapperTest {
+public class TodoMapperTest implements PostgresTestContainerSupport {
 
   @Autowired private Todo stockTodo;
 

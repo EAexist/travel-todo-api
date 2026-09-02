@@ -10,6 +10,7 @@ import com.matchalab.travel_todo_api.DTO.TodoContentDTO;
 import com.matchalab.travel_todo_api.DTO.TodoCreateDTO;
 import com.matchalab.travel_todo_api.DTO.TodoDTO;
 import com.matchalab.travel_todo_api.DTO.TodoPatchDTO;
+import com.matchalab.travel_todo_api.config.PostgresTestContainerSupport;
 import com.matchalab.travel_todo_api.config.TestConfig;
 import com.matchalab.travel_todo_api.exception.NotFoundException;
 import com.matchalab.travel_todo_api.factory.TodoFactory;
@@ -49,7 +50,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @TestInstance(Lifecycle.PER_CLASS)
 @EnableWebSecurity
 @SpringBootTest
-public class TodoControllerIntegrationTest {
+public class TodoControllerIntegrationTest implements PostgresTestContainerSupport {
 
   @Autowired private MockMvc mockMvc;
 

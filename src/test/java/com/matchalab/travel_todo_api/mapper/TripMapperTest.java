@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import com.matchalab.travel_todo_api.DTO.TripDTO;
 import com.matchalab.travel_todo_api.DTO.TripSummaryDTO;
 import com.matchalab.travel_todo_api.config.MapperTestConfig;
+import com.matchalab.travel_todo_api.config.PostgresTestContainerSupport;
 import com.matchalab.travel_todo_api.config.TestConfig;
 import com.matchalab.travel_todo_api.enums.TodoCategory;
 import com.matchalab.travel_todo_api.model.Icon;
@@ -27,7 +28,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 @SpringBootTest
 @Import({TestConfig.class, MapperTestConfig.class})
 @TestInstance(Lifecycle.PER_CLASS)
-public class TripMapperTest {
+public class TripMapperTest implements PostgresTestContainerSupport {
 
   @Autowired private Trip tripHydrated;
 

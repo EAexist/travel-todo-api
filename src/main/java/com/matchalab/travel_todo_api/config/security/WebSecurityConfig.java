@@ -6,9 +6,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.matchalab.travel_todo_api.service.UserAccountService;
 import java.util.Collections;
 import java.util.List;
-import javax.sql.DataSource;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +39,6 @@ public class WebSecurityConfig {
   private String kakaoIssuerUri;
   @Value("${spring.security.oauth2.resourceserver.jwt.google.issuer-uri}")
   private String googleIssuerUri;
-  @Autowired private DataSource dataSource;
 
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

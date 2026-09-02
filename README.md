@@ -15,21 +15,19 @@
   </p>
 </div>
 
+<!-- Documentations -->
+## Documentation
 
-<!-- ABOUT THE APP -->
-## About The App
-여권 만료일 다 돼가는 줄 모르고 있다가 여행 전날 당황할 일 없게 
+- [Data Modeling](./docs/architecture/data-model.md)
+- [Architecture Decision Records](./docs/architecture/adr)
+- [Product Requirements Document](https://subsequent-sovereign-b76.notion.site/Product-Requirements-Document-Travel-Todo-47afe2d457fe82b6b76781893d2c505e?pvs=143)
 
-손에 캐리어 두 개 가방 세개 쥐고 호텔 로비에서 식은땀 흘리며 이메일 뒤적일 일 없게 
-
-여권, 보조배터리, 입국 서류, 짐, 미술관·테마파크·호텔·에어비앤비 예약 내역 중 꼭 한 두개씩 빼먹는 일 없게
-
-떠나는 당신을 위한 단 하나의 투두리스트
+[//]: # (- [API Specification]&#40;./openapi/openapi.yaml&#41;)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This RESTful API Server supports mobile app "Travel Todo". 
+This RESTful API server supports mobile app "Travel Todo". 
 
 ### Built With
 
@@ -43,6 +41,15 @@ This RESTful API Server supports mobile app "Travel Todo".
 <a href="https://travel-todo-demo.vercel.app" target="_blank" rel="noopener noreferrer">View Demo</a>
 
 
+<!-- ABOUT THE APP -->
+## About The App
+여권 만료일 다 돼가는 줄 모르고 있다가 여행 전날 당황할 일 없게
+
+손에 캐리어 두 개 가방 세개 쥐고 호텔 로비에서 식은땀 흘리며 이메일 뒤적일 일 없게
+
+여권, 보조배터리, 입국 서류, 짐, 미술관·테마파크·호텔·에어비앤비 예약 내역 중 꼭 한 두개씩 빼먹는 일 없게
+
+떠나는 당신을 위한 단 하나의 투두리스트
 
 <!-- LICENSE -->
 ## License
