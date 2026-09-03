@@ -1,9 +1,18 @@
 spring:
-#  session:
-#    jdbc:
-#      platform: postgresql
-#  datasource:
-#    driver-class-name: ~
-#  flyway:
-#    clean-disabled: false
-#    repair-check-sum-on-migrate: true
+  cloud:
+    gcp:
+      project-id: example-google-cloud-project-id
+  ai:
+    google:
+      genai:
+        project-id: example-project-id
+        api-key: example-api-key
+app:
+  google:
+    client-id: example-client-id
+    web-client-id: example-web-client-id
+  cors-allowed-origins: example-cors-allowed-origins
+  security:
+    admin-emails: example-security-admin-emails
+  google-places-api-key: example-google-places-api-key
+  google-places-base-url: example-google-places-base-url

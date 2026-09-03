@@ -40,21 +40,18 @@ schema-gen: ## Generate DB schema using Hibernate
 	-@$(GRADLE) bootRun -x test --args='--spring.profiles.active=dev,schema-generation'
 	@$(DB_COMPOSE) down
 
-lambda-deploy: ## Build and deploy lambda with CDK
-	$(GRADLE) clean buildLambdaWebAdapterZip -x test
+aws-lambda-deploy: aws-lambda-build ## Deploy to AWS Lambda with CDK
 	@cd infra && cdk deploy
 
-lambda-test-run: ## Build and test lambda artifact locally
-	$(GRADLE) clean buildLambdaWebAdapterZip -x test
+aws-lambda-build: ## Build AWS Lambda version
+    @$(GRADLE) clean buildLambdaWebAdapterZip
+
+aws-lambda-artifact-run: ## Test lambda artifact locally
 	@bash scripts/test-lambda-docker.sh
 
-test-local: test-db-up
-	@echo "Database is ready. Running tests..."
-	$(MAKE) test
-
-test: ## Run tests. Usage: make test PROFILES=... TEST_FILTER=...
-	@export $$(grep -v '^#' .env.dev.db.test | xargs) && \
-	$(GRADLE) clean test \
+test: ##Usage: make test PROFILES=... TEST_FILTER=...
+	@export $$(grep -v '^#' .env.dev | xargs) && \
+	$(GRADLE) test \
 		-Dspring.profiles.active=$(PROFILES) \
 		$(if $(TEST_FILTER),--tests "$(TEST_FILTER)")
 
@@ -64,3 +61,7 @@ test-db-up:
 
 test-db-down:
 	@$(DB_COMPOSE_TEST) down -t 1
+
+ci-test:
+	@$(GRADLE) test \
+		-Dspring.profiles.active=ci

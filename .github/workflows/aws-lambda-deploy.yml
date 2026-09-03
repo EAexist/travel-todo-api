@@ -1,0 +1,52 @@
+name: AWS CDK Deploy
+
+on:
+  push:
+    branches: [ "staging", "ci/aws-lambda-deploy-test" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    environment: ${{ github.ref == 'refs/heads/staging'
+      && 'staging'
+      || 'development' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ap-northeast-2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install CDK
+        run: npm install -g aws-cdk
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build lambda zip
+        run: ./gradlew buildLambdaWebAdapterZip
+
+      - name: Build CDK
+        working-directory: infra
+        run: mvn -B package
+
+      - name: Deploy
+        working-directory: infra
+        run: cdk deploy --require-approval never
