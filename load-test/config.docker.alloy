@@ -1,0 +1,33 @@
+// https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.remote_write/#send-metrics-to-a-managed-service
+prometheus.remote_write "metrics_hosted_prometheus" {
+   endpoint {
+      name = "hosted-prometheus"
+      url  = env("PROMETHEUS_REMOTE_WRITE_URL")
+
+      basic_auth {
+        username = env("PROMETHEUS_REMOTE_WRITE_USERNAME")
+        password = env("PROMETHEUS_REMOTE_WRITE_PASSWORD")
+      }
+   }
+}
+
+// https://grafana.com/docs/alloy/latest/get-started/components/
+// https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.scrape/#prometheusscrape
+prometheus.scrape "api_metrics" {
+  targets = [{"__address__" = "target-spring-app:8080"}]
+  metrics_path = "/actuator/prometheus"
+  forward_to = [prometheus.remote_write.metrics_hosted_prometheus.receiver]
+}
+
+// https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.exporter.unix/
+prometheus.exporter.unix "wsl" {
+  enable_collectors = [
+    "cpu",
+    "meminfo",
+  ]
+}
+
+prometheus.scrape "wsl" {
+  targets    = prometheus.exporter.unix.wsl.targets
+  forward_to = [prometheus.remote_write.metrics_hosted_prometheus.receiver]
+}

@@ -38,24 +38,12 @@ public class ReservationController {
   @PostMapping("trip/{tripId}/reservation/analysis/text")
   public ResponseEntity<List<ReservationDTO>> createReservationFromText(
       @PathVariable UUID tripId, @RequestBody CreateReservationDTO createReservationDTO) throws Exception {
-      String parsedConfirmationText =
-          htmlParserService.extractTextAndLink(createReservationDTO.confirmationText());
 
-      ReservationCategory category;
-      try {
-        category =
-            createReservationDTO.category() != null
-                ? createReservationDTO.category()
-                : ReservationCategory.UNKNOWN;
-      } catch (IllegalArgumentException e) {
-        category = ReservationCategory.UNKNOWN;
-      }
+      List<ReservationDTO> reservationDTOs = reservationService.createReservationFromText(
+          tripId,
+          createReservationDTO
+      );
 
-      List<Reservation> reservations =
-          reservationService.extractReservationFromText(parsedConfirmationText, category);
-
-      List<ReservationDTO> reservationDTOs =
-          reservationService.saveReservation(tripId, reservations);
       return ResponseEntity.created(
               ServletUriComponentsBuilder.fromCurrentRequestUri()
                   .replacePath("/trip/{tripId}/reservation/{reservationId}")

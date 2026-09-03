@@ -1,0 +1,27 @@
+scrape_configs:
+  - job_name: spring
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+        - target-spring-app:8080
+    scrape_interval: 10s
+
+  - job_name: "wsl_node"
+    static_configs:
+      - targets: ["node_exporter:9100"]
+    scrape_interval: 10s
+
+  - job_name: "windows_host"
+    static_configs:
+      - targets: ["host.docker.internal:9182"]
+    scrape_interval: 10s
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    metric_relabel_configs:
+      # ONLY keep metrics for db container
+      - source_labels: [name]
+        regex: '(db)'
+        action: keep
+    scrape_interval: 10s

@@ -1,0 +1,39 @@
+networks:
+  app-network:
+    name: load-test-network
+    external: true
+    
+services:
+  target-spring-app:
+    container_name: target-spring-app
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 2s
+      retries: 3
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev,no-security,load-test"
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres"
+      - "SPRING_DATASOURCE_USERNAME=postgres"
+      - "SPRING_DATASOURCE_PASSWORD=password"
+      - "SPRING_AI_OPENAI_BASEURL=http://llm-mock-server:8081"
+      - "GOOGLE_CLOUD_PROJECT=travel-todo-stg"
+      - "APP_GOOGLE_CLIENT_ID=428235231680-j847tt5013n612lk39j8rjp6gih61fsd.apps.googleusercontent.com"
+      - "APP_GOOGLE_WEB_CLIENT_ID=455519588477-es89o3g6fftf0t0ibdta0e5elq82toto.apps.googleusercontent.com"
+      - "APP_SECURITY_ADMIN_EMAILS=hyeon.expression@gmail.com"
+      - "APP_GOOGLE_PLACES_API_KEY=AIzaSyCkX3YRZHNfTjhjh9SoDo8zcFLF66BiL6o"
+      - "APP_GOOGLE_PLACES_BASE_URL=https://maps.googleapis.com/maps/api/place/autocomplete/json"
+      # JVM heap memory allocation (1.25GB)
+      - "JAVA_TOOL_OPTIONS=-Xms640m -Xmx640m -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=64m -XX:MaxDirectMemorySize=64m"
+      - "GOOGLE_APPLICATION_CREDENTIALS=/etc/gcp/gc-service-account-key.json"
+      - MANAGEMENT_METRICS_TAGS_TEST_ID
+      - MANAGEMENT_METRICS_TAGS_ITERATION
+    volumes:
+      - ./src/main/resources/certs/gc-service-account-key.json:/etc/gcp/gc-service-account-key.json:ro
+    deploy:
+      resources:
+        limits:
+          memory: 1G #1GB
+    cpuset: "2,3"

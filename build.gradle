@@ -77,9 +77,10 @@ dependencies {
     /* Google */
     implementation "com.google.api-client:google-api-client:2.8.0"
 
-    /* Google - Gemini */
+    /* LLM */
     implementation platform("org.springframework.ai:spring-ai-bom:1.1.2")
-    implementation "org.springframework.ai:spring-ai-starter-model-google-genai"
+//    implementation "org.springframework.ai:spring-ai-starter-model-google-genai"
+    implementation "org.springframework.ai:spring-ai-starter-model-openai"
 
     /* Jsoup */
     implementation "org.jsoup:jsoup:1.21.2"
@@ -119,6 +120,7 @@ dependencies {
 
     // Actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     /* Test */
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -172,13 +174,3 @@ tasks.named('bootBuildImage') {
 }
 
 ext['testcontainers.version'] = '1.21.4'
-
-// tasks.withType(JavaCompile).configureEach {
-//     if (name.contains("Test")) {
-//         options.compilerArgs << "-proc:none"
-//     }
-// }
-
-// tasks.named('compileTestJava', JavaCompile) {
-//     options.compilerArgs.add("-proc:none")
-// }

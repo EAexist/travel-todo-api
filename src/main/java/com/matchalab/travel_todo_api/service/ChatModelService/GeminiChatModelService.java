@@ -8,6 +8,7 @@ import com.matchalab.travel_todo_api.model.genAI.RecommendedFlightChatResult;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
@@ -19,7 +20,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Profile({"ai"})
+@Profile({"ai", "load-test"})
+@Slf4j
 public class GeminiChatModelService implements ChatModelService {
 
   private final ChatModel chatModel;
@@ -101,7 +103,14 @@ public class GeminiChatModelService implements ChatModelService {
     try {
       Prompt prompt =
           PromptTemplate.builder()
-              .template(String.format("%s\n%s", "{format}", message))
+              .template(String.format("""
+                      <format>
+                      {format}
+                      </format>
+                      <message>
+                      %s
+                      </message>
+                      """, message))
               .variables(Map.of("format", outputConverter.getFormat()))
               .build()
               .create();
@@ -110,7 +119,9 @@ public class GeminiChatModelService implements ChatModelService {
       return outputConverter.convert(text);
 
     } catch (NonTransientAiException e) {
-      throw new AiQuotaExceededException();
+      log.error(e.getMessage());
+      throw e;
+//      throw new AiQuotaExceededException();
     } catch (Exception e) {
       throw new AiServiceUnavailableException();
     }
@@ -119,6 +130,14 @@ public class GeminiChatModelService implements ChatModelService {
   private String generateTextAnalysisUserMessage(
       String instructionUserMessage, String confirmationText) {
 
-    return String.format("%s\n%s", instructionUserMessage, confirmationText);
+    return String.format(
+            """
+            <instruction>
+            %s
+            </instruction>                    
+            <target_text>
+            %s
+            </target_text>
+            """, instructionUserMessage, confirmationText);
   }
 }

@@ -1,0 +1,24 @@
+{
+  "samples": [
+    {
+      "id": "flightBooking_eastarjet_gmail_text_ko",
+      "path": "flightBooking_eastarjet_gmail_text_ko.txt",
+      "output_path": "outputs/flightBooking_eastarjet_gmail_text_ko.json"
+    },
+    {
+      "id": "general_teshima_gmail_text_ko",
+      "path": "general_teshima_gmail_text_ko.txt",
+      "output_path": "outputs/general_teshima_gmail_text_ko.json"
+    },
+    {
+      "id": "gmail_text_ko_hostelPAQTokushima",
+      "path": "gmail_text_ko_hostelPAQTokushima.txt",
+      "output_path": "outputs/gmail_text_ko_hostelPAQTokushima.json"
+    },
+    {
+      "id": "kakao_text_ko",
+      "path": "kakao_text_ko.txt",
+      "output_path": "outputs/kakao_text_ko.json"
+    }
+  ]
+}

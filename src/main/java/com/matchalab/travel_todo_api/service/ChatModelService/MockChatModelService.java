@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Profile({"!ai"})
+@Profile("!ai && !load-test")
 public class MockChatModelService implements ChatModelService {
 
   @Autowired public HtmlParserService htmlParserService;

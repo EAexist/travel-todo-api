@@ -1,0 +1,22 @@
+{
+  "partOfTextAndLinksThatContainsReservationInformation": null,
+  "flightBookings": [],
+  "flightTickets": [],
+  "accomodations": [],
+  "otherReservations": [
+    {
+      "reservationDetailHrefLink": "https://www.etix.com/kketix/online/onlinereprint.jsp?userID=25504976&password=66755185",
+      "reservationNumberOrCode": "4428332754",
+      "reservationTitle": "Teshima Art Museum",
+      "numberOfClient": 1,
+      "reservationDateTimeIsoString": "2025-02-22"
+    },
+    {
+      "reservationDetailHrefLink": "https://www.etix.com/kketix/online/onlinereprint.jsp?userID=25504976&password=66755185",
+      "reservationNumberOrCode": "4428332898",
+      "reservationTitle": "Teshima Art Museum",
+      "numberOfClient": 1,
+      "reservationDateTimeIsoString": "2025-02-22"
+    }
+  ]
+}

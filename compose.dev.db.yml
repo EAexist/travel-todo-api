@@ -1,0 +1,25 @@
+services:
+  db-dev:
+    image: postgres:17.6
+    container_name: dev-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - SSL=${SSL:-false}
+    volumes:
+      - postgres_data-dev:/var/lib/postgresql/data
+      - ../src/main/resources/certs:/certs:ro
+      - ./scripts/postgres-entrypoint.sh:/usr/local/bin/custom-entrypoint.sh:ro
+
+    entrypoint: ["/usr/local/bin/custom-entrypoint.sh"]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data-dev:

@@ -1,0 +1,153 @@
+networks:
+  app-network:
+    name: load-test-network
+
+services:
+  llm-mock-server:
+    container_name: llm-mock-server
+    image: llm-mock-server:latest
+    networks:
+      - app-network
+    volumes:
+      - ../data/fixtures:/etc/llm-mock-server/data/fixtures
+    environment:
+      - "FIXTURES_ROOT=/etc/llm-mock-server/data/fixtures"
+      - "GAMMA_MODEL_PATAMETERS_PATH=gamma_model_parameters.csv"
+      - "SAMPLES_MANIFEST_PATH=samples.json"
+      - "PORT=:8081"
+      - "CHAT_COMPLETIONS_PATH=/v1/chat/completions"
+    #    healthcheck:
+    #      test: ["CMD", "/llm-mock-server", "healthcheck"]
+    #      interval: 10s
+    #      timeout: 2s
+    #      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    cpuset: "4,5"
+
+  db:
+    container_name: db
+    image: postgres:17.6
+    networks:
+      - app-network
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M #0.5GB
+    cpuset: "0,1"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    networks:
+      - app-network
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+      # REMOTE WRITE: Allows k6 test metrics remote write
+      # https://grafana.com/docs/k6/latest/results-output/real-time/prometheus-remote-write/#send-test-metrics-to-a-remote-write-endpoint
+      - "--web.enable-remote-write-receiver"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    # https://prometheus.io/docs/prometheus/latest/management_api/
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://prometheus:9090/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    cpuset: "4,5"
+
+  # https://github.com/prometheus/node_exporter#docker
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    networks:
+      - app-network
+    # network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro'
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    cpuset: "4,5"
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    networks:
+      - app-network
+    command:
+      - '-enable_metrics=cpu,memory'
+      # Skip monitoring internal docker storage layer to reduce overhead
+      - '-docker_only=true'
+      - '-disable_root_cgroup_stats=true'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    privileged: true
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    cpuset: "4,5"
+
+  # grafana-alloy-with-curl:
+  #   networks:
+  #     - app-network
+  #   image: grafana-alloy-with-curl:latest
+  #   environment:
+  #     PROMETHEUS_REMOTE_WRITE_URL: ${PROMETHEUS_REMOTE_WRITE_URL}
+  #     PROMETHEUS_REMOTE_WRITE_USERNAME: ${PROMETHEUS_REMOTE_WRITE_USERNAME}
+  #     PROMETHEUS_REMOTE_WRITE_PASSWORD: ${PROMETHEUS_REMOTE_WRITE_PASSWORD}
+  #   volumes:
+  #     - ./config.docker.alloy:/etc/alloy/config.docker.alloy:ro
+  #     - alloy_data:/var/lib/alloy/data
+  #   command:
+  #     - run
+  #     - --server.http.listen-addr=0.0.0.0:12345
+  #     - --storage.path=/var/lib/alloy/data
+  #     - /etc/alloy/config.docker.alloy
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:12345/-/ready || exit 1"]
+  #     interval: 15s
+  #     timeout: 5s
+  #     retries: 3
+  #     start_period: 10s
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 256M
+  #   cpuset: "4,5"
+  
+volumes:
+  postgres_data: {}
+  alloy_data: {}
+  prometheus_data: {}

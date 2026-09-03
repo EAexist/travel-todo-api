@@ -1,0 +1,25 @@
+// https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.remote_write/#send-metrics-to-a-managed-service
+prometheus.remote_write "metrics_hosted_prometheus" {
+   endpoint {
+      name = "hosted-prometheus"
+      url  = env("PROMETHEUS_REMOTE_WRITE_URL")
+
+      basic_auth {
+        username = env("PROMETHEUS_REMOTE_WRITE_USERNAME")
+        password = env("PROMETHEUS_REMOTE_WRITE_PASSWORD")
+      }
+   }
+}
+
+// https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.exporter.windows/
+prometheus.exporter.windows "host" {
+  enabled_collectors = [
+    "os",
+    "hyperv",
+  ]
+}
+
+prometheus.scrape "host_metrics" {
+  targets    = prometheus.exporter.windows.host.targets
+  forward_to = [prometheus.remote_write.metrics_hosted_prometheus.receiver]
+}

@@ -1,0 +1,18 @@
+{
+  "partOfTextAndLinksThatContainsReservationInformation": null,
+  "flightBookings": [
+    {
+      "reservationDetailHrefLink": "https://www.eastarjet.com/newstar/PGWRA00003?in_pnrNo=K9N96A",
+      "reservationNumberOrCode": "K9N96A",
+      "flightNumber": "ZE671",
+      "departureAirportIataCode": "ICN",
+      "arrivalAirportIataCode": "TKS",
+      "numberOfPassenger": 1,
+      "departureDateTimeIsoString": "2025-02-20",
+      "passengerNames": ["PYO HYEON"]
+    }
+  ],
+  "flightTickets": [],
+  "accomodations": [],
+  "otherReservations": []
+}
