@@ -1,0 +1,80 @@
+networks:
+  app-network:
+    name: load-test-network
+    external: true
+
+services:
+  target-spring-app:
+    extends:
+      file: compose.base.yml
+      service: target-spring-app
+    image: travel-todo-api:${TARGET_TAG}
+    environment:
+      SPRING_CLOUD_AWS_SQS_ENDPOINT: http://localstack:4566
+    depends_on:
+      db:
+        condition: service_healthy
+      llm-mock-server:
+        condition: service_started # TODO: update llm-mock-server to non-distroless and add healthceck and service_healthy dependency
+      reservation-data-processor:
+        condition: service_started # TODO: add healthceck and service_healthy dependency
+      localstack:
+        condition: service_healthy
+
+  reservation-data-processor:
+    image: reservation-data-processor:latest
+    networks:
+      - app-network
+    environment:
+      DATABASE_URL: "host=db user=postgres password=password dbname=postgres port=5432 sslmode=disable"
+      GENAI_API_KEY: DEV_GENAI_API_KEY
+      GENAI_MODEL: gemini-2.5-flash
+      GENAI_CLIENT_BASE_URL: http://llm-mock-server:8081/v1
+      SQS_ENDPOINT_URL: http://localstack:4566
+      SQS_QUEUE_URL: http://localstack:4566/000000000000/reservation-analysis-queue
+      AWS_REGION: ap-northeast-2
+      AWS_ACCESS_KEY_ID: DEV_LOCALSTACK_ACCESS_KEY
+      AWS_SECRET_ACCESS_KEY: DEV_LOCALSTACK_SECRET_KEY
+      AWS_SESSION_TOKEN: DEV_LOCALSTACK_TOKEN
+      TEST_ID: ${TEST_ID}
+    #    healthcheck:
+    #      test: ["CMD", "/llm-mock-server", "healthcheck"]
+    #      interval: 10s
+    #      timeout: 2s
+    #      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    cpuset: "6,7"
+    depends_on:
+      db:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+
+  # https://docs.localstack.cloud/aws/getting-started/installation/#docker-compose
+  localstack:
+    image: localstack/localstack:4.12.0
+    networks:
+      - app-network
+    # ports:
+    #   - '127.0.0.1:4566:4566' # LocalStack Gateway
+    #   - '127.0.0.1:4510-4559:4510-4559' # external services port range
+    #   - '127.0.0.1:443:443' # LocalStack HTTPS Gateway
+    environment:
+      # Activate LocalStack for AWS: https://docs.localstack.cloud/getting-started/auth-token/
+      # - LOCALSTACK_AUTH_TOKEN=?
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=1
+      - PERSISTENCE=0
+      - AWS_DEFAULT_REGION=ap-northeast-2
+    volumes:
+      - '${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '${INIT_SCRIPT_DIR}:/etc/localstack/init/ready.d'
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    cpuset: "6,7"

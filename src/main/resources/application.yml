@@ -39,6 +39,9 @@ spring:
   cloud:
     gcp:
       project-id: ${GOOGLE_CLOUD_PROJECT}
+    aws:
+      sqs:
+        endpoint: ${SPRING_CLOUD_AWS_SQS_ENDPOINT:http://localhost:4566}
   ai:
     openai:
       api-key: fake-spring-ai-openai-api-key
@@ -81,8 +84,11 @@ app:
     max-destinations: 4
     max-todos: 64
     max-reservations: 64
-
-
+  sqs:
+    reservation-analysis-queue-name: reservation-analysis-queue
+  google-places:
+    base-url: https://maps.googleapis.com/maps/api/place/autocomplete/json
+    api-key: EXAMPLE_API_KEY
 
 # @TODO: use redis, not caffeine.
 bucket4j:

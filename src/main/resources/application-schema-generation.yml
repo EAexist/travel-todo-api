@@ -13,3 +13,6 @@ spring:
             create-source: metadata
   flyway:
     enabled: false
+  session:
+    jdbc:
+      initialize-schema: never

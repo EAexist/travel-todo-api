@@ -36,20 +36,15 @@ public class ReservationController {
   }
 
   @PostMapping("trip/{tripId}/reservation/analysis/text")
-  public ResponseEntity<List<ReservationDTO>> createReservationFromText(
+  public ResponseEntity<Void> createReservationFromText(
       @PathVariable UUID tripId, @RequestBody CreateReservationDTO createReservationDTO) throws Exception {
 
-      List<ReservationDTO> reservationDTOs = reservationService.createReservationFromText(
+      reservationService.createReservationFromText(
           tripId,
           createReservationDTO
       );
 
-      return ResponseEntity.created(
-              ServletUriComponentsBuilder.fromCurrentRequestUri()
-                  .replacePath("/trip/{tripId}/reservation/{reservationId}")
-                  .buildAndExpand(tripId, reservationDTOs.getFirst().getId())
-                  .toUri())
-          .body(reservationDTOs);
+      return ResponseEntity.status(HttpStatus.ACCEPTED).build();
   }
 
   /** Provide the details of an Trip with the given id. */

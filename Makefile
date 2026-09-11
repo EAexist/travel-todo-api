@@ -20,7 +20,7 @@ DOCKER := docker
 DOCKER_COMPOSE_DEV := $(DOCKER) compose -f compose.dev.db.yml
 DB_COMPOSE_TEST := $(DOCKER) compose -f compose.test.db.yml
 
-PROFILES ?=
+PROFILES ?= dev
 TEST_FILTER ?=
 
 TEST_ID ?=
@@ -42,16 +42,14 @@ bootRun: ## Run the application with DB and env vars
 	@$(DOCKER_COMPOSE_DEV) up -d && \
 # 	export $$(grep -v '^#' .env.dev | xargs) && \
 	export $$(grep -v '^#' .env.dev.db | xargs) && \
-	$(GRADLE) bootRun -x test --args='--spring.profiles.active=dev,$(PROFILES)'
+	$(GRADLE) bootRun -x test --args='--spring.profiles.active=$(PROFILES)'
 
 load-data: ## Load reference data
 	@$(GRADLE) bootRun --args='--spring.profiles.active=dev'
 
 schema-gen: ## Generate DB schema using Hibernate
-	@$(DOCKER_COMPOSE_DEV) up -d && \
-	export $$(grep -v '^#' .env.dev.db | xargs) && \
-	$(GRADLE) bootRun -x test --args='--spring.profiles.active=dev,schema-generation'
-	@$(DOCKER_COMPOSE_DEV) down
+	@$(MAKE) bootRun PROFILES=dev,schema-generation
+	@$(DB_COMPOSE_DEV) down
 
 lambda-deploy: ## Build and deploy lambda with CDK
 	@lambda-build
@@ -99,3 +97,8 @@ load-test:
 	@docker build -t travel-todo-api:$(GIT_COMMIT) .
 	@cd load-test && \
 	python -m scripts.run --test-id $(TEST_ID) --n-iterations $(N_ITERATIONS) --script $(SCRIPT) --target-tag $(GIT_COMMIT)
+
+localstack-run:
+	@$(DOCKER) compose -f compose.localstack.yml up -d --wait
+
+

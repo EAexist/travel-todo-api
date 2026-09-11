@@ -4,6 +4,7 @@ import com.matchalab.travel_todo_api.DTO.CreateReservationDTO;
 import com.matchalab.travel_todo_api.enums.ReservationCategory;
 import com.matchalab.travel_todo_api.exception.NotFoundException;
 import com.matchalab.travel_todo_api.exception.TripNotFoundException;
+import com.matchalab.travel_todo_api.jobs.AppSqsProperties;
 import com.matchalab.travel_todo_api.load_test.StageContext;
 import com.matchalab.travel_todo_api.mapper.ReservationMapper;
 import com.matchalab.travel_todo_api.model.Reservation.Reservation;
@@ -13,17 +14,23 @@ import com.matchalab.travel_todo_api.model.Trip;
 import com.matchalab.travel_todo_api.model.genAI.ExtractReservationChatResultDTO;
 import com.matchalab.travel_todo_api.repository.ReservationRepository;
 import com.matchalab.travel_todo_api.repository.TripRepository;
+import com.matchalab.travel_todo_api.reservation_analysis.CreateReservation;
+import com.matchalab.travel_todo_api.reservation_analysis.CreateReservationJob;
+import com.matchalab.travel_todo_api.reservation_analysis.CreateReservationJobRepository;
+import com.matchalab.travel_todo_api.reservation_analysis.CreateReservationPayload;
 import com.matchalab.travel_todo_api.service.ChatModelService.ChatModelService;
+import io.awspring.cloud.sqs.operations.MessagingOperationFailedException;
+import io.awspring.cloud.sqs.operations.SendResult;
+import io.awspring.cloud.sqs.operations.SqsOperations;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Setter;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +48,7 @@ public class ReservationService {
     @Autowired
     private ReservationRepository reservationRepository;
 
+    private final CreateReservationJobRepository createReservationJobRepository;
     /*
      * Service
      */
@@ -59,14 +67,23 @@ public class ReservationService {
     private final StageContext stageContext;
     private final MeterRegistry registry;
 
+    /* SQS */
+//    https://docs.awspring.io/spring-cloud-aws/docs/3.0.0/reference/html/index.html#sqs-template-send
+    private final SqsOperations sqsTemplate;
+    private final AppSqsProperties appSqsProperties;
+
     public ReservationService(
             TripRepository tripRepository,
+            CreateReservationJobRepository createReservationJobRepository,
             HtmlParserService htmlParserService,
-            MeterRegistry registry, StageContext stageContext) {
+            MeterRegistry registry, StageContext stageContext, SqsOperations sqsTemplate, AppSqsProperties appSqsProperties) {
         this.tripRepository = tripRepository;
+        this.createReservationJobRepository = createReservationJobRepository;
         this.htmlParserService = htmlParserService;
         this.stageContext = stageContext;
         this.registry = registry;
+        this.sqsTemplate = sqsTemplate;
+        this.appSqsProperties = appSqsProperties;
     }
 
     /**
@@ -222,42 +239,59 @@ public class ReservationService {
         }
     }
 
-    public List<ReservationDTO> createReservationFromText(
+    public void createReservationFromText(
             UUID tripId, CreateReservationDTO createReservationDTO
-    ) throws Exception {
-        Timer.Sample sample = Timer.start(registry);
+    ) throws RuntimeException {
+        Instant e2eOperationStartTime = Instant.now();
 
-        List<ReservationDTO> reservationDTOs;
+        CreateReservationJob job = new CreateReservationJob(
+                tripId,
+                CreateReservationPayload.builder()
+                        .category(createReservationDTO.category())
+                        .confirmationText(createReservationDTO.confirmationText()).build()
+        );
+
+        UUID jobId = createReservationJobRepository.save(job).getId();
+
+        CreateReservation message = new CreateReservation(jobId, e2eOperationStartTime);
 
         try {
-            String parsedConfirmationText =
-                    htmlParserService.extractTextAndLink(createReservationDTO.confirmationText());
-
-            ReservationCategory category;
-            try {
-                category =
-                        createReservationDTO.category() != null
-                                ? createReservationDTO.category()
-                                : ReservationCategory.UNKNOWN;
-            } catch (IllegalArgumentException e) {
-                category = ReservationCategory.UNKNOWN;
-            }
-
-            List<Reservation> reservations =
-                    extractReservationFromText(parsedConfirmationText, category);
-
-            reservationDTOs =
-                    saveReservation(tripId, reservations);
-        } finally {
-            String stageId = stageContext.getCurrentStageId();
-            Timer reservationAnalysisE2eTimer = Timer.builder("reservation.analysis.e2e.duration")
-                    .description("End-to-end reservation analysis duration")
-                    .tag("stage_id", stageId)
-                    .publishPercentileHistogram()
-                    .register(this.registry);
-            sample.stop(reservationAnalysisE2eTimer);
+            SendResult<CreateReservation> sendResult = this.sqsTemplate.send(appSqsProperties.getReservationAnalysisQueueName(), message);
         }
-        return reservationDTOs;
+        catch (MessagingOperationFailedException e) {
+            throw new RuntimeException("SQS 메세지 발행 실패", e);
+        }
+        return;
+
+//        try {
+//            String parsedConfirmationText =
+//                    htmlParserService.extractTextAndLink(createReservationDTO.confirmationText());
+//
+//            ReservationCategory category;
+//            try {
+//                category =
+//                        createReservationDTO.category() != null
+//                                ? createReservationDTO.category()
+//                                : ReservationCategory.UNKNOWN;
+//            } catch (IllegalArgumentException e) {
+//                category = ReservationCategory.UNKNOWN;
+//            }
+//
+//            List<Reservation> reservations =
+//                    extractReservationFromText(parsedConfirmationText, category);
+//
+//            reservationDTOs =
+//                    saveReservation(tripId, reservations);
+//        } finally {
+//            String stageId = stageContext.getCurrentStageId();
+//            Timer reservationAnalysisE2eTimer = Timer.builder("reservation.analysis.e2e.duration")
+//                    .description("End-to-end reservation analysis duration")
+//                    .tag("stage_id", stageId)
+//                    .publishPercentileHistogram()
+//                    .register(this.registry);
+//            sample.stop(reservationAnalysisE2eTimer);
+//        }
+//        return reservationDTOs;
     }
 
     public List<Reservation> extractReservationFromText(

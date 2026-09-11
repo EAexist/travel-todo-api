@@ -120,15 +120,19 @@ def generate_staged_test_report(output_dir, title):
         for metric_name in first_stage.get("latencies", {}).keys():
             lines.append(f"### {metric_name}")
             for stage_id, stage_data in report_data.items():
-                vus = stage_data.get("vus", "unknown")
-                lines.append(f"#### Stage: {vus} VUs")
+                target_rps = stage_data.get("target_rps", "unknown")
+                lines.append(f"#### Target RPS {target_rps}")
                 lines.append("| Iteration | P95 (s) | P50 (s) | P99 (s) |")
                 lines.append("| --- | --- | --- | --- |")
                 data = stage_data["latencies"][metric_name]
                 agg = data["aggregate"]
-                lines.append(f"| **Total** | {agg['p95']:.3f} | {agg['p50']:.3f} | {agg['p99']:.3f} |")
+                lines.append(
+                    f"| **Total** | {agg['p95']:.3f} | {agg['p50']:.3f} | {agg['p99']:.3f} |"
+                )
                 for idx, it in enumerate(data.get("iterations", [])):
-                    lines.append(f"| {idx + 1} | {it['p95']:.3f} | {it['p50']:.3f} | {it['p99']:.3f} |")
+                    lines.append(
+                        f"| {idx + 1} | {it['p95']:.3f} | {it['p50']:.3f} | {it['p99']:.3f} |"
+                    )
                 lines.append("")
 
         # 1.1 Throughput (Conditional)
@@ -136,12 +140,14 @@ def generate_staged_test_report(output_dir, title):
             lines.append("### Throughput")
             for metric_name in first_stage["throughputs"].keys():
                 lines.append(f"#### {metric_name.upper()}")
-                lines.append("| Stage (VUs) | Throughput (rps) |")
+                lines.append("| Target RPS | Throughput (rps) |")
                 lines.append("| --- | --- |")
                 for stage_id, stage_data in report_data.items():
-                    vus = stage_data.get("vus", "unknown")
+                    target_rps = stage_data.get("target_rps", "unknown")
                     stats = stage_data["throughputs"][metric_name]
-                    lines.append(f"| {vus} | {stats['mean']:.2f} ± {stats['std_dev']:.2f} |")
+                    lines.append(
+                        f"| {target_rps} | {stats['mean']:.2f} ± {stats['std_dev']:.2f} |"
+                    )
                 lines.append("")
 
     # 2. Resource Condition Proof
@@ -156,32 +162,32 @@ def generate_staged_test_report(output_dir, title):
 
     # 3. Resource Usage (Dynamic)
     lines.append("### Usage Stats")
-    lines.append("| Stage (VUs) | Service | Avg Memory (MB) | Peak Memory (MB) | Mean CPU |")
+    lines.append(
+        "| Target RPS | Service | Avg Memory (MB) | Peak Memory (MB) | Mean CPU |"
+    )
     lines.append("| --- | --- | --- | --- | --- |")
     for stage_id, stage_data in report_data.items():
-        vus = stage_data.get("vus", "unknown")
+        target_rps = stage_data.get("target_rps", "unknown")
         for service_name, metrics in stage_data.get("resources", {}).items():
             cpu = metrics["cpu"]
             mem_avg = metrics["memory_avg"]
             mem_peak = metrics["memory_peak"]
-            lines.append(f"| {vus} | {service_name.replace('_', ' ').title()} | {mem_avg['mean'] / 1024 / 1024:.2f} | {mem_peak['mean'] / 1024 / 1024:.2f} | {cpu['mean']:.4f} {cpu['unit']} |")
+            lines.append(
+                f"| {target_rps} | {service_name.replace('_', ' ').title()} | {mem_avg['mean'] / 1024 / 1024:.2f} | {mem_peak['mean'] / 1024 / 1024:.2f} | {cpu['mean']:.4f} {cpu['unit']} |"
+            )
     lines.append("")
 
     # 0. Test Configuration Summary
     lines.append("## Load Test Configuration")
     lines.append(f"- **Target URI**: `{summary_data['uri']}`")
-    lines.append(
-        f"- **Iterations**: {all_stages[0]['iterations']}"
-    )
+    lines.append(f"- **Iterations**: {all_stages[0]['iterations']}")
     lines.append(
         f"- **Stages**: {sum(1 for i in summary_data['stages'] if i['is_target'])}"
     )
     # Using the duration of the first target stage if available
-    target_stages = [i for i in summary_data['stages'] if i['is_target']]
+    target_stages = [i for i in summary_data["stages"] if i["is_target"]]
     if target_stages:
-        lines.append(
-            f"- **Duration per Stage**: {target_stages[0]['duration']}\n"
-        )
+        lines.append(f"- **Duration per Stage**: {target_stages[0]['duration']}\n")
 
     # Save to report.md
     with open(test_path / "report.md", "w", encoding="utf-8") as f:

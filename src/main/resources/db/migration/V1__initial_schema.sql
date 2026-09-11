@@ -13,6 +13,22 @@ create table airport (
     primary key (iata_code)
 );
 
+create table create_reservation_job (
+    created_at timestamp(6) with time zone not null,
+    updated_at timestamp(6) with time zone,
+    id uuid not null,
+    trip_id uuid not null,
+    status varchar(255) check (
+        status in (
+            'PROCESSING',
+            'COMPLETED',
+            'FAILED'
+        )
+    ),
+    payload jsonb,
+    primary key (id)
+);
+
 create table custom_todo_content (
     flight_todo_content_id uuid unique,
     id uuid not null,
@@ -86,7 +102,6 @@ create table reservation (
     todo_id uuid unique,
     trip_id uuid,
     primary_href_link varchar(2048),
-    note varchar(255),
     category varchar(255) check (
         category in (
             'UNKNOWN',
@@ -98,6 +113,7 @@ create table reservation (
         )
     ),
     code varchar(255),
+    note varchar(255),
     raw_text varchar(255),
     detail jsonb,
     primary key (id)

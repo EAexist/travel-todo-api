@@ -1,4 +1,3 @@
-import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.2/index.js';
 
 function parseDurationToMs(durationStr) {
     if (typeof durationStr !== 'string') {
@@ -48,34 +47,78 @@ function calculateStageTimestamps(stages, testStartTime) {
         accumulatedTimeMs += durationMs;
         const stageEnd = new Date(baseTime + accumulatedTimeMs);
 
-        console.log(stage.tags, stage.is_target)
-
         return {
             stage_index: index,
             stage_id: `stage_${index}`,
-            duration: stage.duration,
-            target_vus: stage.target,
+            durationSeconds: durationMs / 1000,
+            target_rps: stage.target,
             start_time: stageStart.toISOString(),
             end_time: stageEnd.toISOString(),
-            is_target: stage.is_target ?? false,
+            is_target: stage.is_target === "true",
         };
     });
 }
 
-export function handleSummary(data, stages, getUri) {
-    const summaryPath = __ENV.SUMMARY_PATH
-    const totalDurationMs = data?.state.testRunDurationMs;
+function handleSummary(data, stages, getUri, textSummaryFn) {
+    const summaryPath = __ENV.SUMMARY_PATH;
+    const totalDurationMs = data?.state?.testRunDurationMs || 0;
     const testEndTime = new Date();
     const testStartTime = new Date(testEndTime.getTime() - totalDurationMs);
 
     const stageTimeline = calculateStageTimestamps(stages, testStartTime);
+
+    let foundFailure = false;
+
+    const decoratedTimeline = stageTimeline.map((stage) => {
+        const stageIdx = stage.stage_index;
+        const failedMetric = `http_req_failed{stage:${stageIdx}}`;
+        const durationMetric = `http_req_duration{stage:${stageIdx}}`;
+        const droppedMetric = `dropped_iterations{stage:${stageIdx}}`;
+
+        let stageFailed = false;
+        let hasConfiguredThreshold = false;
+
+        // Inspect both metric thresholds for this stage
+        [failedMetric, durationMetric, droppedMetric].forEach((metricName) => {
+            const metric = data?.metrics?.[metricName];
+            if (metric && metric.thresholds) {
+                hasConfiguredThreshold = true;
+                Object.values(metric.thresholds).forEach((threshold) => {
+                    // k6 sets `ok: false` when a threshold fails
+                    if (threshold.ok === false) {
+                        stageFailed = true;
+                    }
+                });
+            }
+        });
+
+        // Determine if stage was skipped due to an earlier abort
+        const skipped = foundFailure;
+
+        if (stageFailed) {
+            foundFailure = true;
+        }
+
+        return {
+            ...stage,
+            failed: stageFailed,
+            skipped: skipped,
+        };
+    });
+
     const summaryManifest = {
-        uri: getUri(data),
-        stages: stageTimeline,
+        uri: getUri ? getUri(data) : '',
+        stages: decoratedTimeline,
     };
+
+    const summaryText = textSummaryFn
+        ? textSummaryFn(data, { indent: ' ', enableColors: true })
+        : 'Summary placeholder';
 
     return {
         [summaryPath]: JSON.stringify(summaryManifest, null, 2),
-        'stdout': textSummary(data, { indent: ' ', enableColors: true }),
+        'stdout': summaryText,
     };
 }
+
+export { calculateStageTimestamps, handleSummary, parseDurationToMs };

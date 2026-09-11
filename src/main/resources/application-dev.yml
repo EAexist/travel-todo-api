@@ -6,11 +6,23 @@ spring:
   cloud:
     gcp:
       project-id: example-google-cloud-project-id
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: ap-northeast-2
+      sqs:
+        endpoint: ${SPRING_CLOUD_AWS_SQS_ENDPOINT:http://localhost:4566}
   ai:
     google:
       genai:
         project-id: example-project-id
         api-key: example-api-key
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: password
 #  flyway:
 #    clean-disabled: false
 #  datasource:

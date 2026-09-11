@@ -34,3 +34,6 @@ management:
     distribution:
       percentiles-histogram:
         http.server.requests: true
+  health:
+    probes:
+      enabled: true

@@ -36,7 +36,7 @@ def get_container_cpu_usage(
         **(
             get_mean_value(
                 template=Template(
-                    f'rate(container_cpu_usage_seconds_total{{container_label_service_id="{container_service_id}"}}[$duration_string])'
+                    f'rate(container_cpu_usage_seconds_total{{ container_label_com_docker_compose_service="{container_service_id}"}}[$duration_string])'
                 ),
                 iterations=iterations,
             )
@@ -56,7 +56,7 @@ def get_container_memory_working_set_avg(
         **(
             get_mean_value(
                 template=Template(
-                    f'avg_over_time(container_memory_working_set_bytes{{container_label_service_id="{container_service_id}"}}[$duration_string])'
+                    f'avg_over_time(container_memory_working_set_bytes{{ container_label_com_docker_compose_service="{container_service_id}"}}[$duration_string])'
                 ),
                 iterations=iterations,
             )
@@ -76,7 +76,7 @@ def get_container_memory_working_set_peak(
         **(
             get_mean_value(
                 template=Template(
-                    f'max_over_time(container_memory_working_set_bytes{{container_label_service_id="{container_service_id}"}}[$duration_string])'
+                    f'max_over_time(container_memory_working_set_bytes{{ container_label_com_docker_compose_service="{container_service_id}"}}[$duration_string])'
                 ),
                 iterations=iterations,
             )

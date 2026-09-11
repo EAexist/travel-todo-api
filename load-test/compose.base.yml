@@ -8,10 +8,11 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8080/actuator/health/liveness"]
       interval: 10s
-      timeout: 2s
-      retries: 3
+      timeout: 10s       
+      retries: 5         
+      start_period: 30s
     environment:
       SPRING_PROFILES_ACTIVE: dev,no-security,load-test
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
@@ -19,11 +20,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_AI_OPENAI_BASEURL: http://llm-mock-server:8081
       # JVM heap memory allocation (1.25GB)
-      JAVA_TOOL_OPTIONS: -Xms640m -Xmx640m -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=64m -XX:MaxDirectMemorySize=64m
+      JAVA_TOOL_OPTIONS: "-Xms640m -Xmx640m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:ReservedCodeCacheSize=64m -XX:MaxDirectMemorySize=128m"
       MANAGEMENT_METRICS_TAGS_TEST_ID: ${MANAGEMENT_METRICS_TAGS_TEST_ID}
       MANAGEMENT_METRICS_TAGS_ITERATION: ${MANAGEMENT_METRICS_TAGS_ITERATION}
     deploy:
       resources:
         limits:
-          memory: 1G #1GB
+          memory: 1536m
     cpuset: "2,3"
