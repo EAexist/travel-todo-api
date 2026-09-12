@@ -33,4 +33,4 @@ management:
     # Disable Histogram Buckets for http.server.requests
     distribution:
       percentiles-histogram:
-        http.server.requests: false
+        http.server.requests: true
