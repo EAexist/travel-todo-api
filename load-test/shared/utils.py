@@ -13,11 +13,12 @@ docker_compose_env = {"COMPOSE_FILE": "compose.loadtest.yml"}
 @dataclass
 class LoadTestRun:
     test_id: str
+    variant: str
     iteration: int
 
     @property
     def output_path(self):
-        return f"output/{self.test_id}/{self.iteration}"
+        return f"output/{self.test_id}/{self.variant}/{self.iteration}"
 
     @property
     def test_summary_path(self):
@@ -60,20 +61,20 @@ def record_run(test_id: str, run: LoadTestRun) -> None:
         json.dump(manifest, f, indent=2)
 
 
-def run_cmd(cmd, check=True, env={}):
-    try:
-        result = subprocess.run(
-            cmd,
-            shell=True,
-            capture_output=True,
-            text=True,
-            check=check,
-            env={**os.environ.copy(), **env},
-        )
-        return result.stdout.strip()
-    except subprocess.CalledProcessError as e:
-        print(f"Error executing: {cmd}\n{e.stderr}")
-        return None
+def run_cmd(cmd, check=True, env=None):
+    """Executes a shell command. Raises subprocess.CalledProcessError if check=True and exit code != 0."""
+    merged_env = {**os.environ.copy(), **(env or {})}
+
+    # Raises subprocess.CalledProcessError if check=True and returncode != 0
+    result = subprocess.run(
+        cmd,
+        shell=True,
+        capture_output=True,
+        text=True,
+        check=check,
+        env=merged_env,
+    )
+    return result.stdout.strip()
 
 
 def run_wsl_cmd(command: str) -> str:
@@ -96,10 +97,10 @@ def run_wsl_cmd(command: str) -> str:
 
 
 def verify_container_cpu_isolation_config():
-    print("=== Verifying CPU Isolation Config ===")
+    # print("=== Verifying CPU Isolation Config ===")
 
     # 1. Validate /proc/cmdline
-    print("- Checking /proc/cmdline...")
+    # print("- Checking /proc/cmdline...")
     cmdline = run_wsl_cmd("cat /proc/cmdline")
     if "isolcpus=" not in cmdline:
         raise RuntimeError(f"isolcpus= not found in /proc/cmdline: {cmdline}")
@@ -143,10 +144,6 @@ def verify_containers_resource_config(project: str):
             mem_res = host_config.get("MemoryReservation", 0) / (1024 * 1024)  # MB
             cpu_set = host_config.get("CpusetCpus", "Not Set")
             mem_limit = host_config.get("Memory", 0) / (1024 * 1024)  # MB
-
-            print(f"[{name}]")
-            print(f"  - Memory Reservation: {mem_res} MB (Limit: {mem_limit} MB)")
-            print(f"  - CpusetCpus: {cpu_set}")
 
             results[name] = {
                 "MemoryReservationMB": mem_res,

@@ -8,16 +8,10 @@ SCRIPT ?= 000-smoke-test.js
 
 # Main
 bench-architecture-msg-broker:
-	@python -m bench-architecture-msg-broker.run --test-id $(TEST_ID) --n-iterations $(N_ITERATIONS) --script $(SCRIPT) --target-tag $(TAG)
+	@python -m bench-architecture-msg-broker.run
 	
-bench-architecture-msg-broker-baseline:
-	@$(MAKE) bench-architecture-msg-broker TEST_ID=$(TEST_ID) N_ITERATIONS=5 SCRIPT=002-breakpoint-test.js TAG=bench-architecture-msg-broker-baseline
-
-bench-architecture-msg-broker-smoke-test:
-	@$(MAKE) bench-architecture-msg-broker TEST_ID=$(TEST_ID) N_ITERATIONS=2 SCRIPT=000-smoke-test.js TAG=bench-architecture-msg-broker-baseline
-
-bench-architecture-msg-broker-probe-break-test:
-	@$(MAKE) bench-architecture-msg-broker TEST_ID=$(TEST_ID) N_ITERATIONS=1 SCRIPT=001-probe-breakpoint-test.js
+bench-architecture-msg-broker-dev:
+	@ENV=dev python -m bench-architecture-msg-broker.run
 
 run-prometheus:
 	@docker start prometheus
@@ -33,13 +27,20 @@ bench-data-model-reservation-baseline:
 bench-data-model-reservation-target:
 	@python -m bench-data-model-reservation.run --test-id $(TEST_ID) --target-tag bench-data-model-reservation-target
 
+k6-test:
+	node --test bench-architecture-msg-broker/k6/scripts/handleSummary.test.js
+
 # Dev
 docker-build-alloy-with-curl:
 	@cd alloy && \
 	docker build . -t grafana-alloy-with-curl:latest
 
+BASE_DIR ?=
+cANDIDATE_DIR ?=
+OUTPUT ?=
+
 bench-architecture-msg-broker-report:
-	@$(MAKE) bench-architecture-msg-broker.report --test-id $(TEST_ID) --n-iterations $(N_ITERATIONS)
+	@python -m bench-architecture-msg-broker.report --base-dir $(BASE_DIR) --candidate-dir $(CANDIDATE_DIR) --output $(OUTPUT)
 
 bench-data-model-reservation-report:
 	@python -m bench-data-model-reservation.report --test-id $(TEST_ID)

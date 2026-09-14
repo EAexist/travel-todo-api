@@ -122,9 +122,12 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	http.HandleFunc(config.ChatCompletionsPath, geminiMockHandler)
 
-	log.Printf("Endpoints:\n%s\n%s", "/health", config.ChatCompletionsPath)
+	for _, path := range config.ChatCompletionsPaths {
+		http.HandleFunc(path, geminiMockHandler)
+	}
+
+	log.Printf("Endpoints:\n%s\n%s", "/health", config.ChatCompletionsPaths)
 
 	port := config.Port
 

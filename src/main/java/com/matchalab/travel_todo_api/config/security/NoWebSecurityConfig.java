@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -29,13 +30,22 @@ import java.util.List;
 @EnableWebSecurity
 @Profile("no-security")
 public class NoWebSecurityConfig {
-
     private final UserAccountService userAccountService;
-    private final UserDetailsService userDetailsService;
 
-    public NoWebSecurityConfig(UserAccountService userAccountService, UserDetailsService userDetailsService) {
+    public NoWebSecurityConfig(UserAccountService userAccountService) {
         this.userAccountService = userAccountService;
-        this.userDetailsService = userDetailsService;
+    }
+
+    @Bean
+    public ApplicationRunner initDevAdmin() {
+        return args -> {
+            GoogleProfile devAdminProfile = GoogleProfile.builder()
+                    .id("mock-admin-google-id")
+                    .email("admin@test.com")
+                    .build();
+
+            userAccountService.findOrCreateAdminAccount(devAdminProfile);
+        };
     }
 
     @Bean
@@ -44,7 +54,7 @@ public class NoWebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterBefore(new DevMockAuthFilter(userAccountService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new DevMockAuthFilter(userAccountService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -52,11 +62,14 @@ public class NoWebSecurityConfig {
     private static class DevMockAuthFilter extends OncePerRequestFilter {
 
         private final UserAccountService userAccountService;
-        private final UserDetailsService userDetailsService;
 
-        private DevMockAuthFilter(UserAccountService userAccountService, UserDetailsService userDetailsService) {
+        private DevMockAuthFilter(UserAccountService userAccountService) {
             this.userAccountService = userAccountService;
-            this.userDetailsService = userDetailsService;
+        }
+
+        @Override
+        protected boolean shouldNotFilter(HttpServletRequest request) {
+            return request.getRequestURI().startsWith("/actuator");
         }
 
         @Override
@@ -64,18 +77,46 @@ public class NoWebSecurityConfig {
                 throws ServletException, IOException {
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                GoogleProfile googleProfile =
-                        GoogleProfile.builder().id("subjectr").email("email").build();
-
-                UserAccount userAccount = userAccountService.findOrCreateAdminAccount(googleProfile);
-                UserDetails user = userDetailsService.loadUserByUsername(userAccount.getId().toString());
-                var mockUser = new UsernamePasswordAuthenticationToken(
-                        user.getUsername(), user.getPassword(), user.getAuthorities()
+                UserAccount admin = userAccountService.findOrCreateAdminAccount(
+                        GoogleProfile.builder().id("mock-admin-google-id").email("admin@test.com").build()
                 );
-                SecurityContextHolder.getContext().setAuthentication(mockUser);
+
+                var mockAuth = new UsernamePasswordAuthenticationToken(
+                        admin.getId().toString(),
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                );
+                SecurityContextHolder.getContext().setAuthentication(mockAuth);
             }
 
             chain.doFilter(request, response);
         }
+
+//        private final UserAccountService userAccountService;
+//        private final UserDetailsService userDetailsService;
+//
+//        private DevMockAuthFilter(UserAccountService userAccountService, UserDetailsService userDetailsService) {
+//            this.userAccountService = userAccountService;
+//            this.userDetailsService = userDetailsService;
+//        }
+//
+//        @Override
+//        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+//                throws ServletException, IOException {
+//
+//            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+//                GoogleProfile googleProfile =
+//                        GoogleProfile.builder().id("subjectr").email("email").build();
+//
+//                UserAccount userAccount = userAccountService.findOrCreateAdminAccount(googleProfile);
+//                UserDetails user = userDetailsService.loadUserByUsername(userAccount.getId().toString());
+//                var mockUser = new UsernamePasswordAuthenticationToken(
+//                        user.getUsername(), user.getPassword(), user.getAuthorities()
+//                );
+//                SecurityContextHolder.getContext().setAuthentication(mockUser);
+//            }
+//
+//            chain.doFilter(request, response);
+//        }
     }
 }

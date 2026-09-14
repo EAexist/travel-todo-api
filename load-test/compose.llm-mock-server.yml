@@ -1,6 +1,7 @@
 networks:
   app-network:
     name: load-test-network
+    external: true
 
 services:
   llm-mock-server:
@@ -23,5 +24,5 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 64M
     cpuset: "4,5"

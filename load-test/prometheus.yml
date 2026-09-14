@@ -19,9 +19,9 @@ scrape_configs:
   - job_name: 'cadvisor'
     static_configs:
       - targets: ['cadvisor:8080']
-    metric_relabel_configs:
-      # ONLY keep metrics for db container
-      - source_labels: [name]
-        regex: '(db)'
-        action: keep
     scrape_interval: 10s
+
+  - job_name: "reservation-data-processor"
+    scrape_interval: 10s
+    static_configs:
+      - targets: ["reservation-data-processor:2112"]

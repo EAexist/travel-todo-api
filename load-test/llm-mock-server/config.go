@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -13,7 +14,22 @@ type Config struct {
 	GammaModelPatametersPath string
 	SamplesManifestPath      string
 	Port                     string
-	ChatCompletionsPath      string
+	ChatCompletionsPaths     []string
+}
+
+func getPaths(envName string) []string {
+	value := os.Getenv(envName)
+
+	var paths []string
+	for _, path := range strings.Split(value, ",") {
+		path = strings.TrimSpace(path)
+		path = strings.Trim(path, `"`)
+		if path != "" {
+			paths = append(paths, path)
+		}
+	}
+
+	return paths
 }
 
 func LoadConfig() (Config, error) {
@@ -41,8 +57,8 @@ func LoadConfig() (Config, error) {
 		return Config{}, fmt.Errorf("PORT is required")
 	}
 
-	chatCompletionsPath := os.Getenv("CHAT_COMPLETIONS_PATH")
-	if chatCompletionsPath == "" {
+	ChatCompletionsPaths := getPaths("CHAT_COMPLETIONS_PATH")
+	if len(ChatCompletionsPaths) == 0 {
 		return Config{}, fmt.Errorf("CHAT_COMPLETIONS_PATH is required")
 	}
 
@@ -50,6 +66,6 @@ func LoadConfig() (Config, error) {
 		GammaModelPatametersPath: filepath.Join(fixturesRoot, gammaModelPatametersPath),
 		SamplesManifestPath:      filepath.Join(fixturesRoot, samplesManifestPath),
 		Port:                     port,
-		ChatCompletionsPath:      chatCompletionsPath,
+		ChatCompletionsPaths:     ChatCompletionsPaths,
 	}, nil
 }

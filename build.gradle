@@ -118,6 +118,13 @@ dependencies {
     implementation(platform("software.amazon.awssdk:bom:2.25.0"))
     implementation("software.amazon.awssdk:ssm")
 
+    /* AWS SQS */
+    // Source: https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-dependencies
+    implementation(platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.4.2"))
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
+    // Source: https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-testcontainers
+    testImplementation("io.awspring.cloud:spring-cloud-aws-testcontainers")
+
     // Actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("io.micrometer:micrometer-registry-prometheus")
@@ -132,8 +139,12 @@ dependencies {
 
     /* TestContainer */
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
+
+    // Source: https://mvnrepository.com/artifact/org.testcontainers/testcontainers-bom
+    testImplementation(platform("org.testcontainers:testcontainers-bom:2.0.5"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:testcontainers-localstack")
 }
 
 test {

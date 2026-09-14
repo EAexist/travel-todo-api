@@ -26,6 +26,19 @@ def parse_buckets_from_response(metrics_response: list) -> dict:
     return buckets
 
 
+def get_api_latency(test_id: str, stage_id: str, iterations: list[TimeRange]) -> dict:
+    """
+    Fetches raw bucket data for http_server_requests_seconds_bucket,
+    calculates aggregate and per-iteration P95/P50/P99.
+    """
+    return fetch_and_calculate_histogram(
+        test_id=test_id,
+        stage_id=stage_id,
+        iterations=iterations,
+        metric_name="http_server_requests_seconds_bucket",
+    )
+
+
 def get_reservation_analysis_e2e_latency(
     test_id: str, stage_id: str, iterations: list[TimeRange]
 ) -> dict:
@@ -87,9 +100,13 @@ def fetch_and_calculate_histogram(
         query_end_time = iteration.end_time
 
         query = (
-            f'{metric_name}{{test_id="{test_id}", stage_id="{stage_id}"}}'
-            if stage_id is not None
-            else f'{metric_name}{{test_id="{test_id}"}}'
+            metric_name
+            if metric_name == "reservation_analysis_e2e_duration_seconds_bucket"
+            else (
+                f'{metric_name}{{test_id="{test_id}", stage_id="{stage_id}"}}'
+                if stage_id is not None
+                else f'{metric_name}{{test_id="{test_id}"}}'
+            )
         )
 
         start_metrics = fetch_metrics(
