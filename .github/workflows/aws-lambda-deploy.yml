@@ -2,7 +2,7 @@ name: AWS CDK Deploy
 
 on:
   push:
-    branches: [ "staging", "ci/aws-lambda-deploy-test" ]
+    branches: [ "staging" ]
 
 jobs:
   deploy:
