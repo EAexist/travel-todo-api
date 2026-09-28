@@ -1,7 +1,6 @@
 package com.matchalab.travel_todo_api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.matchalab.travel_todo_api.config.GcpConfigInitializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -25,7 +24,7 @@ public class TravelTodoApiApplication {
 
   public static void main(String[] args) {
     SpringApplication app = new SpringApplication(TravelTodoApiApplication.class);
-    app.addInitializers(new GcpConfigInitializer());
+    // app.addInitializers(new GcpConfigInitializer());
     app.run(args);
   }
 

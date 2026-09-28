@@ -68,7 +68,7 @@ lambda-zip-test-run:
 	export $$(grep -v '^#' $(CURDIR)/.env.dev.db | xargs) && \
 	./run.sh
 aws-lambda-build: ## Build AWS Lambda version
-    @$(GRADLE) clean buildLambdaWebAdapterZip
+	@$(GRADLE) clean buildLambdaWebAdapterZip
 
 aws-lambda-artifact-run: ## Test lambda artifact locally
 	@bash scripts/test-lambda-docker.sh
