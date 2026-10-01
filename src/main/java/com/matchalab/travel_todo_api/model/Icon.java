@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public record Icon(String name, String type) {
 
-    public Icon(String name) {
-        this(name, "tossface");
-    }
+  public Icon(String name) {
+    this(name, "tossface");
+  }
 }

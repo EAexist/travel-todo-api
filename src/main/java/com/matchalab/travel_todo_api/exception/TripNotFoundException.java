@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class TripNotFoundException extends RuntimeException {
 
-    public TripNotFoundException(UUID id) {
-        super("Could not find Trip " + id);
-    }
+  public TripNotFoundException(UUID id) {
+    super("Could not find Trip " + id);
+  }
 }

@@ -4,8 +4,4 @@ import lombok.Builder;
 
 @Builder
 public record AirportDTO(
-        String iataCode,
-        String airportName,
-        String cityName,
-        String iso2DigitNationCode) {
-}
+    String iataCode, String airportName, String cityName, String iso2DigitNationCode) {}

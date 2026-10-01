@@ -1,0 +1,17 @@
+{
+  "partOfTextAndLinksThatContainsReservationInformation": null,
+  "flightBookings": [],
+  "flightTickets": [
+    {
+      "reservationDetailHrefLink": null,
+      "reservationNumberOrCode": "K9N96A",
+      "flightNumber": "ZE671",
+      "departureAirportIataCode": "ICN",
+      "arrivalAirportIataCode": "TKS",
+      "departureDateTimeIsoString": "2025-02-20",
+      "passengerName": "PYO HYEON"
+    }
+  ],
+  "accomodations": [],
+  "otherReservations": []
+}

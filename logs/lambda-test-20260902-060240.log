@@ -1,0 +1,17 @@
+01 Sep 2026 21:02:41,388 [INFO] (rapid) exec '/var/runtime/bootstrap' (cwd=/var/task, handler=)
+START RequestId: 46e90db7-5b3b-4c1e-9e3d-76d0f70a4587 Version: $LATEST
+01 Sep 2026 21:04:00,487 [INFO] (rapid) INIT START(type: on-demand, phase: init)
+01 Sep 2026 21:04:00,509 [INFO] (rapid) External agent lambda-adapter (4f350eb4-22fb-4e93-b09c-26533f664414) registered, subscribed to []
+01 Sep 2026 21:04:00,510 [INFO] (rapid) Starting runtime without AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN , Expected?: false
+01 Sep 2026 21:04:00,512 [INFO] (rapid) INIT RTDONE(status: success)
+01 Sep 2026 21:04:00,512 [INFO] (rapid) INIT REPORT(durationMs: 25.501000)
+01 Sep 2026 21:04:00,512 [INFO] (rapid) INVOKE START(requestId: 46e90db7-5b3b-4c1e-9e3d-76d0f70a4587)
+ERROR Lambda runtime invoke{requestId="46e90db7-5b3b-4c1e-9e3d-76d0f70a4587"}: lambda_runtime::layers::api_response: Request payload deserialization into LambdaEvent<T> failed. The handler will not be called. Log at TRACE level to see the payload. error=DeserializeError { inner: Error { path: Path { segments: [] }, original: Error("EOF while parsing a value", line: 1, column: 0) } }
+END RequestId: 46e90db7-5b3b-4c1e-9e3d-76d0f70a4587
+REPORT RequestId: 46e90db7-5b3b-4c1e-9e3d-76d0f70a4587	Init Duration: 2.53 ms	Duration: 36.60 ms	Billed Duration: 37 ms	Memory Size: 3008 MB	Max Memory Used: 3008 MB	
+01 Sep 2026 21:04:00,522 [INFO] (rapid) INVOKE RTDONE(status: success, produced bytes: 0, duration: 9.342000ms)
+01 Sep 2026 21:04:35,706 [INFO] (rapid) Received signal signal=interrupt
+01 Sep 2026 21:04:35,706 [INFO] (rapid) Shutting down...
+01 Sep 2026 21:04:35,706 [WARNING] (rapid) Reset initiated: SandboxTerminated
+01 Sep 2026 21:04:36,026 [INFO] (rapid) Sending SIGKILL to extension-lambda-adapter-1(18).
+01 Sep 2026 21:04:36,027 [INFO] (rapid) Waiting for runtime domain processes termination

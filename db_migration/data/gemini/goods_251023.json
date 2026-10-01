@@ -1,272 +1,272 @@
 [
-    {
-        "isStock": true,
-        "type": "passport",
-        "category": "DOCUMENT",
-        "title": "여권",
-        "icon": {
-            "name": "passport",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "id_card",
-        "category": "DOCUMENT",
-        "title": "신분증 (국내용)",
-        "icon": {
-            "name": "id-card",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "visa",
-        "category": "DOCUMENT",
-        "title": "비자 및 입국 서류",
-        "icon": {
-            "name": "📃",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "vaccination_certificate",
-        "category": "DOCUMENT",
-        "title": "예방접종 증명서 (필요 시)",
-        "icon": {
-            "name": "vaccine",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "eticket",
-        "category": "RESERVATION",
-        "title": "항공권 E-티켓",
-        "icon": {
-            "name": "airplane-ticket",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "accomodation",
-        "category": "RESERVATION",
-        "title": "숙박 예약 확인증",
-        "icon": {
-            "name": "🛏️",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "transport_reservation",
-        "category": "RESERVATION",
-        "title": "교통편 예약 (기차, 렌터카)",
-        "icon": {
-            "name": "🚆",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "insurance",
-        "category": "FINANCE",
-        "title": "여행자 보험 가입",
-        "icon": {
-            "name": "🛡️",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "credit_card",
-        "category": "FINANCE",
-        "title": "해외 사용 신용카드",
-        "icon": {
-            "name": "credit-card-outline",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "currency",
-        "category": "FINANCE",
-        "title": "현지 통화 환전",
-        "icon": {
-            "name": "💵",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "phone_roaming",
-        "category": "COMMUNICATION",
-        "title": "데이터 로밍/유심/eSIM",
-        "icon": {
-            "name": "📡",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "portable_charger",
-        "category": "COMMUNICATION",
-        "title": "보조 배터리",
-        "icon": {
-            "name": "power-bank",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "adapter",
-        "category": "ELECTRONICS",
-        "title": "멀티 어댑터 (변환 플러그)",
-        "icon": {
-            "name": "🔌",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "cables",
-        "category": "ELECTRONICS",
-        "title": "충전 케이블 및 이어폰",
-        "icon": {
-            "name": "cable-data",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "first_aid",
-        "category": "HEALTH",
-        "title": "상비약 (소화제, 두통약 등)",
-        "icon": {
-            "name": "first-aid-kit",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "personal_meds",
-        "category": "HEALTH",
-        "title": "개인 복용약/처방전",
-        "icon": {
-            "name": "💊",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "sunscreen",
-        "category": "HEALTH",
-        "title": "선크림/자외선 차단제",
-        "icon": {
-            "name": "🧴",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "toothbrush",
-        "category": "TOILETRY",
-        "title": "칫솔/치약/세면도구",
-        "icon": {
-            "name": "🛁",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "towel",
-        "category": "TOILETRY",
-        "title": "개인 수건 (필요 시)",
-        "icon": {
-            "name": "towel",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "makeup",
-        "category": "TOILETRY",
-        "title": "화장품 및 미용 도구",
-        "icon": {
-            "name": "💄",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "basic_clothes",
-        "category": "CLOTHING",
-        "title": "기본 의류 및 속옷",
-        "icon": {
-            "name": "👕",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "socks",
-        "category": "CLOTHING",
-        "title": "양말",
-        "icon": {
-            "name": "socks",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "outerwear",
-        "category": "CLOTHING",
-        "title": "외투/가디건 (실내용 포함)",
-        "icon": {
-            "name": "jacket",
-            "type": "material-community"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "umbrella",
-        "category": "MISC",
-        "title": "우산/우비",
-        "icon": {
-            "name": "☔",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "zipper_bag",
-        "category": "MISC",
-        "title": "지퍼백/봉투 (빨랫감 등)",
-        "icon": {
-            "name": "👝",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "eye_mask",
-        "category": "MISC",
-        "title": "안대 및 귀마개",
-        "icon": {
-            "name": "😴",
-            "type": "tossface"
-        }
-    },
-    {
-        "isStock": true,
-        "type": "book",
-        "category": "MISC",
-        "title": "책 또는 독서 도구",
-        "icon": {
-            "name": "📚",
-            "type": "tossface"
-        }
+  {
+    "isStock": true,
+    "type": "passport",
+    "category": "DOCUMENT",
+    "title": "여권",
+    "icon": {
+      "name": "passport",
+      "type": "material-community"
     }
+  },
+  {
+    "isStock": true,
+    "type": "id_card",
+    "category": "DOCUMENT",
+    "title": "신분증 (국내용)",
+    "icon": {
+      "name": "id-card",
+      "type": "material-community"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "visa",
+    "category": "DOCUMENT",
+    "title": "비자 및 입국 서류",
+    "icon": {
+      "name": "📃",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "vaccination_certificate",
+    "category": "DOCUMENT",
+    "title": "예방접종 증명서 (필요 시)",
+    "icon": {
+      "name": "vaccine",
+      "type": "material-community"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "eticket",
+    "category": "RESERVATION",
+    "title": "항공권 E-티켓",
+    "icon": {
+      "name": "airplane-ticket",
+      "type": "material-community"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "accomodation",
+    "category": "RESERVATION",
+    "title": "숙박 예약 확인증",
+    "icon": {
+      "name": "🛏️",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "transport_reservation",
+    "category": "RESERVATION",
+    "title": "교통편 예약 (기차, 렌터카)",
+    "icon": {
+      "name": "🚆",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "insurance",
+    "category": "FINANCE",
+    "title": "여행자 보험 가입",
+    "icon": {
+      "name": "🛡️",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "credit_card",
+    "category": "FINANCE",
+    "title": "해외 사용 신용카드",
+    "icon": {
+      "name": "credit-card-outline",
+      "type": "material-community"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "currency",
+    "category": "FINANCE",
+    "title": "현지 통화 환전",
+    "icon": {
+      "name": "💵",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "phone_roaming",
+    "category": "COMMUNICATION",
+    "title": "데이터 로밍/유심/eSIM",
+    "icon": {
+      "name": "📡",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "portable_charger",
+    "category": "COMMUNICATION",
+    "title": "보조 배터리",
+    "icon": {
+      "name": "power-bank",
+      "type": "material-community"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "adapter",
+    "category": "ELECTRONICS",
+    "title": "멀티 어댑터 (변환 플러그)",
+    "icon": {
+      "name": "🔌",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "cables",
+    "category": "ELECTRONICS",
+    "title": "충전 케이블 및 이어폰",
+    "icon": {
+      "name": "cable-data",
+      "type": "material-community"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "first_aid",
+    "category": "HEALTH",
+    "title": "상비약 (소화제, 두통약 등)",
+    "icon": {
+      "name": "first-aid-kit",
+      "type": "material-community"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "personal_meds",
+    "category": "HEALTH",
+    "title": "개인 복용약/처방전",
+    "icon": {
+      "name": "💊",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "sunscreen",
+    "category": "HEALTH",
+    "title": "선크림/자외선 차단제",
+    "icon": {
+      "name": "🧴",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "toothbrush",
+    "category": "TOILETRY",
+    "title": "칫솔/치약/세면도구",
+    "icon": {
+      "name": "🛁",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "towel",
+    "category": "TOILETRY",
+    "title": "개인 수건 (필요 시)",
+    "icon": {
+      "name": "towel",
+      "type": "material-community"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "makeup",
+    "category": "TOILETRY",
+    "title": "화장품 및 미용 도구",
+    "icon": {
+      "name": "💄",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "basic_clothes",
+    "category": "CLOTHING",
+    "title": "기본 의류 및 속옷",
+    "icon": {
+      "name": "👕",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "socks",
+    "category": "CLOTHING",
+    "title": "양말",
+    "icon": {
+      "name": "socks",
+      "type": "material-community"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "outerwear",
+    "category": "CLOTHING",
+    "title": "외투/가디건 (실내용 포함)",
+    "icon": {
+      "name": "jacket",
+      "type": "material-community"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "umbrella",
+    "category": "MISC",
+    "title": "우산/우비",
+    "icon": {
+      "name": "☔",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "zipper_bag",
+    "category": "MISC",
+    "title": "지퍼백/봉투 (빨랫감 등)",
+    "icon": {
+      "name": "👝",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "eye_mask",
+    "category": "MISC",
+    "title": "안대 및 귀마개",
+    "icon": {
+      "name": "😴",
+      "type": "tossface"
+    }
+  },
+  {
+    "isStock": true,
+    "type": "book",
+    "category": "MISC",
+    "title": "책 또는 독서 도구",
+    "icon": {
+      "name": "📚",
+      "type": "tossface"
+    }
+  }
 ]

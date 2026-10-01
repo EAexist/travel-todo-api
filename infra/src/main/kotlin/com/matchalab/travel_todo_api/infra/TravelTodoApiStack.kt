@@ -4,8 +4,6 @@ package com.matchalab.travel_todo_api.infra
 import software.amazon.awscdk.*
 import software.amazon.awscdk.services.lambda.*
 import software.amazon.awscdk.services.lambda.Function
-import software.amazon.awscdk.services.logs.LogGroup
-import software.amazon.awscdk.services.logs.RetentionDays
 import software.amazon.awscdk.services.ssm.StringParameter
 import software.constructs.Construct
 import java.io.File
@@ -20,7 +18,7 @@ class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env
         Tags.of(this).add("Environment", env)
         Tags.of(this).add("Application", "TravelTodoApi")
 
-        val functionName = "travel-todo-api-handler-$env"
+        val functionName = "travel-todo-api-lambda-$env"
 
         val webAdapterLayer = LayerVersion.fromLayerVersionArn(
             this, "WebAdapterLayer",
@@ -31,12 +29,6 @@ class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env
 //            "SsmExtension",
 //            "arn:aws:lambda:${this.region}:187925254637:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11"
 //        )
-
-        val lambdaLogGroup = LogGroup.Builder.create(this, "LambdaLogGroup")
-            .logGroupName("/aws/lambda/$functionName")
-            .retention(RetentionDays.ONE_WEEK)
-            .removalPolicy(RemovalPolicy.DESTROY)
-            .build()
 
         val artifactPath = File("..", "build/distributions/travel-todo-api-0.0.1-SNAPSHOT.zip").path
 
@@ -65,8 +57,10 @@ class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env
             StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/SPRING_AI_GOOGLE_GENAI_API_KEY")
 
         // Places API
-        val appGooglePlacesApiKey = StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_API_KEY")
-        val appGooglePlacesBaseUrl = StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_BASE_URL")
+        val appGooglePlacesApiKey =
+            StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_API_KEY")
+        val appGooglePlacesBaseUrl =
+            StringParameter.valueForStringParameter(this, "/stg/travel-todo-api/APP_GOOGLE_PLACES_BASE_URL")
 
         //  app
         val appSecurityAdminEmails =
@@ -88,7 +82,6 @@ class TravelTodoApiStack(scope: Construct?, id: String?, props: StackProps?, env
                 Code.fromAsset(artifactPath)
             )
             .layers(listOf(webAdapterLayer))
-            .logGroup(lambdaLogGroup)
             .environment(
                 mapOf(
                     // profile

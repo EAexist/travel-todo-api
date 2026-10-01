@@ -1,0 +1,41 @@
+timestamp,iteration,file,latency_seconds,error
+2026-08-24T08:58:26.034345,1,flightBooking_eastarjet_gmail_text_ko.txt,,"Invalid non-printable ASCII character in URL, '\r' at position 72."
+2026-08-24T08:58:26.039551,2,general_teshima_gmail_text_ko.txt,,"Invalid non-printable ASCII character in URL, '\r' at position 72."
+2026-08-24T08:58:26.044636,3,gmail_text_ko_hostelPAQTokushima.txt,,"Invalid non-printable ASCII character in URL, '\r' at position 72."
+2026-08-24T08:58:26.049940,4,kakao_text_ko.txt,,"Invalid non-printable ASCII character in URL, '\r' at position 72."
+2026-08-24T08:58:26.054729,5,flightBooking_eastarjet_gmail_text_ko.txt,,"Invalid non-printable ASCII character in URL, '\r' at position 72."
+2026-08-24T09:01:30.603391,2,general_teshima_gmail_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:01:30.607811,3,gmail_text_ko_hostelPAQTokushima.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:01:30.612122,4,kakao_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:01:30.593784,1,flightBooking_eastarjet_gmail_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:01:30.616292,5,flightBooking_eastarjet_gmail_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:05:16.607165,4,kakao_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:05:16.598750,1,flightBooking_eastarjet_gmail_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:05:16.607547,5,flightBooking_eastarjet_gmail_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:05:16.606569,3,gmail_text_ko_hostelPAQTokushima.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:05:16.605749,2,general_teshima_gmail_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:06:49.426055,2,general_teshima_gmail_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:06:49.427436,4,kakao_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:06:49.419098,1,flightBooking_eastarjet_gmail_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:06:49.426787,3,gmail_text_ko_hostelPAQTokushima.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:06:49.427815,5,flightBooking_eastarjet_gmail_text_ko.txt,,"Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAECXH_IiHc2oeXUzDaApd06W6QqT1KV-4'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+2026-08-24T09:11:46.768286,1,flightBooking_eastarjet_gmail_text_ko.txt,6.901287300002878,
+2026-08-24T09:11:46.774012,2,general_teshima_gmail_text_ko.txt,4.706518999999389,
+2026-08-24T09:11:46.774358,3,gmail_text_ko_hostelPAQTokushima.txt,7.270534199997201,
+2026-08-24T09:11:46.774580,4,kakao_text_ko.txt,4.03569360000256,
+2026-08-24T09:11:46.774777,5,flightBooking_eastarjet_gmail_text_ko.txt,6.312315799994394,

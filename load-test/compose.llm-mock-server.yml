@@ -1,0 +1,28 @@
+networks:
+  app-network:
+    name: load-test-network
+    external: true
+
+services:
+  llm-mock-server:
+    image: llm-mock-server:latest
+    networks:
+      - app-network
+    volumes:
+      - ../data/fixtures:/etc/llm-mock-server/data/fixtures
+    environment:
+      FIXTURES_ROOT: /etc/llm-mock-server/data/fixtures
+      GAMMA_MODEL_PATAMETERS_PATH: gamma_model_parameters.csv
+      SAMPLES_MANIFEST_PATH: samples.json
+      PORT: :8081
+      CHAT_COMPLETIONS_PATH: /v1/chat/completions
+    #    healthcheck:
+    #      test: ["CMD", "/llm-mock-server", "healthcheck"]
+    #      interval: 10s
+    #      timeout: 2s
+    #      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    cpuset: "4,5"

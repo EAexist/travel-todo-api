@@ -4,13 +4,14 @@ import java.util.UUID;
 
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.domain.Persistable;
 
 import com.matchalab.travel_todo_api.enums.ReservationCategory;
-import com.matchalab.travel_todo_api.model.Accomodation;
+import com.matchalab.travel_todo_api.mapper.ReservationDetailMapper;
 import com.matchalab.travel_todo_api.model.Trip;
+import com.matchalab.travel_todo_api.model.Todo.Todo;
 
 import io.micrometer.common.lang.NonNull;
 import jakarta.annotation.Nullable;
@@ -23,11 +24,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PostLoad;
-import jakarta.persistence.PostPersist;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,18 +44,15 @@ import lombok.Setter;
 @Builder
 public class Reservation implements Persistable<UUID> {
 
+    @Enumerated(EnumType.STRING)
+    ReservationCategory category;
+
     @Id
     @NonNull
     @Builder.Default
     private UUID id = UUID.randomUUID();
-
     @Builder.Default
     private Boolean isCompleted = false;
-
-    @Enumerated(EnumType.STRING)
-    ReservationCategory category;
-
-    @Lob
     @Basic(fetch = FetchType.LAZY)
     private String rawText;
 
@@ -66,32 +64,33 @@ public class Reservation implements Persistable<UUID> {
     @Nullable
     private String code;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "detail", columnDefinition = "jsonb")
+    private String detailJson;
+
     private String note;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Nullable
-    private VisitJapan visitJapan;
+    @Transient
+    private ReservationDetail detail;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Nullable
-    private Accomodation accomodation;
+    @PostLoad
+    private void deserializeDetail() {
+        if (this.detailJson != null && this.category != null) {
+            this.detail = ReservationDetailMapper.fromJson(this.detailJson, this.category);
+        }
+    }
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Nullable
-    private FlightBooking flightBooking;
+    @PrePersist
+    @PreUpdate
+    private void serializeDetail() {
+        if (this.detail != null) {
+            this.detailJson = ReservationDetailMapper.toJson(this.detail);
+        }
+    }
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Nullable
-    private FlightTicket flightTicket;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @Nullable
-    private GeneralReservation generalReservation;
+    private Todo todo;
 
     // @Nullable
     // private String serverFileUri;
@@ -107,6 +106,17 @@ public class Reservation implements Persistable<UUID> {
     @Builder.Default
     private boolean isNew = true;
 
+    public Reservation(Reservation reservation) {
+        this.id = UUID.randomUUID();
+        this.isCompleted = reservation.getIsCompleted();
+        this.category = reservation.getCategory();
+        // this.rawText = reservation.getRawText();
+        this.primaryHrefLink = reservation.getPrimaryHrefLink();
+        this.detail = reservation.detail;
+        // this.serverFileUri = reservation.getServerFileUri();
+        // this.localAppStorageFileUri = reservation.getLocalAppStorageFileUri();
+    }
+
     @Override
     public UUID getId() {
         return id;
@@ -115,34 +125,5 @@ public class Reservation implements Persistable<UUID> {
     @Override
     public boolean isNew() {
         return this.isNew;
-    }
-
-    @PostPersist
-    @PostLoad
-    private void setIsNotNew() {
-        this.isNew = false;
-    }
-
-    public Reservation(
-            Reservation reservation) {
-        this.id = UUID.randomUUID();
-        this.isCompleted = reservation.getIsCompleted();
-        this.category = reservation.getCategory();
-        // this.rawText = reservation.getRawText();
-        this.primaryHrefLink = reservation.getPrimaryHrefLink();
-        this.accomodation = reservation.getAccomodation() != null ? new Accomodation(reservation.getAccomodation())
-                : null;
-        this.flightBooking = reservation.getFlightBooking() != null ? new FlightBooking(reservation.getFlightBooking())
-                : null;
-        this.flightTicket = reservation.getFlightTicket() != null ? new FlightTicket(reservation.getFlightTicket())
-                : null;
-        this.generalReservation = reservation.getGeneralReservation() != null
-                ? new GeneralReservation(reservation.getGeneralReservation())
-                : null;
-        this.visitJapan = reservation.getVisitJapan() != null
-                ? new VisitJapan(reservation.getVisitJapan())
-                : null;
-        // this.serverFileUri = reservation.getServerFileUri();
-        // this.localAppStorageFileUri = reservation.getLocalAppStorageFileUri();
     }
 }

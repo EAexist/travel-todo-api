@@ -1,0 +1,39 @@
+networks:
+  app-network:
+    name: load-test-network
+    external: true
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    labels:
+      keep: "true"
+    ports:
+      - "9090:9090"
+    networks:
+      - app-network
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+      # REMOTE WRITE: Allows k6 test metrics remote write
+      # https://grafana.com/docs/k6/latest/results-output/real-time/prometheus-remote-write/#send-test-metrics-to-a-remote-write-endpoint
+      - "--web.enable-remote-write-receiver"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    # https://prometheus.io/docs/prometheus/latest/management_api/
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://prometheus:9090/-/healthy"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    cpuset: "4,5"
+    
+volumes:
+  prometheus_data: {}

@@ -1,0 +1,98 @@
+networks:
+  app-network:
+    name: load-test-network
+    external: true
+
+services:
+  db:
+    image: postgres:17.6
+    labels:
+      service_id: db
+    networks:
+      - app-network
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    cpuset: "0,1"
+
+  # https://github.com/prometheus/node_exporter#docker
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    command:
+      - '--path.rootfs=/host'
+    networks:
+      - app-network
+    # network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro'
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    cpuset: "4,5"
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    networks:
+      - app-network
+    command:
+      - '-enable_metrics=cpu,memory'
+      # Skip monitoring internal docker storage layer to reduce overhead
+      - '-docker_only=true'
+      - '-disable_root_cgroup_stats=true'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    privileged: true
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    cpuset: "4,5"
+
+  # grafana-alloy-with-curl:
+  #   networks:
+  #     - app-network
+  #   image: grafana-alloy-with-curl:latest
+  #   environment:
+  #     PROMETHEUS_REMOTE_WRITE_URL: ${PROMETHEUS_REMOTE_WRITE_URL}
+  #     PROMETHEUS_REMOTE_WRITE_USERNAME: ${PROMETHEUS_REMOTE_WRITE_USERNAME}
+  #     PROMETHEUS_REMOTE_WRITE_PASSWORD: ${PROMETHEUS_REMOTE_WRITE_PASSWORD}
+  #   volumes:
+  #     - ./config.docker.alloy:/etc/alloy/config.docker.alloy:ro
+  #     - alloy_data:/var/lib/alloy/data
+  #   command:
+  #     - run
+  #     - --server.http.listen-addr=0.0.0.0:12345
+  #     - --storage.path=/var/lib/alloy/data
+  #     - /etc/alloy/config.docker.alloy
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:12345/-/ready || exit 1"]
+  #     interval: 15s
+  #     timeout: 5s
+  #     retries: 3
+  #     start_period: 10s
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 256M
+  #   cpuset: "4,5"
+  
+volumes:
+  postgres_data: {}

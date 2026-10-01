@@ -13,8 +13,15 @@ fi
 
 echo "✅ ZIP file found: $ZIP_FILE"
 
+# Stage file for Docker context
+mkdir -p .docker/dist
+cp "$ZIP_FILE" .docker/dist/lambda-app.zip
+
 echo "🔨 Building Docker image..."
-docker build -f docker/Dockerfile.lambda-test -t lambda-test .
+docker build -f .docker/Dockerfile.lambda-test -t lambda-test .
+
+# Clean up staged file after build
+rm -rf .docker/dist
 
 mkdir -p logs
 LOG_FILE="logs/lambda-test-$(date +%Y%m%d-%H%M%S).log"

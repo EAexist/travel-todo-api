@@ -1,11 +1,6 @@
 package com.matchalab.travel_todo_api.model.Todo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import com.matchalab.travel_todo_api.enums.TodoPresetType;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,17 +27,18 @@ import lombok.Setter;
 @Builder
 public class TodoPreset {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(unique = true)
-    private TodoPresetType type;
+  @Enumerated(EnumType.STRING)
+  @Column(unique = true)
+  private TodoPresetType type;
 
-    private String title;
+  private String title;
 
-    @OneToMany(mappedBy = "todoPreset", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<TodoPresetStockTodoContent> todoPresetStockTodoContents = new ArrayList<TodoPresetStockTodoContent>();
+  @OneToMany(mappedBy = "todoPreset", cascade = CascadeType.ALL)
+  @Builder.Default
+  private List<TodoPresetStockTodoContent> todoPresetStockTodoContents =
+      new ArrayList<TodoPresetStockTodoContent>();
 }

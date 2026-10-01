@@ -1,0 +1,5 @@
+management:
+  metrics:
+    enable:
+      reservation.repository.save_all.duration: true
+      reservation.repository.find_all_by_id.duration: true

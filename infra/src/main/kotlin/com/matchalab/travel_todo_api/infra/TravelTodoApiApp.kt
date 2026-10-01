@@ -17,7 +17,7 @@ class TravelTodoApiApp {
 
             val stgStack: TravelTodoApiStack = TravelTodoApiStack(
                 app,
-                "TravelTodoApi-Stg-Stack",
+                "TravelTodoApi-Staging-Stack",
                 StackProps.builder()
                     // If you don't specify 'env', this stack will be environment-agnostic.
                     // Account/Region-dependent features and context lookups will not work,

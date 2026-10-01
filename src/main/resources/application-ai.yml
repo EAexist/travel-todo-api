@@ -1,15 +1,25 @@
 spring:
   ai:
-    model:
-      chat: google-genai
-    retry:
-      max-attempts: 1
-    google:
-      genai:
-        #        project-id: ${SPRING_AI_GOOGLE_GENAI_PROJECT_ID}
-        #        api-key: ${SPRING_AI_GOOGLE_GENAI_API_KEY}
-        chat:
-          options:
-            model: gemini-3-flash-preview
-            temperature: 0.1
-            thinking-level: LOW
+    # A. openai
+    # OpenAI-compatible REST API for mocking by baseUrl configuration
+    openai:
+      api-key: ${SPRING_AI_GOOGLE_GENAI_API_KEY}
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      chat:
+        options:
+          model: gemini-2.5-flash
+    # B.google-genai
+    # Deprecated
+#    model:
+#      chat: google-genai
+#    retry:
+#      max-attempts: 1
+#    google:
+#      genai:
+#        #        project-id: ${SPRING_AI_GOOGLE_GENAI_PROJECT_ID}
+#        #        api-key: ${SPRING_AI_GOOGLE_GENAI_API_KEY}
+#        chat:
+#          options:
+#            model: gemini-3-flash-preview
+#            temperature: 0.1
+#            thinking-level: LOW

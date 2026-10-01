@@ -24,29 +24,27 @@ import lombok.Setter;
 @Builder
 public class TodoPresetStockTodoContent {
 
-    @EmbeddedId
-    private TodoPresetStockTodoContentId id;
+  @EmbeddedId private TodoPresetStockTodoContentId id;
 
-    @Builder.Default
-    private Boolean isFlaggedToAdd = false;
+  @Builder.Default private Boolean isFlaggedToAdd = false;
 
-    private int orderKey;
+  private int orderKey;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @MapsId("stockTodoContentId") // Maps the stockTodoContentId field of the composite key
-    @JoinColumn(name = "stock-todo-content_id")
-    private StockTodoContent stockTodoContent;
+  @OneToOne(cascade = CascadeType.ALL)
+  @MapsId("stockTodoContentId") // Maps the stockTodoContentId field of the composite key
+  @JoinColumn(name = "stock-todo-content_id")
+  private StockTodoContent stockTodoContent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("todoPresetId")
-    @JoinColumn(name = "todo-preset_id")
-    private TodoPreset todoPreset;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @MapsId("todoPresetId")
+  @JoinColumn(name = "todo-preset_id")
+  private TodoPreset todoPreset;
 
-    public TodoPresetStockTodoContent(TodoPreset todoPreset, StockTodoContent stockTodoContent,
-            Boolean isFlaggedToAdd) {
-        this.todoPreset = todoPreset;
-        this.stockTodoContent = stockTodoContent;
-        this.isFlaggedToAdd = isFlaggedToAdd;
-        this.id = new TodoPresetStockTodoContentId(todoPreset.getId(), stockTodoContent.getId());
-    }
+  public TodoPresetStockTodoContent(
+      TodoPreset todoPreset, StockTodoContent stockTodoContent, Boolean isFlaggedToAdd) {
+    this.todoPreset = todoPreset;
+    this.stockTodoContent = stockTodoContent;
+    this.isFlaggedToAdd = isFlaggedToAdd;
+    this.id = new TodoPresetStockTodoContentId(todoPreset.getId(), stockTodoContent.getId());
+  }
 }

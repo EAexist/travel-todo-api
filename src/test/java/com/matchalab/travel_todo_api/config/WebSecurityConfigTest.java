@@ -26,70 +26,70 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 @SpringJUnitWebConfig(classes = SecurityConfig.class)
 public class WebSecurityConfigTest {
 
-    // @Test
-    // void loginWhenRemembermeThenAuthenticated(WebApplicationContext context)
-    // throws Exception {
-    //     // @formatter:off
-	// 	MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context)
-	// 			.apply(springSecurity())
-	// 			.build();
+  // @Test
+  // void loginWhenRemembermeThenAuthenticated(WebApplicationContext context)
+  // throws Exception {
+  //     // @formatter:off
+  // 	MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context)
+  // 			.apply(springSecurity())
+  // 			.build();
 
-	// 	MockHttpServletRequestBuilder login = post("/auth/web-browser")
-	// 			.with(csrf())
-	// 			.param("username", "user")
-	// 			.param("remember-me", "true");
-	// 	MvcResult mvcResult = mockMvc.perform(login)
-	// 			.andExpect(authenticated())
-	// 			.andReturn();
-	// 	// @formatter:on
+  // 	MockHttpServletRequestBuilder login = post("/auth/web-browser")
+  // 			.with(csrf())
+  // 			.param("username", "user")
+  // 			.param("remember-me", "true");
+  // 	MvcResult mvcResult = mockMvc.perform(login)
+  // 			.andExpect(authenticated())
+  // 			.andReturn();
+  // 	// @formatter:on
 
-    // Cookie rememberMe = mvcResult.getResponse().getCookie("remember-me");
+  // Cookie rememberMe = mvcResult.getResponse().getCookie("remember-me");
 
-    //     // @formatter:off
-	// 	mockMvc.perform(get("/").cookie(rememberMe))
-	// 			.andExpect(authenticated());
-	// 	// @formatter:on
-    // }
+  //     // @formatter:off
+  // 	mockMvc.perform(get("/").cookie(rememberMe))
+  // 			.andExpect(authenticated());
+  // 	// @formatter:on
+  // }
 
-    // @Test
-    // void loginWhenNoRemembermeThenUnauthenticated(WebApplicationContext context)
-    // throws Exception {
-    //     // @formatter:off
-	// 	MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context)
-	// 			.apply(springSecurity())
-	// 			.build();
+  // @Test
+  // void loginWhenNoRemembermeThenUnauthenticated(WebApplicationContext context)
+  // throws Exception {
+  //     // @formatter:off
+  // 	MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context)
+  // 			.apply(springSecurity())
+  // 			.build();
 
-	// 	MockHttpServletRequestBuilder login = post("/auth/web-browser")
-	// 			.with(csrf())
-	// 			.param("username", "user")
-	// 			.param("remember-me", "true");
-	// 	// @formatter:on
+  // 	MockHttpServletRequestBuilder login = post("/auth/web-browser")
+  // 			.with(csrf())
+  // 			.param("username", "user")
+  // 			.param("remember-me", "true");
+  // 	// @formatter:on
 
-    //     // @formatter:off
-	// 	mockMvc.perform(get("/"))
-	// 			.andExpect(unauthenticated());
-	// 	// @formatter:on
-    // }
+  //     // @formatter:off
+  // 	mockMvc.perform(get("/"))
+  // 			.andExpect(unauthenticated());
+  // 	// @formatter:on
+  // }
 
-    // @Test
-    // void loginWhenNoRemembermeThenNoCookie(WebApplicationContext context) throws
-    // Exception {
-    //     // @formatter:off
-	// 	MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context)
-	// 			.apply(springSecurity())
-	// 			.build();
+  // @Test
+  // void loginWhenNoRemembermeThenNoCookie(WebApplicationContext context) throws
+  // Exception {
+  //     // @formatter:off
+  // 	MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context)
+  // 			.apply(springSecurity())
+  // 			.build();
 
-	// 	MockHttpServletRequestBuilder login = post("/auth/web-browser")
-	// 			.with(csrf())
-	// 			.param("username", "user");
-	// 	MvcResult mvcResult = mockMvc.perform(login)
-	// 			.andExpect(authenticated())
-	// 			.andReturn();
-	// 	// @formatter:on
+  // 	MockHttpServletRequestBuilder login = post("/auth/web-browser")
+  // 			.with(csrf())
+  // 			.param("username", "user");
+  // 	MvcResult mvcResult = mockMvc.perform(login)
+  // 			.andExpect(authenticated())
+  // 			.andReturn();
+  // 	// @formatter:on
 
-    // Cookie rememberMe = mvcResult.getResponse().getCookie("remember-me");
+  // Cookie rememberMe = mvcResult.getResponse().getCookie("remember-me");
 
-    // assertThat(rememberMe).isNull();
-    // }
+  // assertThat(rememberMe).isNull();
+  // }
 
 }

@@ -1,11 +1,10 @@
 package com.matchalab.travel_todo_api.model.Todo;
 
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
-
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,31 +17,23 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TodoPresetStockTodoContentId implements Serializable {
 
-    @JoinColumn(name = "todo-preset_id")
-    private UUID todoPresetId;
+  @JoinColumn(name = "todo-preset_id")
+  private UUID todoPresetId;
 
-    @JoinColumn(name = "stock-todo-content_id")
-    private UUID stockTodoContentId;
+  @JoinColumn(name = "stock-todo-content_id")
+  private UUID stockTodoContentId;
 
-    // public TodoPresetStockTodoContentId(UUID todoPresetId, UUID
-    // stockTodoContentId) {
-    // this.todoPresetId = todoPresetId;
-    // this.stockTodoContentId = stockTodoContentId;
-    // }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TodoPresetStockTodoContentId that = (TodoPresetStockTodoContentId) o;
+    return Objects.equals(todoPresetId, that.todoPresetId)
+        && Objects.equals(stockTodoContentId, that.stockTodoContentId);
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        TodoPresetStockTodoContentId that = (TodoPresetStockTodoContentId) o;
-        return Objects.equals(todoPresetId, that.todoPresetId) &&
-                Objects.equals(stockTodoContentId, that.stockTodoContentId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(todoPresetId, stockTodoContentId);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(todoPresetId, stockTodoContentId);
+  }
 }

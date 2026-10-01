@@ -1,10 +1,9 @@
 package com.matchalab.travel_todo_api.model.Flight;
 
-import java.util.UUID;
-
 import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,22 +19,17 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Flight {
 
-    @Id
-    @NonNull
-    @Builder.Default
-    private UUID id = UUID.randomUUID();
+  String flightNumber;
+  String departureDateTimeIsoString;
 
-    String flightNumber;
+  // Airport departureAirport;
 
-    // Airport departureAirport;
+  // Airport arrivalAirport;
+  @Id @NonNull @Builder.Default private UUID id = UUID.randomUUID();
 
-    // Airport arrivalAirport;
-
-    String departureDateTimeIsoString;
-
-    public Flight(String flightNumber, String departureDateTimeIsoString) {
-        this.id = UUID.randomUUID();
-        this.flightNumber = flightNumber;
-        this.departureDateTimeIsoString = departureDateTimeIsoString;
-    }
+  public Flight(String flightNumber, String departureDateTimeIsoString) {
+    this.id = UUID.randomUUID();
+    this.flightNumber = flightNumber;
+    this.departureDateTimeIsoString = departureDateTimeIsoString;
+  }
 }

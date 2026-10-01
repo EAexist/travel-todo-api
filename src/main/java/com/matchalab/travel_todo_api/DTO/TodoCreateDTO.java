@@ -6,9 +6,10 @@ import lombok.Builder;
 import org.openapitools.jackson.nullable.JsonNullable;
 
 @Builder
-public record TodoCreateDTO (
-        UUID id,
-        int orderKey,
-        String note,
-        @Nullable JsonNullable<String> completeDateIsoString,
-        TodoContentDTO content) implements TodoRequest {}
+public record TodoCreateDTO(
+    UUID id,
+    int orderKey,
+    String note,
+    @Nullable JsonNullable<String> completeDateIsoString,
+    TodoContentDTO content)
+    implements TodoRequest {}

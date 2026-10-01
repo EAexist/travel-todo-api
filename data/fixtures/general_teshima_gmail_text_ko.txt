@@ -1,0 +1,60 @@
+Dear Pyo Hyeon,
+
+Thank you for purchasing your Teshima Art Museum Online Ticket(s) from Etix.
+
+Please confirm your purchase details below.
+
+Confirmation code: 25504976
+Ticket type: Barcode ticket (smartphone display/print at home)
+
+*On the day of visit, please show your barcode ticket at the Teshima Art Museum Ticket Center either on your smartphone screen, or as a print out. The barcode ticket can be opened from the "View Your Ticket" link below.
+
+
+Ticket details
+Serial #: 4428332754
+Venue: Teshima Art Museum
+Date/time: May 10, 2024 11:30 AM
+Ticket price: JPY1,570.00
+Category: 一般 (Adult)
+
+Serial #: 4428332898
+Venue: Teshima Art Museum
+Date/time: May 10, 2024 11:30 AM
+Ticket price: JPY1,570.00
+Category: 一般 (Adult)
+
+Total: JPY3,140.00
+
+View Your Ticket
+ Click on the link below to view your ticket(s):
+https://www.etix.com/kketix/online/onlinereprint.jsp?userID=25504976&password=66755185
+
+Handling of barcode tickets
+Please handle this confirmation email and your barcode ticket with care. If the same barcode ticket is presented multiple times at the museum entrance, only the first ticket presented will be valid.
+
+Cancellation
+If you wish to cancel ticket, please make procedure using the cancellation form below.
+
+https://www.etix.com/kketix/refundbyself/refundbyself.jsp
+
+[Caution]
+*Cancel request will be accepted until 1 hour before the reservation time. Cancel request after the acceptance period cannot be accepted.
+*Cancellation is applicable on each order level. If you order multiple tickets with one order, all tickets will be cancelled.
+*Please note that cancelling the cancel request is not possible.
+
+[Cancellation procedure]
+(1) Enter the "email address" used when applying for the numbered ticket and "order number" on the cancellation form.
+(2) "Self-Service refund confirmation" email will be sent. *The cancellation procedure has not been completed yet.
+(3) Open the URL delivered in the "Cancellation Confirmation Email".
+(4) The order details to cancel will be displayed.
+(5) After confirming the details of the order, submit cancel.
+(6) Confirmation page will be displayed, the cancellation procedure is complete. "Cancel Confirmation" email will be sent.
+
+Please note
+- Resale of this ticket for commercial purposes or resale to third parties, auction selling and internet auction selling are prohibited.
+- The validity of this ticket can be revoked by the museum if it appears to have been illegally created, obtained by theft or counterfeited. Neither the museum or Etix will refund or exchange such tickets.
+- This email is an automated purchase confirmation. For further assistance on online tickets, please contact our Email Support from the Online Ticket sales page.
+
+Sincerely,
+
+Etix

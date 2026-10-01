@@ -3,20 +3,42 @@ spring:
     hibernate:
       ddl-auto: none
     show_sql: true
-  flyway:
-    clean-disabled: false
+  cloud:
+    gcp:
+      project-id: example-google-cloud-project-id
+    aws:
+      credentials:
+        access-key: test
+        secret-key: test
+      region:
+        static: ap-northeast-2
+      sqs:
+        endpoint: ${SPRING_CLOUD_AWS_SQS_ENDPOINT:http://localhost:4566}
+  ai:
+    google:
+      genai:
+        project-id: example-project-id
+        api-key: example-api-key
   datasource:
-    hikari:
-      initialization-fail-timeout: 1
-      connection-test-query: ""
-      keepalive-time: 0
-      max-lifetime: 1800000
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: password
+#  flyway:
+#    clean-disabled: false
+#  datasource:
+#    hikari:
+#      initialization-fail-timeout: 1
+#      connection-test-query: ""
+#      keepalive-time: 0
+#      max-lifetime: 1800000
 #  ai:
 #    model:
 #      chat: none
 logging:
   level:
-    # root: DEBUG
+    com:
+      matchalab:
+        travel_todo_api: DEBUG
     org:
       hibernate:
         sql: DEBUG
@@ -31,6 +53,14 @@ server:
 app:
   cors:
     allowed-origins: https://localhost
+  google:
+    client-id: example-client-id
+    web-client-id: example-web-client-id
+  cors-allowed-origins: example-cors-allowed-origins
+  security:
+    admin-emails: example-security-admin-emails
+  google-places-api-key: example-google-places-api-key
+  google-places-base-url: example-google-places-base-url
 # bucket4j:
 #   filters:
 #     - cache-name: create-reservation-from-text-api-call-quota-cache
